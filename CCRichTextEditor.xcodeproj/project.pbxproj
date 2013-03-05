@@ -1,0 +1,378 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2AD2328D16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */; };
+		2ADEA01616E095C200E768F3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01516E095C200E768F3 /* UIKit.framework */; };
+		2ADEA01816E095C200E768F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01716E095C200E768F3 /* Foundation.framework */; };
+		2ADEA01A16E095C200E768F3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01916E095C200E768F3 /* CoreGraphics.framework */; };
+		2ADEA02016E095C200E768F3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA01E16E095C200E768F3 /* InfoPlist.strings */; };
+		2ADEA02216E095C200E768F3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ADEA02116E095C200E768F3 /* main.m */; };
+		2ADEA02616E095C200E768F3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ADEA02516E095C200E768F3 /* AppDelegate.m */; };
+		2ADEA02816E095C200E768F3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA02716E095C200E768F3 /* Default.png */; };
+		2ADEA02A16E095C200E768F3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA02916E095C200E768F3 /* Default@2x.png */; };
+		2ADEA02C16E095C200E768F3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA02B16E095C200E768F3 /* Default-568h@2x.png */; };
+		2ADEA02F16E095C200E768F3 /* CCRichTextEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ADEA02E16E095C200E768F3 /* CCRichTextEditorViewController.m */; };
+		2ADEA03216E095C200E768F3 /* CCRichTextEditorViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA03016E095C200E768F3 /* CCRichTextEditorViewController_iPhone.xib */; };
+		2ADEA03516E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA03316E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib */; };
+		2ADEA04316E09BD200E768F3 /* customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */; };
+		2ADEA04416E09BD200E768F3 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04216E09BD200E768F3 /* index.html */; };
+		2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */; };
+		2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */; };
+		2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2167E16E4315F00887B7C /* QuartzCore.framework */; };
+		2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2168916E4674C00887B7C /* CoreText.framework */; };
+		2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */; };
+		2AE2169B16E49EBC00887B7C /* SimSun.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2AE2169916E49EBC00887B7C /* SimSun.ttf */; };
+		2AE2169D16E4A07A00887B7C /* Kai.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2AE2169C16E4A07A00887B7C /* Kai.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2AD2328B16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEAccessorySwitch.h; sourceTree = "<group>"; };
+		2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEAccessorySwitch.m; sourceTree = "<group>"; };
+		2ADEA01116E095C200E768F3 /* CCRichTextEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCRichTextEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2ADEA01516E095C200E768F3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2ADEA01716E095C200E768F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		2ADEA01916E095C200E768F3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		2ADEA01D16E095C200E768F3 /* CCRichTextEditor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CCRichTextEditor-Info.plist"; sourceTree = "<group>"; };
+		2ADEA01F16E095C200E768F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2ADEA02116E095C200E768F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2ADEA02316E095C200E768F3 /* CCRichTextEditor-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CCRichTextEditor-Prefix.pch"; sourceTree = "<group>"; };
+		2ADEA02416E095C200E768F3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2ADEA02516E095C200E768F3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2ADEA02716E095C200E768F3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		2ADEA02916E095C200E768F3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		2ADEA02B16E095C200E768F3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		2ADEA02D16E095C200E768F3 /* CCRichTextEditorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCRichTextEditorViewController.h; sourceTree = "<group>"; };
+		2ADEA02E16E095C200E768F3 /* CCRichTextEditorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCRichTextEditorViewController.m; sourceTree = "<group>"; };
+		2ADEA03116E095C200E768F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CCRichTextEditorViewController_iPhone.xib; sourceTree = "<group>"; };
+		2ADEA03416E095C200E768F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CCRichTextEditorViewController_iPad.xib; sourceTree = "<group>"; };
+		2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = customKeyboardBar.png; sourceTree = "<group>"; };
+		2ADEA04216E09BD200E768F3 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		2AE1336F16E58A9F00209312 /* CCRTEColorSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEColorSelectionViewController.h; sourceTree = "<group>"; };
+		2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEColorSelectionViewController.m; sourceTree = "<group>"; };
+		2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEPhotoSelectionViewController.h; sourceTree = "<group>"; };
+		2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEPhotoSelectionViewController.m; sourceTree = "<group>"; };
+		2AE2167E16E4315F00887B7C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2AE2168916E4674C00887B7C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		2AE2168F16E493F000887B7C /* CCRTEFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEFontSelectionViewController.h; sourceTree = "<group>"; };
+		2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEFontSelectionViewController.m; sourceTree = "<group>"; };
+		2AE2169916E49EBC00887B7C /* SimSun.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimSun.ttf; sourceTree = "<group>"; };
+		2AE2169C16E4A07A00887B7C /* Kai.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Kai.ttf; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2ADEA00E16E095C200E768F3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */,
+				2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */,
+				2ADEA01616E095C200E768F3 /* UIKit.framework in Frameworks */,
+				2ADEA01816E095C200E768F3 /* Foundation.framework in Frameworks */,
+				2ADEA01A16E095C200E768F3 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2ADEA00616E095C200E768F3 = {
+			isa = PBXGroup;
+			children = (
+				2ADEA01B16E095C200E768F3 /* CCRichTextEditor */,
+				2ADEA01416E095C200E768F3 /* Frameworks */,
+				2ADEA01216E095C200E768F3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2ADEA01216E095C200E768F3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2ADEA01116E095C200E768F3 /* CCRichTextEditor.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2ADEA01416E095C200E768F3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2AE2168916E4674C00887B7C /* CoreText.framework */,
+				2AE2167E16E4315F00887B7C /* QuartzCore.framework */,
+				2ADEA01516E095C200E768F3 /* UIKit.framework */,
+				2ADEA01716E095C200E768F3 /* Foundation.framework */,
+				2ADEA01916E095C200E768F3 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2ADEA01B16E095C200E768F3 /* CCRichTextEditor */ = {
+			isa = PBXGroup;
+			children = (
+				2ADEA02416E095C200E768F3 /* AppDelegate.h */,
+				2ADEA02516E095C200E768F3 /* AppDelegate.m */,
+				2ADEA02D16E095C200E768F3 /* CCRichTextEditorViewController.h */,
+				2ADEA02E16E095C200E768F3 /* CCRichTextEditorViewController.m */,
+				2ADEA03016E095C200E768F3 /* CCRichTextEditorViewController_iPhone.xib */,
+				2ADEA03316E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib */,
+				2AD2328B16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.h */,
+				2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */,
+				2AE2168F16E493F000887B7C /* CCRTEFontSelectionViewController.h */,
+				2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */,
+				2AE1336F16E58A9F00209312 /* CCRTEColorSelectionViewController.h */,
+				2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */,
+				2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */,
+				2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */,
+				2ADEA03B16E09A7100E768F3 /* Resources */,
+				2ADEA01C16E095C200E768F3 /* Supporting Files */,
+			);
+			path = CCRichTextEditor;
+			sourceTree = "<group>";
+		};
+		2ADEA01C16E095C200E768F3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2ADEA01D16E095C200E768F3 /* CCRichTextEditor-Info.plist */,
+				2ADEA01E16E095C200E768F3 /* InfoPlist.strings */,
+				2ADEA02116E095C200E768F3 /* main.m */,
+				2ADEA02316E095C200E768F3 /* CCRichTextEditor-Prefix.pch */,
+				2ADEA02716E095C200E768F3 /* Default.png */,
+				2ADEA02916E095C200E768F3 /* Default@2x.png */,
+				2ADEA02B16E095C200E768F3 /* Default-568h@2x.png */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2ADEA03B16E09A7100E768F3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2AE2169C16E4A07A00887B7C /* Kai.ttf */,
+				2AE2169916E49EBC00887B7C /* SimSun.ttf */,
+				2ADEA04016E09BD200E768F3 /* Images */,
+				2ADEA04216E09BD200E768F3 /* index.html */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2ADEA04016E09BD200E768F3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2ADEA01016E095C200E768F3 /* CCRichTextEditor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2ADEA03816E095C200E768F3 /* Build configuration list for PBXNativeTarget "CCRichTextEditor" */;
+			buildPhases = (
+				2ADEA00D16E095C200E768F3 /* Sources */,
+				2ADEA00E16E095C200E768F3 /* Frameworks */,
+				2ADEA00F16E095C200E768F3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CCRichTextEditor;
+			productName = CCRichTextEditor;
+			productReference = 2ADEA01116E095C200E768F3 /* CCRichTextEditor.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2ADEA00816E095C200E768F3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = ddrccw;
+			};
+			buildConfigurationList = 2ADEA00B16E095C200E768F3 /* Build configuration list for PBXProject "CCRichTextEditor" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2ADEA00616E095C200E768F3;
+			productRefGroup = 2ADEA01216E095C200E768F3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2ADEA01016E095C200E768F3 /* CCRichTextEditor */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2ADEA00F16E095C200E768F3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2ADEA02016E095C200E768F3 /* InfoPlist.strings in Resources */,
+				2ADEA02816E095C200E768F3 /* Default.png in Resources */,
+				2ADEA02A16E095C200E768F3 /* Default@2x.png in Resources */,
+				2ADEA02C16E095C200E768F3 /* Default-568h@2x.png in Resources */,
+				2ADEA03216E095C200E768F3 /* CCRichTextEditorViewController_iPhone.xib in Resources */,
+				2ADEA03516E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib in Resources */,
+				2ADEA04316E09BD200E768F3 /* customKeyboardBar.png in Resources */,
+				2ADEA04416E09BD200E768F3 /* index.html in Resources */,
+				2AE2169B16E49EBC00887B7C /* SimSun.ttf in Resources */,
+				2AE2169D16E4A07A00887B7C /* Kai.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2ADEA00D16E095C200E768F3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2ADEA02216E095C200E768F3 /* main.m in Sources */,
+				2ADEA02616E095C200E768F3 /* AppDelegate.m in Sources */,
+				2ADEA02F16E095C200E768F3 /* CCRichTextEditorViewController.m in Sources */,
+				2AD2328D16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m in Sources */,
+				2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */,
+				2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */,
+				2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2ADEA01E16E095C200E768F3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2ADEA01F16E095C200E768F3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2ADEA03016E095C200E768F3 /* CCRichTextEditorViewController_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2ADEA03116E095C200E768F3 /* en */,
+			);
+			name = CCRichTextEditorViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		2ADEA03316E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2ADEA03416E095C200E768F3 /* en */,
+			);
+			name = CCRichTextEditorViewController_iPad.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2ADEA03616E095C200E768F3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2ADEA03716E095C200E768F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2ADEA03916E095C200E768F3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CCRichTextEditor/CCRichTextEditor-Prefix.pch";
+				INFOPLIST_FILE = "CCRichTextEditor/CCRichTextEditor-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		2ADEA03A16E095C200E768F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CCRichTextEditor/CCRichTextEditor-Prefix.pch";
+				INFOPLIST_FILE = "CCRichTextEditor/CCRichTextEditor-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2ADEA00B16E095C200E768F3 /* Build configuration list for PBXProject "CCRichTextEditor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2ADEA03616E095C200E768F3 /* Debug */,
+				2ADEA03716E095C200E768F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2ADEA03816E095C200E768F3 /* Build configuration list for PBXNativeTarget "CCRichTextEditor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2ADEA03916E095C200E768F3 /* Debug */,
+				2ADEA03A16E095C200E768F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2ADEA00816E095C200E768F3 /* Project object */;
+}
