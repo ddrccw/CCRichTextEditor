@@ -11,6 +11,7 @@
 #import "CCRTEFontSelectionViewController.h"
 #import "CCRTEColorSelectionViewController.h"
 #import <CoreText/CoreText.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 #define DOCUMENT_EXECCMDSTRING_CMD(CMD) [NSString stringWithFormat:@"document.execCommand('%@')", CMD]
 #define DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%@')", CMD, VALUE]
@@ -479,24 +480,23 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image picker
+//TODO:图片存储有待改进
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
   // Obtain the path to save to
-//  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//  NSString *documentsDirectory = [paths objectAtIndex:0];
-//  NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%i.png", i]];
-//  
-//  // Extract image from the picker and save it
-//  NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-//  if ([mediaType isEqualToString:@"public.image"]){
-//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-//    NSData *data = UIImagePNGRepresentation(image);
-//    [data writeToFile:imagePath atomically:YES];
-//  }
-//  
-//  [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand('insertImage', false, '%@')", imagePath]];
-//  [imagePickerPopover dismissPopoverAnimated:YES];
-//  i++;
-
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0];
+  NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png", [NSDate date]]];
+  
+  // Extract image from the picker and save it
+  NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+  if ([mediaType isEqualToString:(NSString *)kUTTypeImage]){
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    NSData *data = UIImagePNGRepresentation(image);
+    [data writeToFile:imagePath atomically:YES];
+  }
+  
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand('insertImage', false, '%@')", imagePath]];
+  [_photoPopController dismissPopoverAnimated:YES];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

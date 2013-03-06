@@ -43,6 +43,7 @@
 		2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */; };
 		2AE1EBC816E6D6D700FB4D04 /* commonBtnHighlightedBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */; };
 		2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC916E6D7F600FB4D04 /* photoMark.png */; };
+		2AE1EBD416E732E900FB4D04 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */; };
 		2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2167E16E4315F00887B7C /* QuartzCore.framework */; };
 		2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2168916E4674C00887B7C /* CoreText.framework */; };
 		2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */; };
@@ -95,6 +96,7 @@
 		2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBtnBackground.png; sourceTree = "<group>"; };
 		2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBtnHighlightedBackground.png; sourceTree = "<group>"; };
 		2AE1EBC916E6D7F600FB4D04 /* photoMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoMark.png; sourceTree = "<group>"; };
+		2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		2AE2167E16E4315F00887B7C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2AE2168916E4674C00887B7C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE2168F16E493F000887B7C /* CCRTEFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEFontSelectionViewController.h; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AE1EBD416E732E900FB4D04 /* MobileCoreServices.framework in Frameworks */,
 				2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */,
 				2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */,
 				2ADEA01616E095C200E768F3 /* UIKit.framework in Frameworks */,
@@ -139,6 +142,7 @@
 		2ADEA01416E095C200E768F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */,
 				2AE2168916E4674C00887B7C /* CoreText.framework */,
 				2AE2167E16E4315F00887B7C /* QuartzCore.framework */,
 				2ADEA01516E095C200E768F3 /* UIKit.framework */,
