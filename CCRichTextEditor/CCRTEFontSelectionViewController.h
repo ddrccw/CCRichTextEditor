@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol CCRTEFontSelectionViewControllerDelegate <NSObject>
+
+- (void)didSelectFont:(UIFont *)font;
+
+@end
+
 @interface CCRTEFontSelectionViewController : UIViewController
 @property (retain, nonatomic) NSArray *customizedFontArray;
+@property (assign, nonatomic) id <CCRTEFontSelectionViewControllerDelegate> delegate;
 @end

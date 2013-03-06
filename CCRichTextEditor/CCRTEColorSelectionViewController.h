@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCRTEColorSelectionViewController : UIViewController
+@protocol CCRTEColorSelectionViewControllerDelegate <NSObject>
+- (void)didSelectColor:(UIColor *)color;
+@end
 
+@interface CCRTEColorSelectionViewController : UIViewController
+@property (assign, nonatomic) id<CCRTEColorSelectionViewControllerDelegate> delegate;
 @end

@@ -14,20 +14,21 @@
 
 #define DOCUMENT_EXECCMDSTRING_CMD(CMD) [NSString stringWithFormat:@"document.execCommand('%@')", CMD]
 #define DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%@')", CMD, VALUE]
-#define DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, %d)", CMD, VALUE]
+#define DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%d')", CMD, VALUE]
 #define DOCUMENT_QUERYCMDSTRING(CMD) [NSString stringWithFormat:@"document.queryCommandValue('%@')", CMD]
-#define DOCUMENT_QUERYCMDSTATESTRING(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@'", CMD]
-#define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@'", CMD]
+#define DOCUMENT_QUERYCMDSTATESTRING(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@')", CMD]
+#define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@')", CMD]
 
 @interface CCRTEDocumentFragmentStatus : NSObject
-@property (retain, nonatomic) NSString *fontName;
+@property (retain, atomic) NSString *fontName;
 @property (assign, nonatomic) int fontSize;    //webview上的字体大小,不是iOS的计量方法
-@property (retain, nonatomic) UIColor *fontColor;
+@property (retain, atomic) UIColor *fontColor;
 @property (assign, nonatomic) BOOL bold;
 @property (assign, nonatomic) BOOL italic;
 @property (assign, nonatomic) BOOL underline;
 @property (assign, nonatomic) BOOL undo;
 @property (assign, nonatomic) BOOL redo;
+- (UIFont *)font;
 - (NSString *)fontColorString;
 - (void)setFontColorString:(NSString *)fontColorString;
 @end
@@ -40,9 +41,14 @@
   [super dealloc];
 }
 
-- (NSString *)fontColorString {
-  const float *rgb = CGColorGetComponents(self.fontColor.CGColor);
-  return [NSString stringWithFormat:@"rgb(%f, %f, %f)", rgb[0] * 255, rgb[1] * 255, rgb[2] * 255];
+- (UIFont *)font {
+  return [UIFont fontWithName:self.fontName size:15];
+}
+
+- (NSString *)fontColorString {    //不能包含小数
+  float rgb[4] = {0};
+  [self.fontColor getRed:&rgb[0] green:&rgb[1] blue:&rgb[2] alpha:&rgb[3]];
+  return [NSString stringWithFormat:@"rgb(%.0f, %.0f, %.0f)", rgb[0] * 255, rgb[1] * 255, rgb[2] * 255];
 }
 
 - (void)setFontColorString:(NSString *)fontColorString {   //format rgb(red, green, blue)
@@ -55,8 +61,14 @@
   float g = 0;
   float b = 0;
   int ret = sscanf(target, "rgb(%f, %f, %f)", &r, &g, &b);
-  if (!ret) {
-    self.fontColor = [UIColor colorWithRed:r / 255 green:g / 255 blue:b / 255 alpha:1];
+  
+  if (EOF != ret) {
+    if (self.fontColor) {
+      const float *rgb = CGColorGetComponents(self.fontColor.CGColor);
+      if (rgb[0] != (r / 255) || rgb[1] != (g / 255) || rgb[2] != (b / 255)) {
+        self.fontColor = [UIColor colorWithRed:(r / 255) green:(g / 255) blue:(b / 255) alpha:1];
+      }
+    }
   }
   else {
     self.fontColor = [UIColor blackColor];
@@ -66,7 +78,9 @@
 @end
 
 @interface CCRichTextEditorViewController ()
-<UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+<UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,
+CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDelegate>
+
 @property (retain, nonatomic) IBOutlet UIWebView *contentWebView;
 @property (retain, nonatomic) IBOutlet UIView *inputAccessoryView;
 
@@ -167,11 +181,6 @@
   
   [self initAccessoryView];
   [self initDocumentStatus];
-  self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1
-                                                target:self
-                                              selector:@selector(checkSelection)
-                                              userInfo:nil
-                                               repeats:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
@@ -188,10 +197,11 @@
   _documentFragmentStatus.underline = NO;
   _documentFragmentStatus.undo = NO;
   _documentFragmentStatus.redo = NO;
+
   [self.contentWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;",
                        DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontName", _documentFragmentStatus.fontName),
                        DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", 3),
-                       DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontColor", _documentFragmentStatus.fontColorString),
+                       DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"foreColor", _documentFragmentStatus.fontColorString),
                        DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"bold", false),
                        DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"italic", false),
                        DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"underline", false)]];
@@ -208,7 +218,7 @@
     self.documentFragmentStatus.fontSize = fontSize;
   }
   
-  NSString *fontColorString = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"fontColor")];
+  NSString *fontColorString = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"foreColor")];
   if (fontColorString) {
     self.documentFragmentStatus.fontColorString = fontColorString;
   }
@@ -225,11 +235,44 @@
 }
 
 - (void)refreshInputAccessoryView {
+  self.fontBtn.titleLabel.font = self.documentFragmentStatus.font;
+  static const UInt8 kMaxFontSize = 7;
+  static const UInt8 kMinFontSize = 1;
+  if (kMaxFontSize == self.documentFragmentStatus.fontSize) {
+    self.fontSizeUpBtn.enabled = NO;
+  }
+  else if (kMinFontSize == self.documentFragmentStatus.fontSize) {
+    self.fontSizeDownBtn.enabled = NO;
+  }
+  else {
+    self.fontSizeUpBtn.enabled = self.fontSizeDownBtn.enabled = YES;
+  }
   
+  if (![self.fontColorBtn.titleLabel.textColor isEqual:self.documentFragmentStatus.fontColor] &&
+      ![self.fontColorBtn.titleLabel.highlightedTextColor isEqual:self.documentFragmentStatus.fontColor]) {
+    [self.fontColorBtn setTitleColor:self.documentFragmentStatus.fontColor forState:UIControlStateNormal];
+    [self.fontColorBtn setTitleColor:self.documentFragmentStatus.fontColor forState:UIControlStateHighlighted];
+  }
+
+  
+  if ((self.boldSwitch.selected ^ self.documentFragmentStatus.bold)) {
+    self.boldSwitch.selected = self.documentFragmentStatus.bold;
+  }
+  
+  if ((self.italicSwitch.selected ^ self.documentFragmentStatus.italic)) {
+    self.italicSwitch.selected = self.documentFragmentStatus.italic;
+  }
+ 
+  if ((self.italicSwitch.selected ^ self.documentFragmentStatus.underline)) {
+    self.underlineSwitch.selected = self.documentFragmentStatus.underline;
+  }
+  
+  self.undoBtn.enabled = self.documentFragmentStatus.undo;
+  self.redoBtn.enabled = self.documentFragmentStatus.redo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#pragma mark - inputAccessoryView
+#pragma mark - inputAccessoryView -
 - (void)initAccessoryView {
   self.inputAccessoryView.layer.masksToBounds = NO;
   self.inputAccessoryView.layer.shadowOffset = CGSizeMake(0, 0);
@@ -245,6 +288,8 @@
   [self.fontSizeUpBtn addTarget:self action:@selector(fontSizeUp) forControlEvents:UIControlEventTouchUpInside];
   [self.fontSizeDownBtn addTarget:self action:@selector(fontSizeDown) forControlEvents:UIControlEventTouchUpInside];
   [self.fontColorBtn addTarget:self action:@selector(chooseFontColor) forControlEvents:UIControlEventTouchUpInside];
+  [self.fontColorBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.fontColorBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
   
   //Bold, Italic, Underline
   const int kFontSize = 17;
@@ -261,6 +306,7 @@
                  frontImage:[UIImage imageNamed:@"boldMark"]
             backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
     selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
+  [self.boldSwitch addTarget:self action:@selector(boldAction) forControlEvents:UIControlEventTouchUpInside];
   [title release];
   [selectTitle release];
   [selectedFontAttributes release];
@@ -274,6 +320,7 @@
                    frontImage:[UIImage imageNamed:@"italicMark"]
               backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
       selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
+  [self.italicSwitch addTarget:self action:@selector(italicAction) forControlEvents:UIControlEventTouchUpInside];
   [title release];
   [selectTitle release];
   [selectedFontAttributes release];
@@ -286,6 +333,7 @@
                       frontImage:[UIImage imageNamed:@"underlineMark"]
                  backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
          selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
+  [self.underlineSwitch addTarget:self action:@selector(underlineAction) forControlEvents:UIControlEventTouchUpInside];
   [title release];
   [selectTitle release];
   [selectedFontAttributes release];
@@ -301,7 +349,7 @@
   if (!_fontPopController) {
     CCRTEFontSelectionViewController *fontSelectionVC = [CCRTEFontSelectionViewController new];
     fontSelectionVC.customizedFontArray = @[@"Kai Regular", @"宋体"];  //font Name not file name
-//    fontSelectionVC.delegate = self;
+    fontSelectionVC.delegate = self;
     _fontPopController = [[UIPopoverController alloc] initWithContentViewController:fontSelectionVC];
     _fontPopController.popoverContentSize = CGSizeMake(200, 400);
     [fontSelectionVC release];
@@ -313,35 +361,67 @@
                                         animated:YES];
 }
 
+#pragma mark CCRTEFontSelectionViewControllerDelegate
+- (void)didSelectFont:(UIFont *)font {
+  if (![self.documentFragmentStatus.fontName isEqual:font.fontName]) {
+    self.documentFragmentStatus.fontName = font.fontName;
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontName", font.fontName)];
+  }
+  [self.fontPopController dismissPopoverAnimated:YES];
+}
+
 - (void)fontSizeUp {
-  
+  self.documentFragmentStatus.fontSize += 1;
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", self.documentFragmentStatus.fontSize)];
 }
 
 - (void)fontSizeDown {
-  
+  self.documentFragmentStatus.fontSize -= 1;
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", self.documentFragmentStatus.fontSize)];
 }
 
 - (void)chooseFontColor {
   if (!_fontColorPopController) {
     CCRTEColorSelectionViewController *colorSelectionVC = [CCRTEColorSelectionViewController new];
-    //    fontSelectionVC.delegate = self;
+    colorSelectionVC.delegate = self;
     _fontColorPopController = [[UIPopoverController alloc] initWithContentViewController:colorSelectionVC];
     _fontColorPopController.popoverContentSize = CGSizeMake(200, 400);
     [colorSelectionVC release];
   }
   
   [self.fontColorPopController presentPopoverFromRect:self.fontColorBtn.frame
-                                          inView:self.inputAccessoryView
-                        permittedArrowDirections:UIPopoverArrowDirectionDown
-                                        animated:YES];
+                                               inView:self.inputAccessoryView
+                             permittedArrowDirections:UIPopoverArrowDirectionDown
+                                             animated:YES];
+}
+
+#pragma mark CCRTEColorSelectionViewControllerDelegate
+- (void)didSelectColor:(UIColor *)color {
+  if (![self.documentFragmentStatus.fontColor isEqual:color]) {
+    self.documentFragmentStatus.fontColor = color;
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"foreColor", self.documentFragmentStatus.fontColorString)];
+  }
+  [self.fontColorPopController dismissPopoverAnimated:YES];
+}
+
+- (void)boldAction {
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"bold")];
+}
+
+- (void)italicAction {
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"italic")];
+}
+
+- (void)underlineAction {
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"underline")];
 }
 
 - (void)undoAction {
-  
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"undo")];
 }
 
 - (void)redoAction {
-  
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"redo")];
 }
 
 - (void)choosePhoto {

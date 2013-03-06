@@ -91,11 +91,15 @@ selectedBackgroundImage:(UIImage *)selectedBackgroundImage
   [super setSelected:selected];
   if (selected) {
     self.backgroundImageView.image = self.selectedBackgroundImage;
-    [self setTitleTextLayerWithAttributedString:self.selectedTitle];
+    if (self.selectedTitle) {
+      [self setTitleTextLayerWithAttributedString:self.selectedTitle];
+    }
   }
   else {
     self.backgroundImageView.image = self.backgroundImage;
-    [self setTitleTextLayerWithAttributedString:self.title];
+    if (self.title) {
+      [self setTitleTextLayerWithAttributedString:self.title];
+    }
   }
 }
 

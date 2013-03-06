@@ -93,5 +93,10 @@
   return cell;
 }
 
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  NSString *fontName = [self.fontArray objectAtIndex:indexPath.row];
+  if ([self.delegate respondsToSelector:@selector(didSelectFont:)]) {
+    [self.delegate didSelectFont:[UIFont fontWithName:fontName size:[UIFont systemFontSize]]];
+  }
+}
 @end

@@ -12,6 +12,7 @@
 <UITableViewDataSource, UITableViewDelegate>
 @property (retain, nonatomic) UITableView *colorTableView;
 @property (retain, nonatomic) NSArray *colorArray;
+//@property (assign, nonatomic) UITableViewCell *selectedCell;
 @end
 
 @implementation CCRTEColorSelectionViewController
@@ -48,8 +49,9 @@
  
   self.colorArray = @[[UIColor blackColor], [UIColor redColor], [UIColor blueColor],
                       [UIColor greenColor], [UIColor yellowColor], [UIColor orangeColor],
-                      [UIColor grayColor], [UIColor brownColor], [UIColor purpleColor], 
-                      [UIColor magentaColor], [UIColor whiteColor]];
+                      [UIColor brownColor], [UIColor purpleColor], [UIColor magentaColor]
+//                      [UIColor whiteColor]
+                      ];
   
 }
 
@@ -73,9 +75,23 @@
   }
   
   UIColor *color = [self.colorArray objectAtIndex:indexPath.row];
-  cell.contentView.backgroundColor = color;
+  cell.backgroundColor = color;
   return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  UIColor *color = self.colorArray[indexPath.row];
+  if ([self.delegate respondsToSelector:@selector(didSelectColor:)]) {
+    [self.delegate didSelectColor:color];
+  }
+  
+//    if (self.selectedCell) {
+//      self.selectedCell.accessoryType = UITableViewCellAccessoryNone;
+//    }
+//    
+//    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+//    self.selectedCell = cell;
+}
 
 @end
