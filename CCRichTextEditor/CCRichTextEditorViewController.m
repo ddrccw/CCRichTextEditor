@@ -12,7 +12,61 @@
 #import "CCRTEColorSelectionViewController.h"
 #import <CoreText/CoreText.h>
 
-@interface CCRichTextEditorViewController () <UITextFieldDelegate>
+#define DOCUMENT_EXECCMDSTRING_CMD(CMD) [NSString stringWithFormat:@"document.execCommand('%@')", CMD]
+#define DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%@')", CMD, VALUE]
+#define DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, %d)", CMD, VALUE]
+#define DOCUMENT_QUERYCMDSTRING(CMD) [NSString stringWithFormat:@"document.queryCommandValue('%@')", CMD]
+#define DOCUMENT_QUERYCMDSTATESTRING(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@'", CMD]
+#define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@'", CMD]
+
+@interface CCRTEDocumentFragmentStatus : NSObject
+@property (retain, nonatomic) NSString *fontName;
+@property (assign, nonatomic) int fontSize;    //webview上的字体大小,不是iOS的计量方法
+@property (retain, nonatomic) UIColor *fontColor;
+@property (assign, nonatomic) BOOL bold;
+@property (assign, nonatomic) BOOL italic;
+@property (assign, nonatomic) BOOL underline;
+@property (assign, nonatomic) BOOL undo;
+@property (assign, nonatomic) BOOL redo;
+- (NSString *)fontColorString;
+- (void)setFontColorString:(NSString *)fontColorString;
+@end
+
+@implementation CCRTEDocumentFragmentStatus
+
+- (void)dealloc {
+  [_fontName release];
+  [_fontColor release];
+  [super dealloc];
+}
+
+- (NSString *)fontColorString {
+  const float *rgb = CGColorGetComponents(self.fontColor.CGColor);
+  return [NSString stringWithFormat:@"rgb(%f, %f, %f)", rgb[0] * 255, rgb[1] * 255, rgb[2] * 255];
+}
+
+- (void)setFontColorString:(NSString *)fontColorString {   //format rgb(red, green, blue)
+  if (!fontColorString) {
+    self.fontColor = [UIColor blackColor];
+  }
+  
+  const char *target = [fontColorString UTF8String];
+  float r = 0;
+  float g = 0;
+  float b = 0;
+  int ret = sscanf(target, "rgb(%f, %f, %f)", &r, &g, &b);
+  if (!ret) {
+    self.fontColor = [UIColor colorWithRed:r / 255 green:g / 255 blue:b / 255 alpha:1];
+  }
+  else {
+    self.fontColor = [UIColor blackColor];
+  }
+}
+
+@end
+
+@interface CCRichTextEditorViewController ()
+<UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (retain, nonatomic) IBOutlet UIWebView *contentWebView;
 @property (retain, nonatomic) IBOutlet UIView *inputAccessoryView;
 
@@ -25,6 +79,14 @@
 @property (retain, nonatomic) UIPopoverController *fontColorPopController;
 @property (retain, nonatomic) IBOutlet UIButton *photoBtn;
 @property (retain, nonatomic) UIActionSheet *photoActionSheet;
+@property (retain, nonatomic) UIPopoverController *photoPopController;
+@property (retain, nonatomic) NSTimer *timer;
+@property (retain, nonatomic) IBOutlet UIButton *fontSizeUpBtn;
+@property (retain, nonatomic) IBOutlet UIButton *fontSizeDownBtn;
+@property (retain, nonatomic) CCRTEDocumentFragmentStatus *documentFragmentStatus;
+@property (retain, nonatomic) IBOutlet UIButton *undoBtn;
+@property (retain, nonatomic) IBOutlet UIButton *redoBtn;
+
 @end
 
 @implementation CCRichTextEditorViewController
@@ -40,6 +102,10 @@
   [_fontBtn removeTarget:self action:@selector(chooseFont) forControlEvents:UIControlEventTouchUpInside];
   [_fontColorBtn removeTarget:self action:@selector(chooseFontColor) forControlEvents:UIControlEventTouchUpInside];
   [_photoBtn removeTarget:self action:@selector(choosePhoto) forControlEvents:UIControlEventTouchUpInside];
+  [_fontSizeUpBtn removeTarget:self action:@selector(fontSizeUp) forControlEvents:UIControlEventTouchUpInside];
+  [_fontSizeDownBtn removeTarget:self action:@selector(fontSizeDown) forControlEvents:UIControlEventTouchUpInside];
+  [_undoBtn removeTarget:self action:@selector(undoAction) forControlEvents:UIControlEventTouchUpInside];
+  [_redoBtn removeTarget:self action:@selector(redoAction) forControlEvents:UIControlEventTouchUpInside];
   [_contentWebView release];
   [_fontBtn release];
   [_fontColorBtn release];
@@ -50,6 +116,13 @@
   [_fontColorPopController release];
   [_photoBtn release];
   [_photoActionSheet release];
+  [_photoPopController release];
+  [_timer release];
+  [_fontSizeUpBtn release];
+  [_fontSizeDownBtn release];
+  [_documentFragmentStatus release];
+  [_undoBtn release];
+  [_redoBtn release];
   [super dealloc];
 }
 
@@ -64,6 +137,13 @@
   self.fontColorPopController = nil;
   [self setPhotoBtn:nil];
   self.photoActionSheet = nil;
+  self.photoPopController = nil;
+  self.timer = nil;
+  [self setFontSizeUpBtn:nil];
+  [self setFontSizeDownBtn:nil];
+  self.documentFragmentStatus = nil;
+  [self setUndoBtn:nil];
+  [self setRedoBtn:nil];
   [super viewDidUnload];
 }
 
@@ -86,21 +166,84 @@
                                              object:nil];
   
   [self initAccessoryView];
+  [self initDocumentStatus];
+  self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1
+                                                target:self
+                                              selector:@selector(checkSelection)
+                                              userInfo:nil
+                                               repeats:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
   return YES;
 }
 
+- (void)initDocumentStatus {
+  _documentFragmentStatus = [CCRTEDocumentFragmentStatus new];
+  _documentFragmentStatus.fontName = self.fontBtn.titleLabel.font.fontName;
+  _documentFragmentStatus.fontSize = 3;
+  _documentFragmentStatus.fontColor = [UIColor blackColor];
+  _documentFragmentStatus.bold = NO;
+  _documentFragmentStatus.italic = NO;
+  _documentFragmentStatus.underline = NO;
+  _documentFragmentStatus.undo = NO;
+  _documentFragmentStatus.redo = NO;
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;",
+                       DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontName", _documentFragmentStatus.fontName),
+                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", 3),
+                       DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontColor", _documentFragmentStatus.fontColorString),
+                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"bold", false),
+                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"italic", false),
+                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"underline", false)]];
+}
+
+- (void)checkSelection {
+  NSString *fontName = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"fontName")];
+  if (fontName) {
+    self.documentFragmentStatus.fontName = fontName;
+  }
+  
+  int fontSize = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"fontSize")] intValue];
+  if (fontSize) {
+    self.documentFragmentStatus.fontSize = fontSize;
+  }
+  
+  NSString *fontColorString = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"fontColor")];
+  if (fontColorString) {
+    self.documentFragmentStatus.fontColorString = fontColorString;
+  }
+
+  self.documentFragmentStatus.bold = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATESTRING(@"bold")] boolValue];
+  self.documentFragmentStatus.italic = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATESTRING(@"italic")] boolValue];
+  self.documentFragmentStatus.underline = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATESTRING(@"underline")] boolValue];
+
+  self.documentFragmentStatus.undo = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDENABLED(@"undo")] boolValue];
+  self.documentFragmentStatus.redo = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDENABLED(@"redo")] boolValue];
+
+  [self refreshInputAccessoryView];
+
+}
+
+- (void)refreshInputAccessoryView {
+  
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - inputAccessoryView
 - (void)initAccessoryView {
+  self.inputAccessoryView.layer.masksToBounds = NO;
+  self.inputAccessoryView.layer.shadowOffset = CGSizeMake(0, 0);
+  self.inputAccessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
+  self.inputAccessoryView.layer.shadowOpacity = .8;
+  self.inputAccessoryView.layer.shadowRadius = 2.0f;
   [self.view addSubview:self.inputAccessoryView];
   self.inputAccessoryView.hidden = YES;
   UIImage *barImage = [[UIImage imageNamed:@"customKeyboardBar"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
   self.inputAccessoryView.backgroundColor = [UIColor colorWithPatternImage:barImage];
 
   [self.fontBtn addTarget:self action:@selector(chooseFont) forControlEvents:UIControlEventTouchUpInside];
+  [self.fontSizeUpBtn addTarget:self action:@selector(fontSizeUp) forControlEvents:UIControlEventTouchUpInside];
+  [self.fontSizeDownBtn addTarget:self action:@selector(fontSizeDown) forControlEvents:UIControlEventTouchUpInside];
   [self.fontColorBtn addTarget:self action:@selector(chooseFontColor) forControlEvents:UIControlEventTouchUpInside];
   
   //Bold, Italic, Underline
@@ -114,7 +257,10 @@
   NSMutableDictionary *selectedFontAttributes = [[NSMutableDictionary alloc] initWithDictionary:@{(id)kCTFontAttributeName :
                                                                                                   (id)CTFontCreateWithName((CFStringRef)selectedFont.fontName, kFontSize, NULL)}];
   NSAttributedString *selectTitle = [[NSAttributedString alloc] initWithString:@"B" attributes:selectedFontAttributes];
-  [self.boldSwitch setTitle:title selectedTitle:selectTitle backgroundImage:nil selectedImage:nil];
+  [self.boldSwitch setTitle:nil selectedTitle:nil
+                 frontImage:[UIImage imageNamed:@"boldMark"]
+            backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
+    selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
   [title release];
   [selectTitle release];
   [selectedFontAttributes release];
@@ -124,7 +270,10 @@
                                                                              (id)CTFontCreateWithName((CFStringRef)selectedFont.fontName, kFontSize, NULL)}];
   title = [[NSAttributedString alloc] initWithString:@"I" attributes:normalFontAttributes];
   selectTitle = [[NSAttributedString alloc] initWithString:@"I" attributes:selectedFontAttributes];
-  [self.italicSwitch setTitle:title selectedTitle:selectTitle backgroundImage:nil selectedImage:nil];
+  [self.italicSwitch setTitle:nil selectedTitle:nil
+                   frontImage:[UIImage imageNamed:@"italicMark"]
+              backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
+      selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
   [title release];
   [selectTitle release];
   [selectedFontAttributes release];
@@ -133,11 +282,18 @@
   [selectedFontAttributes addEntriesFromDictionary:@{(id)kCTUnderlineStyleAttributeName : @(kCTUnderlineStyleSingle)}];
   title = [[NSAttributedString alloc] initWithString:@"U" attributes:normalFontAttributes];
   selectTitle = [[NSAttributedString alloc] initWithString:@"U" attributes:selectedFontAttributes];
-  [self.underlineSwitch setTitle:title selectedTitle:selectTitle backgroundImage:nil selectedImage:nil];
+  [self.underlineSwitch setTitle:nil selectedTitle:nil
+                      frontImage:[UIImage imageNamed:@"underlineMark"]
+                 backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
+         selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
   [title release];
   [selectTitle release];
   [selectedFontAttributes release];
   
+  [self.undoBtn addTarget:self action:@selector(undoAction) forControlEvents:UIControlEventTouchUpInside];
+  self.undoBtn.enabled = NO;
+  [self.redoBtn addTarget:self action:@selector(redoAction) forControlEvents:UIControlEventTouchUpInside];
+  self.redoBtn.enabled = NO;
   [self.photoBtn addTarget:self action:@selector(choosePhoto) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -148,6 +304,7 @@
 //    fontSelectionVC.delegate = self;
     _fontPopController = [[UIPopoverController alloc] initWithContentViewController:fontSelectionVC];
     _fontPopController.popoverContentSize = CGSizeMake(200, 400);
+    [fontSelectionVC release];
   }
   
   [self.fontPopController presentPopoverFromRect:self.fontBtn.frame
@@ -156,12 +313,21 @@
                                         animated:YES];
 }
 
+- (void)fontSizeUp {
+  
+}
+
+- (void)fontSizeDown {
+  
+}
+
 - (void)chooseFontColor {
   if (!_fontColorPopController) {
     CCRTEColorSelectionViewController *colorSelectionVC = [CCRTEColorSelectionViewController new];
     //    fontSelectionVC.delegate = self;
     _fontColorPopController = [[UIPopoverController alloc] initWithContentViewController:colorSelectionVC];
     _fontColorPopController.popoverContentSize = CGSizeMake(200, 400);
+    [colorSelectionVC release];
   }
   
   [self.fontColorPopController presentPopoverFromRect:self.fontColorBtn.frame
@@ -170,19 +336,95 @@
                                         animated:YES];
 }
 
+- (void)undoAction {
+  
+}
+
+- (void)redoAction {
+  
+}
+
 - (void)choosePhoto {
   if (!_photoActionSheet) {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Select a font color" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Blue", @"Yellow", @"Green", @"Red", @"Orange", nil];
+    _photoActionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                    delegate:self
+                                           cancelButtonTitle:@"取消"
+                                      destructiveButtonTitle:nil
+                                           otherButtonTitles:@"拍照", @"从相册中选择", nil];
 
   }
   [_photoActionSheet showFromRect:self.photoBtn.frame inView:self.inputAccessoryView animated:YES];
 }
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - action sheet
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+  
+  if (0 == buttonIndex) {   //拍照
+    if (!_photoPopController) {
+      if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        imagePicker.delegate = self;
+        
+        _photoPopController = [[UIPopoverController alloc] initWithContentViewController:imagePicker];
+        [imagePicker release];
+      }
+    }
+    
+    [_photoPopController presentPopoverFromRect:self.photoBtn.frame
+                                         inView:self.inputAccessoryView
+                       permittedArrowDirections:UIPopoverArrowDirectionDown
+                                       animated:YES];
+  }
+  else if (1 == buttonIndex) {                    //从相册中选择
+    if (!_photoPopController) {
+      if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.delegate = self;
+        
+        _photoPopController = [[UIPopoverController alloc] initWithContentViewController:imagePicker];
+        [imagePicker release];
+      }
+    }
+    
+    [_photoPopController presentPopoverFromRect:self.photoBtn.frame
+                                         inView:self.inputAccessoryView
+                       permittedArrowDirections:UIPopoverArrowDirectionDown
+                                       animated:YES];
+
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - image picker
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+  // Obtain the path to save to
+//  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//  NSString *documentsDirectory = [paths objectAtIndex:0];
+//  NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%i.png", i]];
+//  
+//  // Extract image from the picker and save it
+//  NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+//  if ([mediaType isEqualToString:@"public.image"]){
+//    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+//    NSData *data = UIImagePNGRepresentation(image);
+//    [data writeToFile:imagePath atomically:YES];
+//  }
+//  
+//  [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand('insertImage', false, '%@')", imagePath]];
+//  [imagePickerPopover dismissPopoverAnimated:YES];
+//  i++;
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - keyboard
 - (void)keyboardWillShow:(NSNotification *)notification {
   [self performSelector:@selector(removeSystemInputAccessoryBar) withObject:nil afterDelay:0];
   
-  static int kFixBarOffset = 5;
+  static int kFixBarOffset = 11;
   NSDictionary *userInfo = [notification userInfo];
   NSValue* aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
   CGRect rect = [aValue CGRectValue];
@@ -196,13 +438,18 @@
                                   self.view.frame.size.height + rect.size.height / 2);
   CGPoint toPoint = CGPointMake(self.view.frame.size.width / 2,
                                 rect.origin.y + kFixBarOffset - rect.size.height / 2);
-  
+
   if (self.inputAccessoryView.hidden) {
     CAAnimationGroup *animationGroup = [self showInputAccessoryBarFromPoint:fromPoint toPoint:toPoint];
     [self.inputAccessoryView.layer addAnimation:animationGroup forKey:@"show"];
+    self.inputAccessoryView.hidden = NO;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1
+                                                  target:self
+                                                selector:@selector(checkSelection)
+                                                userInfo:nil
+                                                 repeats:YES];
   }
   self.inputAccessoryView.frame = endRect;
-  self.inputAccessoryView.hidden = NO;
 }
 
 - (void)removeSystemInputAccessoryBar {
@@ -234,9 +481,11 @@
   endRect.origin.x = 0;
   endRect.origin.y = self.view.frame.size.height;
   endRect.size.height = self.inputAccessoryView.frame.size.height;
+  
   if (!self.inputAccessoryView.hidden) {
     CAAnimationGroup *animationGroup = [self hideInputAccessoryBar];
     [self.inputAccessoryView.layer addAnimation:animationGroup forKey:@"hide"];
+    [self.timer invalidate];
   }
   self.inputAccessoryView.frame = endRect;
   self.inputAccessoryView.hidden = YES;

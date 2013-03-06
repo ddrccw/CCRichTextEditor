@@ -11,22 +11,26 @@
 
 @interface CCRTEAccessorySwitch ()
 @property (retain, nonatomic) UIImage *backgroundImage;
-@property (retain, nonatomic) UIImage *selectedImage;
+@property (retain, nonatomic) UIImage *selectedBackgroundImage;
 @property (retain, nonatomic) UIImageView *backgroundImageView;
 @property (retain, nonatomic) NSAttributedString *title;
 @property (retain, nonatomic) NSAttributedString *selectedTitle;
 @property (retain, nonatomic) CATextLayer *titleTextLayer;
+@property (retain, nonatomic) UIImage *frontImage;
+@property (retain, nonatomic) UIImageView *frontImageView;
 @end
 
 @implementation CCRTEAccessorySwitch
 
 - (void)dealloc {
   [_backgroundImage release];
-  [_selectedImage release];
+  [_selectedBackgroundImage release];
   [_backgroundImageView release];
   [_title release];
   [_selectedTitle release];
   [_titleTextLayer release];
+  [_frontImage release];
+  [_frontImageView release];
   [super dealloc];
 }
 
@@ -39,15 +43,20 @@
     return self;
 }
 
+- (void)awakeFromNib {
+  self.backgroundColor = [UIColor clearColor];
+}
 
 - (void)setTitle:(NSAttributedString *)title
    selectedTitle:(NSAttributedString *)selectedTitle
+      frontImage:(UIImage *)frontImage
  backgroundImage:(UIImage *)backgroundImage
-   selectedImage:(UIImage *)selectedImage
+selectedBackgroundImage:(UIImage *)selectedBackgroundImage
 {
+  
   self.backgroundImage = backgroundImage;
-  self.selectedImage = selectedImage;
-  if (!_backgroundImageView) {
+  self.selectedBackgroundImage = selectedBackgroundImage;
+  if (!_backgroundImageView && _backgroundImage) {
     _backgroundImageView = [[UIImageView alloc] initWithImage:self.backgroundImage];
     _backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
                                             UIViewAutoresizingFlexibleLeftMargin |
@@ -57,6 +66,14 @@
                                             UIViewAutoresizingFlexibleWidth;
     [self addSubview:self.backgroundImageView];
   }
+  
+  self.frontImage = frontImage;
+  if (_frontImage && !_frontImageView) {
+    _frontImageView = [[UIImageView alloc] initWithImage:self.frontImage];
+    _frontImageView.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
+    [self addSubview:self.frontImageView];
+  }
+
   
   self.title = title;
   self.selectedTitle = selectedTitle;
@@ -73,7 +90,7 @@
 - (void)setSelected:(BOOL)selected {
   [super setSelected:selected];
   if (selected) {
-    self.backgroundImageView.image = self.selectedImage;
+    self.backgroundImageView.image = self.selectedBackgroundImage;
     [self setTitleTextLayerWithAttributedString:self.selectedTitle];
   }
   else {

@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2AB4B2D416E5EEE100901268 /* boldMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C016E5EEE100901268 /* boldMark.png */; };
+		2AB4B2D516E5EEE100901268 /* old.customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */; };
+		2AB4B2D616E5EEE100901268 /* fontNameMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C216E5EEE100901268 /* fontNameMark.png */; };
+		2AB4B2D716E5EEE100901268 /* fontSizeMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C316E5EEE100901268 /* fontSizeMark.png */; };
+		2AB4B2D816E5EEE100901268 /* underlineMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C416E5EEE100901268 /* underlineMark.png */; };
+		2AB4B2DA16E5EEE100901268 /* undoMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C616E5EEE100901268 /* undoMark.png */; };
+		2AB4B2DB16E5EEE100901268 /* redoMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C716E5EEE100901268 /* redoMark.png */; };
+		2AB4B2DC16E5EEE100901268 /* fontSizeUpMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C816E5EEE100901268 /* fontSizeUpMark.png */; };
+		2AB4B2DD16E5EEE100901268 /* fontSizeDownMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C916E5EEE100901268 /* fontSizeDownMark.png */; };
+		2AB4B2E116E5EEE100901268 /* italicMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2CD16E5EEE100901268 /* italicMark.png */; };
+		2AB4B2E216E5EEE100901268 /* fontColorMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2CE16E5EEE100901268 /* fontColorMark.png */; };
+		2AB4B2E316E5EEE100901268 /* fontSizeBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2CF16E5EEE100901268 /* fontSizeBackground.png */; };
+		2AB4B2E416E5EEE100901268 /* fontSizeUpBtnHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2D016E5EEE100901268 /* fontSizeUpBtnHighlighted.png */; };
+		2AB4B2E516E5EEE100901268 /* fontSizeDownBtnHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2D116E5EEE100901268 /* fontSizeDownBtnHighlighted.png */; };
+		2AB4B2E616E5EEE100901268 /* fontStyleBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2D216E5EEE100901268 /* fontStyleBackground.png */; };
+		2AB4B2E716E5EEE100901268 /* fontNameBtnHighlightedBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2D316E5EEE100901268 /* fontNameBtnHighlightedBackground.png */; };
 		2AD2328D16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */; };
 		2ADEA01616E095C200E768F3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01516E095C200E768F3 /* UIKit.framework */; };
 		2ADEA01816E095C200E768F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01716E095C200E768F3 /* Foundation.framework */; };
@@ -24,6 +40,9 @@
 		2ADEA04416E09BD200E768F3 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04216E09BD200E768F3 /* index.html */; };
 		2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */; };
 		2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */; };
+		2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */; };
+		2AE1EBC816E6D6D700FB4D04 /* commonBtnHighlightedBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */; };
+		2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC916E6D7F600FB4D04 /* photoMark.png */; };
 		2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2167E16E4315F00887B7C /* QuartzCore.framework */; };
 		2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2168916E4674C00887B7C /* CoreText.framework */; };
 		2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */; };
@@ -32,6 +51,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2AB4B2C016E5EEE100901268 /* boldMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = boldMark.png; sourceTree = "<group>"; };
+		2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = old.customKeyboardBar.png; sourceTree = "<group>"; };
+		2AB4B2C216E5EEE100901268 /* fontNameMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontNameMark.png; sourceTree = "<group>"; };
+		2AB4B2C316E5EEE100901268 /* fontSizeMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontSizeMark.png; sourceTree = "<group>"; };
+		2AB4B2C416E5EEE100901268 /* underlineMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = underlineMark.png; sourceTree = "<group>"; };
+		2AB4B2C616E5EEE100901268 /* undoMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undoMark.png; sourceTree = "<group>"; };
+		2AB4B2C716E5EEE100901268 /* redoMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redoMark.png; sourceTree = "<group>"; };
+		2AB4B2C816E5EEE100901268 /* fontSizeUpMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontSizeUpMark.png; sourceTree = "<group>"; };
+		2AB4B2C916E5EEE100901268 /* fontSizeDownMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontSizeDownMark.png; sourceTree = "<group>"; };
+		2AB4B2CD16E5EEE100901268 /* italicMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = italicMark.png; sourceTree = "<group>"; };
+		2AB4B2CE16E5EEE100901268 /* fontColorMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontColorMark.png; sourceTree = "<group>"; };
+		2AB4B2CF16E5EEE100901268 /* fontSizeBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontSizeBackground.png; sourceTree = "<group>"; };
+		2AB4B2D016E5EEE100901268 /* fontSizeUpBtnHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontSizeUpBtnHighlighted.png; sourceTree = "<group>"; };
+		2AB4B2D116E5EEE100901268 /* fontSizeDownBtnHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontSizeDownBtnHighlighted.png; sourceTree = "<group>"; };
+		2AB4B2D216E5EEE100901268 /* fontStyleBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontStyleBackground.png; sourceTree = "<group>"; };
+		2AB4B2D316E5EEE100901268 /* fontNameBtnHighlightedBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontNameBtnHighlightedBackground.png; sourceTree = "<group>"; };
 		2AD2328B16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEAccessorySwitch.h; sourceTree = "<group>"; };
 		2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEAccessorySwitch.m; sourceTree = "<group>"; };
 		2ADEA01116E095C200E768F3 /* CCRichTextEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCRichTextEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,6 +92,9 @@
 		2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEColorSelectionViewController.m; sourceTree = "<group>"; };
 		2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEPhotoSelectionViewController.h; sourceTree = "<group>"; };
 		2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEPhotoSelectionViewController.m; sourceTree = "<group>"; };
+		2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBtnBackground.png; sourceTree = "<group>"; };
+		2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBtnHighlightedBackground.png; sourceTree = "<group>"; };
+		2AE1EBC916E6D7F600FB4D04 /* photoMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoMark.png; sourceTree = "<group>"; };
 		2AE2167E16E4315F00887B7C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2AE2168916E4674C00887B7C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE2168F16E493F000887B7C /* CCRTEFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEFontSelectionViewController.h; sourceTree = "<group>"; };
@@ -150,9 +188,9 @@
 		2ADEA03B16E09A7100E768F3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2ADEA04016E09BD200E768F3 /* Images */,
 				2AE2169C16E4A07A00887B7C /* Kai.ttf */,
 				2AE2169916E49EBC00887B7C /* SimSun.ttf */,
-				2ADEA04016E09BD200E768F3 /* Images */,
 				2ADEA04216E09BD200E768F3 /* index.html */,
 			);
 			path = Resources;
@@ -161,6 +199,25 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2AE1EBC916E6D7F600FB4D04 /* photoMark.png */,
+				2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */,
+				2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */,
+				2AB4B2C016E5EEE100901268 /* boldMark.png */,
+				2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */,
+				2AB4B2C216E5EEE100901268 /* fontNameMark.png */,
+				2AB4B2C316E5EEE100901268 /* fontSizeMark.png */,
+				2AB4B2C416E5EEE100901268 /* underlineMark.png */,
+				2AB4B2C616E5EEE100901268 /* undoMark.png */,
+				2AB4B2C716E5EEE100901268 /* redoMark.png */,
+				2AB4B2C816E5EEE100901268 /* fontSizeUpMark.png */,
+				2AB4B2C916E5EEE100901268 /* fontSizeDownMark.png */,
+				2AB4B2CD16E5EEE100901268 /* italicMark.png */,
+				2AB4B2CE16E5EEE100901268 /* fontColorMark.png */,
+				2AB4B2CF16E5EEE100901268 /* fontSizeBackground.png */,
+				2AB4B2D016E5EEE100901268 /* fontSizeUpBtnHighlighted.png */,
+				2AB4B2D116E5EEE100901268 /* fontSizeDownBtnHighlighted.png */,
+				2AB4B2D216E5EEE100901268 /* fontStyleBackground.png */,
+				2AB4B2D316E5EEE100901268 /* fontNameBtnHighlightedBackground.png */,
 				2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */,
 			);
 			path = Images;
@@ -227,6 +284,25 @@
 				2ADEA04416E09BD200E768F3 /* index.html in Resources */,
 				2AE2169B16E49EBC00887B7C /* SimSun.ttf in Resources */,
 				2AE2169D16E4A07A00887B7C /* Kai.ttf in Resources */,
+				2AB4B2D416E5EEE100901268 /* boldMark.png in Resources */,
+				2AB4B2D516E5EEE100901268 /* old.customKeyboardBar.png in Resources */,
+				2AB4B2D616E5EEE100901268 /* fontNameMark.png in Resources */,
+				2AB4B2D716E5EEE100901268 /* fontSizeMark.png in Resources */,
+				2AB4B2D816E5EEE100901268 /* underlineMark.png in Resources */,
+				2AB4B2DA16E5EEE100901268 /* undoMark.png in Resources */,
+				2AB4B2DB16E5EEE100901268 /* redoMark.png in Resources */,
+				2AB4B2DC16E5EEE100901268 /* fontSizeUpMark.png in Resources */,
+				2AB4B2DD16E5EEE100901268 /* fontSizeDownMark.png in Resources */,
+				2AB4B2E116E5EEE100901268 /* italicMark.png in Resources */,
+				2AB4B2E216E5EEE100901268 /* fontColorMark.png in Resources */,
+				2AB4B2E316E5EEE100901268 /* fontSizeBackground.png in Resources */,
+				2AB4B2E416E5EEE100901268 /* fontSizeUpBtnHighlighted.png in Resources */,
+				2AB4B2E516E5EEE100901268 /* fontSizeDownBtnHighlighted.png in Resources */,
+				2AB4B2E616E5EEE100901268 /* fontStyleBackground.png in Resources */,
+				2AB4B2E716E5EEE100901268 /* fontNameBtnHighlightedBackground.png in Resources */,
+				2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */,
+				2AE1EBC816E6D6D700FB4D04 /* commonBtnHighlightedBackground.png in Resources */,
+				2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

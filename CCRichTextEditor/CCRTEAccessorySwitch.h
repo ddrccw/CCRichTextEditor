@@ -10,7 +10,8 @@
 
 @interface CCRTEAccessorySwitch : UIControl
 - (void)setTitle:(NSAttributedString *)title
-   selectedTitle:(NSAttributedString *)seletedTitle
+   selectedTitle:(NSAttributedString *)selectedTitle
+      frontImage:(UIImage *)frontImage
  backgroundImage:(UIImage *)backgroundImage
-   selectedImage:(UIImage *)selectedImage;
+selectedBackgroundImage:(UIImage *)selectedBackgroundImage;
 @end
