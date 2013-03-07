@@ -212,7 +212,7 @@
 					</object>
 					<object class="IBUIButton" id="239562553">
 						<reference key="NSNextResponder" ref="192744563"/>
-						<int key="NSvFlags">293</int>
+						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{256, 9}, {38, 38}}</string>
 						<reference key="NSSuperview" ref="192744563"/>
 						<reference key="NSNextKeyView" ref="342813546"/>
@@ -247,7 +247,7 @@
 					<object class="IBUIView" id="342813546">
 						<reference key="NSNextResponder" ref="192744563"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{370, 9}, {38, 38}}</string>
+						<string key="NSFrame">{{338, 9}, {38, 38}}</string>
 						<reference key="NSSuperview" ref="192744563"/>
 						<reference key="NSNextKeyView" ref="517130470"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -261,7 +261,7 @@
 					<object class="IBUIView" id="517130470">
 						<reference key="NSNextResponder" ref="192744563"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{411, 9}, {38, 38}}</string>
+						<string key="NSFrame">{{379, 9}, {38, 38}}</string>
 						<reference key="NSSuperview" ref="192744563"/>
 						<reference key="NSNextKeyView" ref="590906067"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -275,9 +275,22 @@
 					<object class="IBUIView" id="590906067">
 						<reference key="NSNextResponder" ref="192744563"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{452, 9}, {38, 38}}</string>
+						<string key="NSFrame">{{420, 9}, {38, 38}}</string>
 						<reference key="NSSuperview" ref="192744563"/>
 						<reference key="NSNextKeyView" ref="232811742"/>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MQA</bytes>
+							<reference key="NSCustomColorSpace" ref="919177440"/>
+						</object>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+					</object>
+					<object class="IBUIView" id="971626077">
+						<reference key="NSNextResponder" ref="192744563"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{461, 9}, {38, 38}}</string>
+						<reference key="NSSuperview" ref="192744563"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -538,6 +551,14 @@
 					</object>
 					<int key="connectionID">48</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">strikeThroughSwitch</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="971626077"/>
+					</object>
+					<int key="connectionID">56</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -590,6 +611,7 @@
 							<reference ref="231896209"/>
 							<reference ref="920148821"/>
 							<reference ref="874025151"/>
+							<reference ref="971626077"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -673,6 +695,11 @@
 						<reference key="object" ref="601211844"/>
 						<reference key="parent" ref="192744563"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">54</int>
+						<reference key="object" ref="971626077"/>
+						<reference key="parent" ref="192744563"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -709,12 +736,14 @@
 				<string key="50.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="52.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="54.CustomClassName">CCRTEAccessorySwitch</string>
+				<string key="54.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">53</int>
+			<int key="maxID">56</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

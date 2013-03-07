@@ -10,14 +10,16 @@
 #import "CCRTEAccessorySwitch.h"
 #import "CCRTEFontSelectionViewController.h"
 #import "CCRTEColorSelectionViewController.h"
+#import "CCRTEGestureRegnizer.h"
+
 #import <CoreText/CoreText.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
-#define DOCUMENT_EXECCMDSTRING_CMD(CMD) [NSString stringWithFormat:@"document.execCommand('%@')", CMD]
-#define DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%@')", CMD, VALUE]
-#define DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%d')", CMD, VALUE]
-#define DOCUMENT_QUERYCMDSTRING(CMD) [NSString stringWithFormat:@"document.queryCommandValue('%@')", CMD]
-#define DOCUMENT_QUERYCMDSTATESTRING(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@')", CMD]
+#define DOCUMENT_EXECCMD_CMD(CMD) [NSString stringWithFormat:@"document.execCommand('%@')", CMD]
+#define DOCUMENT_EXECCMD_CMD_STRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%@')", CMD, VALUE]
+#define DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%d')", CMD, VALUE]
+#define DOCUMENT_QUERYCMDVALUE(CMD) [NSString stringWithFormat:@"document.queryCommandValue('%@')", CMD]
+#define DOCUMENT_QUERYCMDSTATE(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@')", CMD]
 #define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@')", CMD]
 
 @interface CCRTEDocumentFragmentStatus : NSObject
@@ -27,6 +29,7 @@
 @property (assign, nonatomic) BOOL bold;
 @property (assign, nonatomic) BOOL italic;
 @property (assign, nonatomic) BOOL underline;
+@property (assign, nonatomic) BOOL strikeThrough;
 @property (assign, nonatomic) BOOL undo;
 @property (assign, nonatomic) BOOL redo;
 - (UIFont *)font;
@@ -101,6 +104,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 @property (retain, nonatomic) CCRTEDocumentFragmentStatus *documentFragmentStatus;
 @property (retain, nonatomic) IBOutlet UIButton *undoBtn;
 @property (retain, nonatomic) IBOutlet UIButton *redoBtn;
+@property (retain, nonatomic) IBOutlet CCRTEAccessorySwitch *strikeThroughSwitch;
 
 @end
 
@@ -121,6 +125,10 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   [_fontSizeDownBtn removeTarget:self action:@selector(fontSizeDown) forControlEvents:UIControlEventTouchUpInside];
   [_undoBtn removeTarget:self action:@selector(undoAction) forControlEvents:UIControlEventTouchUpInside];
   [_redoBtn removeTarget:self action:@selector(redoAction) forControlEvents:UIControlEventTouchUpInside];
+  [_boldSwitch removeTarget:self action:@selector(boldAction) forControlEvents:UIControlEventTouchUpInside];
+  [_italicSwitch removeTarget:self action:@selector(italicAction) forControlEvents:UIControlEventTouchUpInside];
+  [_underlineSwitch removeTarget:self action:@selector(underlineAction) forControlEvents:UIControlEventTouchUpInside];
+  [_strikeThroughSwitch removeTarget:self action:@selector(strikeThroughAction) forControlEvents:UIControlEventTouchUpInside];
   [_contentWebView release];
   [_fontBtn release];
   [_fontColorBtn release];
@@ -138,6 +146,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   [_documentFragmentStatus release];
   [_undoBtn release];
   [_redoBtn release];
+  [_strikeThroughSwitch release];
   [super dealloc];
 }
 
@@ -159,6 +168,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   self.documentFragmentStatus = nil;
   [self setUndoBtn:nil];
   [self setRedoBtn:nil];
+  [self setStrikeThroughSwitch:nil];
   [super viewDidUnload];
 }
 
@@ -196,38 +206,68 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   _documentFragmentStatus.bold = NO;
   _documentFragmentStatus.italic = NO;
   _documentFragmentStatus.underline = NO;
+  _documentFragmentStatus.strikeThrough = NO;
   _documentFragmentStatus.undo = NO;
   _documentFragmentStatus.redo = NO;
 
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;",
-                       DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontName", _documentFragmentStatus.fontName),
-                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", 3),
-                       DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"foreColor", _documentFragmentStatus.fontColorString),
-                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"bold", false),
-                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"italic", false),
-                       DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"underline", false)]];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@;%@;%@;%@;%@;%@;%@;",
+                                                               DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"fontName", _documentFragmentStatus.fontName),
+                                                               DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"fontSize", 3),
+                                                               DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"foreColor", _documentFragmentStatus.fontColorString),
+                                                               DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"bold", false),
+                                                               DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"italic", false),
+                                                               DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"underline", false),
+                                                               DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"strikeThrough", false)]];
+  
+  CCRTEGestureRegnizer *tapGesture = [[CCRTEGestureRegnizer alloc] init];
+  tapGesture.touchesBeganCallback = ^(NSSet *touches, UIEvent *event) {
+    UITouch *touch = [[event allTouches] anyObject];
+    CGPoint touchPoint = [touch locationInView:self.view];
+    NSString *javascript = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName.toString()",
+                                                      touchPoint.x, touchPoint.y];
+    NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+    if ([elementNameAtPoint isEqualToString:@"IMG"]) {
+      // We set the inital point of the image for use latter on when we actually move it
+      tapGesture.startPoint = touchPoint;
+      // In order to make moving the image easy we must disable scrolling otherwise the view will just scroll and prevent fully detecting movement on the image.
+      self.contentWebView.scrollView.scrollEnabled = NO;
+    }
+    else {
+      tapGesture.startPoint = CGPointZero;
+    }
+  };
+  tapGesture.touchesEndedCallback = ^(NSSet *touches, UIEvent *event) {
+    UITouch *touch = [[event allTouches] anyObject];
+    CGPoint touchPoint = [touch locationInView:self.view];
+    
+    NSString *javascript = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)", tapGesture.startPoint.x, tapGesture.startPoint.y, touchPoint.x, touchPoint.y];
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+    self.contentWebView.scrollView.scrollEnabled = YES;
+  };
+  
+  [self.contentWebView.scrollView addGestureRecognizer:tapGesture];
 }
 
 - (void)checkSelection {
-  NSString *fontName = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"fontName")];
+  NSString *fontName = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDVALUE(@"fontName")];
   if (fontName) {
     self.documentFragmentStatus.fontName = fontName;
   }
   
-  int fontSize = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"fontSize")] intValue];
+  int fontSize = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDVALUE(@"fontSize")] intValue];
   if (fontSize) {
     self.documentFragmentStatus.fontSize = fontSize;
   }
   
-  NSString *fontColorString = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTRING(@"foreColor")];
+  NSString *fontColorString = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDVALUE(@"foreColor")];
   if (fontColorString) {
     self.documentFragmentStatus.fontColorString = fontColorString;
   }
 
-  self.documentFragmentStatus.bold = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATESTRING(@"bold")] boolValue];
-  self.documentFragmentStatus.italic = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATESTRING(@"italic")] boolValue];
-  self.documentFragmentStatus.underline = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATESTRING(@"underline")] boolValue];
-
+  self.documentFragmentStatus.bold = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATE(@"bold")] boolValue];
+  self.documentFragmentStatus.italic = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATE(@"italic")] boolValue];
+  self.documentFragmentStatus.underline = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATE(@"underline")] boolValue];
+  self.documentFragmentStatus.strikeThrough = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDSTATE(@"strikeThrough")] boolValue];
   self.documentFragmentStatus.undo = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDENABLED(@"undo")] boolValue];
   self.documentFragmentStatus.redo = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDENABLED(@"redo")] boolValue];
 
@@ -264,10 +304,22 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
     self.italicSwitch.selected = self.documentFragmentStatus.italic;
   }
  
-  if ((self.italicSwitch.selected ^ self.documentFragmentStatus.underline)) {
+  if ((self.underlineSwitch.selected ^ self.documentFragmentStatus.underline)) {
     self.underlineSwitch.selected = self.documentFragmentStatus.underline;
   }
   
+  if ((self.strikeThroughSwitch.selected ^ self.documentFragmentStatus.strikeThrough)) {
+    self.strikeThroughSwitch.selected = self.documentFragmentStatus.strikeThrough;
+  }
+  
+//  NSLog(@"c:b=%d, i=%d, u=%d, s=%d", self.documentFragmentStatus.bold, self.documentFragmentStatus.italic, self.documentFragmentStatus.underline, self.documentFragmentStatus.strikeThrough);
+//  NSLog(@"o:b=%d, i=%d, u=%d, s=%d", self.boldSwitch.selected, self.italicSwitch.selected, self.underlineSwitch.selected, self.strikeThroughSwitch.selected);
+
+//  self.boldSwitch.selected = self.documentFragmentStatus.bold;
+//  self.italicSwitch.selected = self.documentFragmentStatus.italic;
+//  self.underlineSwitch.selected = self.documentFragmentStatus.underline;
+//  self.strikeThroughSwitch.selected = self.documentFragmentStatus.strikeThrough;
+
   self.undoBtn.enabled = self.documentFragmentStatus.undo;
   self.redoBtn.enabled = self.documentFragmentStatus.redo;
 }
@@ -339,6 +391,12 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   [selectTitle release];
   [selectedFontAttributes release];
   
+  [self.strikeThroughSwitch setTitle:nil selectedTitle:nil
+                          frontImage:[UIImage imageNamed:@"strikeThroughMark"]
+                     backgroundImage:[UIImage imageNamed:@"commonBtnBackground"]
+             selectedBackgroundImage:[UIImage imageNamed:@"commonBtnHighlightedBackground"]];
+  [self.strikeThroughSwitch addTarget:self action:@selector(strikeThroughAction) forControlEvents:UIControlEventTouchUpInside];
+  
   [self.undoBtn addTarget:self action:@selector(undoAction) forControlEvents:UIControlEventTouchUpInside];
   self.undoBtn.enabled = NO;
   [self.redoBtn addTarget:self action:@selector(redoAction) forControlEvents:UIControlEventTouchUpInside];
@@ -366,19 +424,19 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 - (void)didSelectFont:(UIFont *)font {
   if (![self.documentFragmentStatus.fontName isEqual:font.fontName]) {
     self.documentFragmentStatus.fontName = font.fontName;
-    [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"fontName", font.fontName)];
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"fontName", font.fontName)];
   }
   [self.fontPopController dismissPopoverAnimated:YES];
 }
 
 - (void)fontSizeUp {
   self.documentFragmentStatus.fontSize += 1;
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", self.documentFragmentStatus.fontSize)];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"fontSize", self.documentFragmentStatus.fontSize)];
 }
 
 - (void)fontSizeDown {
   self.documentFragmentStatus.fontSize -= 1;
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_NONSTRING_VALUE(@"fontSize", self.documentFragmentStatus.fontSize)];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"fontSize", self.documentFragmentStatus.fontSize)];
 }
 
 - (void)chooseFontColor {
@@ -400,29 +458,37 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 - (void)didSelectColor:(UIColor *)color {
   if (![self.documentFragmentStatus.fontColor isEqual:color]) {
     self.documentFragmentStatus.fontColor = color;
-    [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD_STRING_VALUE(@"foreColor", self.documentFragmentStatus.fontColorString)];
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"foreColor", self.documentFragmentStatus.fontColorString)];
   }
   [self.fontColorPopController dismissPopoverAnimated:YES];
 }
 
 - (void)boldAction {
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"bold")];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"bold",
+                                                                                                   !self.documentFragmentStatus.bold)];
 }
 
 - (void)italicAction {
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"italic")];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"italic",
+                                                                                                   !self.documentFragmentStatus.italic)];
 }
 
 - (void)underlineAction {
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"underline")];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"underline",
+                                                                                                   !self.documentFragmentStatus.underline)];
+}
+
+- (void)strikeThroughAction {
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"strikeThrough",
+                                                                                                   !self.documentFragmentStatus.strikeThrough)];
 }
 
 - (void)undoAction {
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"undo")];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD(@"undo")];
 }
 
 - (void)redoAction {
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMDSTRING_CMD(@"redo")];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD(@"redo")];
 }
 
 - (void)choosePhoto {
@@ -440,7 +506,6 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - action sheet
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-  
   if (0 == buttonIndex) {   //拍照
     if (!_photoPopController) {
       if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
@@ -480,7 +545,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image picker
-//TODO:图片存储有待改进
+//TODO:图片存储有待改进 ,key url-hash, value url
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
   // Obtain the path to save to
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

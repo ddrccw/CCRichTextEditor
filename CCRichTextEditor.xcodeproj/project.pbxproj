@@ -38,12 +38,14 @@
 		2ADEA03516E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA03316E095C200E768F3 /* CCRichTextEditorViewController_iPad.xib */; };
 		2ADEA04316E09BD200E768F3 /* customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */; };
 		2ADEA04416E09BD200E768F3 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04216E09BD200E768F3 /* index.html */; };
+		2AE0230A16E8305900FC8316 /* strikeThroughMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0230916E8305900FC8316 /* strikeThroughMark.png */; };
 		2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */; };
 		2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */; };
 		2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */; };
 		2AE1EBC816E6D6D700FB4D04 /* commonBtnHighlightedBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */; };
 		2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC916E6D7F600FB4D04 /* photoMark.png */; };
 		2AE1EBD416E732E900FB4D04 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */; };
+		2AE1EBD916E73F6100FB4D04 /* CCRTEGestureRegnizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */; };
 		2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2167E16E4315F00887B7C /* QuartzCore.framework */; };
 		2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2168916E4674C00887B7C /* CoreText.framework */; };
 		2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */; };
@@ -89,6 +91,7 @@
 		2ADEA03416E095C200E768F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CCRichTextEditorViewController_iPad.xib; sourceTree = "<group>"; };
 		2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = customKeyboardBar.png; sourceTree = "<group>"; };
 		2ADEA04216E09BD200E768F3 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		2AE0230916E8305900FC8316 /* strikeThroughMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strikeThroughMark.png; sourceTree = "<group>"; };
 		2AE1336F16E58A9F00209312 /* CCRTEColorSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEColorSelectionViewController.h; sourceTree = "<group>"; };
 		2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEColorSelectionViewController.m; sourceTree = "<group>"; };
 		2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEPhotoSelectionViewController.h; sourceTree = "<group>"; };
@@ -97,6 +100,8 @@
 		2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBtnHighlightedBackground.png; sourceTree = "<group>"; };
 		2AE1EBC916E6D7F600FB4D04 /* photoMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = photoMark.png; sourceTree = "<group>"; };
 		2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		2AE1EBD516E7354500FB4D04 /* CCRTEGestureRegnizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEGestureRegnizer.h; sourceTree = "<group>"; };
+		2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEGestureRegnizer.m; sourceTree = "<group>"; };
 		2AE2167E16E4315F00887B7C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2AE2168916E4674C00887B7C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE2168F16E493F000887B7C /* CCRTEFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEFontSelectionViewController.h; sourceTree = "<group>"; };
@@ -169,6 +174,8 @@
 				2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */,
 				2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */,
 				2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */,
+				2AE1EBD516E7354500FB4D04 /* CCRTEGestureRegnizer.h */,
+				2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */,
 				2ADEA03B16E09A7100E768F3 /* Resources */,
 				2ADEA01C16E095C200E768F3 /* Supporting Files */,
 			);
@@ -203,6 +210,7 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2AE0230916E8305900FC8316 /* strikeThroughMark.png */,
 				2AE1EBC916E6D7F600FB4D04 /* photoMark.png */,
 				2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */,
 				2AE1EBC616E6D6D600FB4D04 /* commonBtnHighlightedBackground.png */,
@@ -307,6 +315,7 @@
 				2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */,
 				2AE1EBC816E6D6D700FB4D04 /* commonBtnHighlightedBackground.png in Resources */,
 				2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */,
+				2AE0230A16E8305900FC8316 /* strikeThroughMark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +333,7 @@
 				2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */,
 				2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */,
 				2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */,
+				2AE1EBD916E73F6100FB4D04 /* CCRTEGestureRegnizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

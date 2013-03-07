@@ -1,5 +1,6 @@
 <html>
-    <script type="text/javascript">
+<script type="text/javascript">
+		//show keyboard, if touch is in the div
         document.addEventListener('touchend', function(e) { // Listen for touch end on the document
             // Get the touch and coordinates
             var touch = e.changedTouches.item(0);
@@ -8,42 +9,45 @@
 
             // Get the rect for the content  
             var contentDIVRect = document.getElementById('content').getClientRects()[0];
+			
+			//alert("left:" + contentDIVRect.left + " bottom:" +contentDIVRect.bottom
+			//	+ "touchX:" + touchX + "touchY:" + touchY);
+			
 
             // Make sure we don't block touches to the content div
-            if (touchX > contentDIVRect.left && touchY < contentDIVRect.bottom) {
-            return;
+			if (touchX > contentDIVRect.left && touchY < contentDIVRect.bottom) {
+				return;
             }
-
+			
             // If the touch is out of the content div then simply give the div focus
             document.getElementById('content').focus();
-        }, false);  
+        }, false);
         
         function moveImageAtTo(x, y, newX, newY) {
             // Get our required variables
             var element  = document.elementFromPoint(x, y);
-            if (element.toString().indexOf('Image') == -1) {
+            if (element.tagName.toString() != "IMG") {
                 // Attempt to move an image which doesn't exist at the point
                 return;
-            }
-            var caretRange = document.caretRangeFromPoint(newX, newY);
-            var selection = window.getSelection();
-            
+			}
             // Save the image source so we know this later when we need to re-insert it
             var imageSrc = element.src;
-            
+
+            var selection = window.getSelection();
+
             // Set the selection to the range of the image, so we can delete it
-            var nodeRange = document.createRange();
-            nodeRange.selectNode(element);
-            selection.removeAllRanges();
+			var nodeRange = document.createRange();
+			nodeRange.selectNode(element);
+            if (selection.rangeCount) selection.removeAllRanges();
             selection.addRange(nodeRange);
             
             // Delete the image
             document.execCommand('delete');
             
             // Set the selection to the caret range, so we can then add the image
-            var selection = window.getSelection();
-            var range = document.createRange();
-            selection.removeAllRanges();
+			selection = window.getSelection();
+            var caretRange = document.caretRangeFromPoint(newX, newY);
+			if (selection.rangeCount) selection.removeAllRanges();
             selection.addRange(caretRange);
             
             // Re-insert the image
