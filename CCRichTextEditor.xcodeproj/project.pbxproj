@@ -39,6 +39,8 @@
 		2ADEA04316E09BD200E768F3 /* customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */; };
 		2ADEA04416E09BD200E768F3 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 2ADEA04216E09BD200E768F3 /* index.html */; };
 		2AE0230A16E8305900FC8316 /* strikeThroughMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0230916E8305900FC8316 /* strikeThroughMark.png */; };
+		2AE0230E16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE0230D16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m */; };
+		2AE0231016E85CC200FC8316 /* highlightMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0230F16E85CC200FC8316 /* highlightMark.png */; };
 		2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */; };
 		2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */; };
 		2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */; };
@@ -80,7 +82,7 @@
 		2ADEA01F16E095C200E768F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2ADEA02116E095C200E768F3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2ADEA02316E095C200E768F3 /* CCRichTextEditor-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CCRichTextEditor-Prefix.pch"; sourceTree = "<group>"; };
-		2ADEA02416E095C200E768F3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2ADEA02416E095C200E768F3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = CCRichTextEditor/AppDelegate.h; sourceTree = "<group>"; };
 		2ADEA02516E095C200E768F3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2ADEA02716E095C200E768F3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		2ADEA02916E095C200E768F3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
@@ -92,6 +94,10 @@
 		2ADEA04116E09BD200E768F3 /* customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = customKeyboardBar.png; sourceTree = "<group>"; };
 		2ADEA04216E09BD200E768F3 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		2AE0230916E8305900FC8316 /* strikeThroughMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strikeThroughMark.png; sourceTree = "<group>"; };
+		2AE0230C16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEDocumentFragmentStatus.h; sourceTree = "<group>"; };
+		2AE0230D16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEDocumentFragmentStatus.m; sourceTree = "<group>"; };
+		2AE0230F16E85CC200FC8316 /* highlightMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = highlightMark.png; sourceTree = "<group>"; };
+		2AE0231816E86C4E00FC8316 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		2AE1336F16E58A9F00209312 /* CCRTEColorSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEColorSelectionViewController.h; sourceTree = "<group>"; };
 		2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEColorSelectionViewController.m; sourceTree = "<group>"; };
 		2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEPhotoSelectionViewController.h; sourceTree = "<group>"; };
@@ -130,6 +136,7 @@
 		2ADEA00616E095C200E768F3 = {
 			isa = PBXGroup;
 			children = (
+				2ADEA02416E095C200E768F3 /* AppDelegate.h */,
 				2ADEA01B16E095C200E768F3 /* CCRichTextEditor */,
 				2ADEA01416E095C200E768F3 /* Frameworks */,
 				2ADEA01216E095C200E768F3 /* Products */,
@@ -160,8 +167,9 @@
 		2ADEA01B16E095C200E768F3 /* CCRichTextEditor */ = {
 			isa = PBXGroup;
 			children = (
-				2ADEA02416E095C200E768F3 /* AppDelegate.h */,
 				2ADEA02516E095C200E768F3 /* AppDelegate.m */,
+				2AE0230C16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.h */,
+				2AE0230D16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m */,
 				2ADEA02D16E095C200E768F3 /* CCRichTextEditorViewController.h */,
 				2ADEA02E16E095C200E768F3 /* CCRichTextEditorViewController.m */,
 				2ADEA03016E095C200E768F3 /* CCRichTextEditorViewController_iPhone.xib */,
@@ -210,6 +218,7 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2AE0230F16E85CC200FC8316 /* highlightMark.png */,
 				2AE0230916E8305900FC8316 /* strikeThroughMark.png */,
 				2AE1EBC916E6D7F600FB4D04 /* photoMark.png */,
 				2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */,
@@ -270,6 +279,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				"zh-Hans",
 			);
 			mainGroup = 2ADEA00616E095C200E768F3;
 			productRefGroup = 2ADEA01216E095C200E768F3 /* Products */;
@@ -316,6 +326,7 @@
 				2AE1EBC816E6D6D700FB4D04 /* commonBtnHighlightedBackground.png in Resources */,
 				2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */,
 				2AE0230A16E8305900FC8316 /* strikeThroughMark.png in Resources */,
+				2AE0231016E85CC200FC8316 /* highlightMark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +345,7 @@
 				2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */,
 				2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */,
 				2AE1EBD916E73F6100FB4D04 /* CCRTEGestureRegnizer.m in Sources */,
+				2AE0230E16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +356,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				2ADEA01F16E095C200E768F3 /* en */,
+				2AE0231816E86C4E00FC8316 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
