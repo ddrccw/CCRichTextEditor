@@ -24,7 +24,8 @@
 #define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@')", CMD]
 
 @interface CCRichTextEditorViewController ()
-<UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,
+<UIActionSheetDelegate, UIWebViewDelegate,
+UINavigationControllerDelegate, UIImagePickerControllerDelegate,
 CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDelegate>
 
 @property (retain, nonatomic) IBOutlet UIWebView *contentWebView;
@@ -100,6 +101,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 {
   [super viewDidLoad];
   [_contentWebView setBackgroundColor:[UIColor clearColor]];
+  _contentWebView.delegate = self;
   NSBundle *bundle = [NSBundle mainBundle];
   NSURL *indexFileURL = [bundle URLForResource:@"index" withExtension:@"html"];
   [self.contentWebView loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
@@ -118,6 +120,22 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+  return YES;
+}
+
+- (BOOL)webView:(UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *)request
+ navigationType:(UIWebViewNavigationType)navigationType {
+  
+  NSString *requestString = [[[request URL] absoluteString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
+  //NSLog(@"%@", requestString);
+  
+  if ([requestString hasPrefix:@"ios-log:"]) {
+    NSString* logString = [[requestString componentsSeparatedByString:@":#iOS#"] objectAtIndex:1];
+    NSLog(@"UIWebView console: %@", logString);
+    return NO;
+  }
+  
   return YES;
 }
 
@@ -537,7 +555,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image picker
-//TODO:图片存储有待改进 ,key url-hash, value url
+//TODO:图片存储有待改进，要去重,key url-hash, value url？
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
   // Obtain the path to save to
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -551,9 +569,15 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
     NSData *data = UIImagePNGRepresentation(image);
     [data writeToFile:imagePath atomically:YES];
   }
-  
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"insertImage", imagePath)];
-  [_photoPopController dismissPopoverAnimated:YES];
+
+  NSString *d = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"insertImage", imagePath)];
+  NSLog(@"%@", d);
+  if (UIImagePickerControllerSourceTypePhotoLibrary == picker.sourceType) {
+    [_photoPopController dismissPopoverAnimated:YES];
+  }
+  else {
+    [self dismissModalViewControllerAnimated:YES];
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

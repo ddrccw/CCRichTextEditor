@@ -1,5 +1,19 @@
 <html>
 <script type="text/javascript">
+  console = new Object();
+  console.log = function(log) {
+    var iframe = document.createElement("IFRAME");
+    iframe.setAttribute("src", "ios-log:#iOS#" + log);
+    document.documentElement.appendChild(iframe);
+    iframe.parentNode.removeChild(iframe);
+    iframe = null;
+  }
+  console.debug = console.log;
+  console.info = console.log;
+  console.warn = console.log;
+  console.error = console.log;
+
+  
 		//show keyboard, if touch is in the div
 document.addEventListener('touchend', function(e) { // Listen for touch end on the document
             // Get the touch and coordinates
@@ -19,7 +33,8 @@ document.addEventListener('touchend', function(e) { // Listen for touch end on t
 	}
 	
 	// If the touch is out of the content div then simply give the div focus
-	document.getElementById('content').focus();
+	document.getElementById('content').focus();                    
+	console.log("touched");
 }, false);
 
 
@@ -68,6 +83,9 @@ function getCaretPosition() {
 		var offsetY = rect.top + rect.height;
 		if (hasFakeNode)
 			range.deleteContents();
+
+		console.log(offsetY);
+
 		return offsetY;
 	}
 	catch (e) {
