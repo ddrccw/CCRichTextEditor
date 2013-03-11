@@ -38,25 +38,37 @@ document.addEventListener('touchend', function(e) { // Listen for touch end on t
 function getCaretPosition() {
 	var sel = window.getSelection();
 	var range = sel.getRangeAt(0);	
-	var foundBr = false;
+	var rects, rect;
+	var hasFakeNode = false;
 	try {
-
 		if (sel.focusNode.nodeType != 3) {      //text == 3
+			var newNode = document.createTextNode("-");
+			
 			if (sel.focusNode.querySelector('br')) {
-				var newNode = document.createElement("div");
-				newNode.appendChild(document.createTextNode("-"));
 				range.insertNode(newNode);
-				foundBr = true;
+				rects = range.getClientRects();
+				rect = rects[0];
+				hasFakeNode = true;
+			}
+			else {
+				rects = range.getClientRects();
+				if (!rects.length) {                //插入图片后，获取的rects为空数组
+					range.insertNode(newNode);
+					rects = range.getClientRects();
+					hasFakeNode = true;
+				}
+				rect = rects[0];
 			}
 		}
+		else {
+			rects = range.getClientRects();
+			rect = rects[0];
+		}
 
-		var rects = range.getClientRects();
-		var rect = rects[0];
 		var offsetY = rect.top + rect.height;
-		
-		if (foundBr)
+		if (hasFakeNode)
 			range.deleteContents();
-		return (offsetY);	
+		return offsetY;
 	}
 	catch (e) {
 		alert(e);

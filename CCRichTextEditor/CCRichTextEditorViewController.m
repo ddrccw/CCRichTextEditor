@@ -171,18 +171,20 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   
   [self.contentWebView.scrollView addGestureRecognizer:tapGesture];
 
-  UIMenuItem *boldItem = [[[UIMenuItem alloc] initWithTitle:@"加粗"
-                                                     action:@selector(boldAction)] autorelease];
-  UIMenuItem *italicItem = [[[UIMenuItem alloc] initWithTitle:@"斜体"
-                                                       action:@selector(italicAction)] autorelease];
-  UIMenuItem *underlineItem = [[[UIMenuItem alloc] initWithTitle:@"下划线"
-                                                          action:@selector(underlineAction)] autorelease];
-  UIMenuItem *highlightItem = [[[UIMenuItem alloc] initWithTitle:@"高亮"
-                                                          action:@selector(highlightAction)] autorelease];
-  [[UIMenuController sharedMenuController] setMenuItems:@[boldItem,
-                                                          italicItem,
-                                                          underlineItem,
-                                                          highlightItem]];
+  if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+    UIMenuItem *boldItem = [[[UIMenuItem alloc] initWithTitle:@"加粗"
+                                                       action:@selector(boldAction)] autorelease];
+    UIMenuItem *italicItem = [[[UIMenuItem alloc] initWithTitle:@"斜体"
+                                                         action:@selector(italicAction)] autorelease];
+    UIMenuItem *underlineItem = [[[UIMenuItem alloc] initWithTitle:@"下划线"
+                                                            action:@selector(underlineAction)] autorelease];
+    UIMenuItem *highlightItem = [[[UIMenuItem alloc] initWithTitle:@"高亮"
+                                                            action:@selector(highlightAction)] autorelease];
+    [[UIMenuController sharedMenuController] setMenuItems:@[boldItem,
+                                                            italicItem,
+                                                            underlineItem,
+                                                            highlightItem]];
+  }
 }
 
 - (void)checkSelection {
@@ -219,32 +221,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 
 
   [self refreshInputAccessoryView];
-
-  int offsetY = [[self.contentWebView stringByEvaluatingJavaScriptFromString:@"getCaretPosition()"] intValue];
-  NSLog(@"out=%d, pre=%d", offsetY, self.documentFragmentStatus.caretOffsetY);
-
-  static const UInt8 kOffsetEdge = 30;
-  offsetY += kOffsetEdge;
-  if (offsetY > self.inputAccessoryView.frame.origin.y &&
-      self.documentFragmentStatus.caretOffsetY != offsetY)
-  {
-    CGPoint preOffset = self.contentWebView.scrollView.contentOffset;
-    CGSize preContentSize = self.contentWebView.scrollView.contentSize;
-    CGPoint p = CGPointMake(0, preOffset.y + offsetY - self.inputAccessoryView.frame.origin.y);
-    static const UInt16 kKeyboardHeight = 450;
-    if (p.y >= (preContentSize.height - kKeyboardHeight)) {
-      preContentSize.height += preContentSize.height / 3;
-      CGRect rect = self.contentWebView.frame;
-      rect.size = preContentSize;
-      self.contentWebView.frame = rect;
-      self.contentWebView.scrollView.contentSize = preContentSize;
-    }
-    NSLog(@"%@, contentSize=%@, scrollframe=%@", NSStringFromCGPoint(p),
-          NSStringFromCGSize(self.contentWebView.scrollView.contentSize),
-          NSStringFromCGRect(self.contentWebView.frame));
-    [self.contentWebView.scrollView setContentOffset:p];
-    self.documentFragmentStatus.caretOffsetY = self.inputAccessoryView.frame.origin.y - kOffsetEdge;
-  }
+  [self refreshForScrollingToVisible];
 }
 
 - (void)refreshInputAccessoryView {
@@ -296,6 +273,37 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 
   self.undoBtn.enabled = self.documentFragmentStatus.undo;
   self.redoBtn.enabled = self.documentFragmentStatus.redo;
+}
+
+//TODO:如果scroll查看时，如果光标在keyboard下方，则会调回到可见区域，有待改进
+- (void)refreshForScrollingToVisible {
+//  NSString *dd = [self.contentWebView stringByEvaluatingJavaScriptFromString:@"getCaretPosition().toString()"];
+//  NSLog(@"%@", dd);
+  int offsetY = [[self.contentWebView stringByEvaluatingJavaScriptFromString:@"getCaretPosition()"] intValue];
+//  NSLog(@"out=%d, pre=%d", offsetY, self.documentFragmentStatus.caretOffsetY);
+  
+  static const UInt8 kOffsetEdge = 30;
+  offsetY += kOffsetEdge;
+  if (offsetY > self.inputAccessoryView.frame.origin.y &&
+      self.documentFragmentStatus.caretOffsetY != offsetY)
+  {
+    CGPoint preOffset = self.contentWebView.scrollView.contentOffset;
+    CGSize preContentSize = self.contentWebView.scrollView.contentSize;
+    CGPoint p = CGPointMake(0, preOffset.y + offsetY - self.inputAccessoryView.frame.origin.y);
+    static const UInt16 kKeyboardHeight = 450;
+    if (p.y >= (preContentSize.height - kKeyboardHeight)) {
+      preContentSize.height += preContentSize.height / 3;
+      CGRect rect = self.contentWebView.frame;
+      rect.size = preContentSize;
+      self.contentWebView.frame = rect;
+      self.contentWebView.scrollView.contentSize = preContentSize;
+    }
+    //    NSLog(@"%@, contentSize=%@, scrollframe=%@", NSStringFromCGPoint(p),
+    //          NSStringFromCGSize(self.contentWebView.scrollView.contentSize),
+    //          NSStringFromCGRect(self.contentWebView.frame));
+    [self.contentWebView.scrollView setContentOffset:p];
+    self.documentFragmentStatus.caretOffsetY = self.inputAccessoryView.frame.origin.y - kOffsetEdge;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -499,21 +507,13 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 #pragma mark - action sheet
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
   if (0 == buttonIndex) {   //拍照
-    if (!_photoPopController) {
-      if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        imagePicker.delegate = self;
-        
-        _photoPopController = [[UIPopoverController alloc] initWithContentViewController:imagePicker];
-        [imagePicker release];
-      }
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+      UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+      imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+      imagePicker.delegate = self;
+      [self presentModalViewController:imagePicker animated:YES];
+      [imagePicker release];
     }
-    
-    [_photoPopController presentPopoverFromRect:self.photoBtn.frame
-                                         inView:self.inputAccessoryView
-                       permittedArrowDirections:UIPopoverArrowDirectionDown
-                                       animated:YES];
   }
   else if (1 == buttonIndex) {                    //从相册中选择
     if (!_photoPopController) {
@@ -552,7 +552,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
     [data writeToFile:imagePath atomically:YES];
   }
   
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.execCommand('insertImage', false, '%@')", imagePath]];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"insertImage", imagePath)];
   [_photoPopController dismissPopoverAnimated:YES];
 }
 
