@@ -2,7 +2,7 @@
 //  ViewController.m
 //  CCRichTextEditor
 //
-//  Created by chenche on 13-3-1.
+//  Created by ddrccw on 13-3-1.
 //  Copyright (c) 2013年 ddrccw. All rights reserved.
 //
 

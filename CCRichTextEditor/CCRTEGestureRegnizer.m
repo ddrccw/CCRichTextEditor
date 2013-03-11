@@ -2,7 +2,7 @@
 //  CCRTEMovePictureGestureRegnizer.m
 //  CCRichTextEditor
 //
-//  Created by chenche on 13-3-6.
+//  Created by ddrccw on 13-3-6.
 //  Copyright (c) 2013年 ddrccw. All rights reserved.
 //
 
