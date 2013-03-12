@@ -15,6 +15,7 @@
 
 #import <CoreText/CoreText.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 #define DOCUMENT_EXECCMD_CMD(CMD) [NSString stringWithFormat:@"document.execCommand('%@')", CMD]
 #define DOCUMENT_EXECCMD_CMD_STRING_VALUE(CMD, VALUE) [NSString stringWithFormat:@"document.execCommand('%@', false, '%@')", CMD, VALUE]
@@ -23,6 +24,33 @@
 #define DOCUMENT_QUERYCMDSTATE(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@')", CMD]
 #define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@')", CMD]
 
+@interface CCRTEContent : NSObject
+@property (retain, nonatomic) NSMutableSet *picturePaths;
+@property (retain, nonatomic) NSMutableSet *audioPaths;
+@property (copy, nonatomic) NSString *htmlContent;
+@end
+
+@implementation CCRTEContent
+
+- (void)dealloc {
+  [_picturePaths release];
+  [_audioPaths release];
+  [_htmlContent release];
+  [super dealloc];
+}
+
+- (id)init {
+  if (self = [super init]) {
+    _picturePaths = [[NSMutableSet alloc] init];
+    _audioPaths = [[NSMutableSet alloc] init];
+  }
+  return self;
+}
+
+@end
+
+
+////////////////////////////////////////////////////////////////////////////////
 @interface CCRichTextEditorViewController ()
 <UIActionSheetDelegate, UIWebViewDelegate,
 UINavigationControllerDelegate, UIImagePickerControllerDelegate,
@@ -38,6 +66,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 @property (retain, nonatomic) NSTimer *timer;
 @property (retain, nonatomic) CCRTEDocumentFragmentStatus *documentFragmentStatus;
 @property (retain, nonatomic) UIMenuController *accessoryMenuController;
+@property (retain, nonatomic) CCRTEContent *content;
 @end
 
 @implementation CCRichTextEditorViewController
@@ -60,6 +89,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   [_timer release];
   [_documentFragmentStatus release];
   [_accessoryMenuController release];
+  [_content release];
   [_fontSizeUpBtn release];
   [_fontSizeDownBtn release];
   [_fontColorBtn release];
@@ -83,6 +113,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   self.timer = nil;
   self.documentFragmentStatus = nil;
   self.accessoryMenuController = nil;
+  self.content = nil;
   [self setFontBtn:nil];
   [self setFontSizeUpBtn:nil];
   [self setFontSizeDownBtn:nil];
@@ -102,6 +133,8 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   [super viewDidLoad];
   [_contentWebView setBackgroundColor:[UIColor clearColor]];
   _contentWebView.delegate = self;
+  _content = [CCRTEContent new];
+  
   NSBundle *bundle = [NSBundle mainBundle];
   NSURL *indexFileURL = [bundle URLForResource:@"index" withExtension:@"html"];
   [self.contentWebView loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
@@ -123,10 +156,11 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   return YES;
 }
 
-- (BOOL)webView:(UIWebView *)webView
-shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType {
-  
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - webview delegate
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
+ navigationType:(UIWebViewNavigationType)navigationType
+{  
   NSString *requestString = [[[request URL] absoluteString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding];
   //NSLog(@"%@", requestString);
   
@@ -555,24 +589,47 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image picker
-//TODO:图片存储有待改进，要去重,key url-hash, value url？
+//TODO:图片存储有待改进，要去重
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-  // Obtain the path to save to
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
-  NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png", [NSDate date]]];
-  
-  // Extract image from the picker and save it
-  NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-  if ([mediaType isEqualToString:(NSString *)kUTTypeImage]){
-    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    NSData *data = UIImagePNGRepresentation(image);
-    [data writeToFile:imagePath atomically:YES];
-  }
-
-  NSString *d = [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"insertImage", imagePath)];
-  NSLog(@"%@", d);
   if (UIImagePickerControllerSourceTypePhotoLibrary == picker.sourceType) {
+    NSURL *referenceUrl = [info objectForKey:UIImagePickerControllerReferenceURL];
+    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
+      __block UIImage *image = nil;
+      if ([self.content.picturePaths containsObject:referenceUrl]) {
+        ALAssetsLibrary *library = [[[ALAssetsLibrary alloc] init] autorelease];
+        [library assetForURL:referenceUrl resultBlock:^(ALAsset *asset)
+        {
+          ALAssetRepresentation *assetRep = [asset defaultRepresentation];
+          image = [UIImage imageWithCGImage:[assetRep fullResolutionImage]
+                                      scale:assetRep.scale
+                                orientation:(UIImageOrientation)assetRep.orientation];
+          
+//          [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"insertImage", assetRep.url.absoluteString)];
+
+        }failureBlock:^(NSError *error){
+          NSLog(@"%@", error);
+        }];
+      }
+      else {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png",
+                                                                                  [NSDate date]]];
+        
+        image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        NSData *data = UIImagePNGRepresentation(image);
+        [data writeToFile:imagePath atomically:YES];
+        
+        NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
+                                                  imagePath, image.size.width, image.size.height];
+        NSLog(@"%@", js);
+        NSString *t = [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
+        NSLog(@"%@", t);
+        [self.content.picturePaths addObject:referenceUrl];
+      }
+    }
+    
     [_photoPopController dismissPopoverAnimated:YES];
   }
   else {
