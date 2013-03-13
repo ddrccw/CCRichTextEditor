@@ -134,3 +134,16 @@ function moveImageAtTo(x, y, newX, newY) {
   insertNodeAtCurrentRange(element);
 };
 
+//css:  top, right, bottom, left, width, height
+function clientRectOfElementFromPoint(x, y) {
+  var rects = document.elementFromPoint(x, y).getClientRects();
+  var rect = rects[0];
+  if (rect) {
+    return ("" + rect.top + "," + rect.right + "," + rect.bottom + "," +
+            rect.left + "," + rect.width + "," + rect.height + "");
+  }
+  else {
+    return "0"
+  }
+};
+

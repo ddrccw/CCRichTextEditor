@@ -12,6 +12,8 @@
 #import "CCRTEFontSelectionViewController.h"
 #import "CCRTEColorSelectionViewController.h"
 #import "CCRTEGestureRegnizer.h"
+#import "CCMaskView.h"
+#import "CCDisplayImageView.h"
 
 #import <CoreText/CoreText.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -24,8 +26,19 @@
 #define DOCUMENT_QUERYCMDSTATE(CMD) [NSString stringWithFormat:@"document.queryCommandState('%@')", CMD]
 #define DOCUMENT_QUERYCMDENABLED(CMD) [NSString stringWithFormat:@"document.queryCommandEnabled('%@')", CMD]
 
+#define DOM_ELEMENT_FORMPOINT_ATTRIBUTE(X, Y, NAME) [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).getAttribute('%@')", X, Y, NAME]
+
+enum {
+  kClientRectTop,
+  kClientRectRight,
+  kClientRectBottom,
+  kClientRectLeft,
+  kClientRectWidth,
+  kClientRectHeight
+};
+
 @interface CCRTEContent : NSObject
-@property (retain, nonatomic) NSMutableSet *picturePaths;
+@property (retain, nonatomic) NSMutableDictionary *picturePaths;
 @property (retain, nonatomic) NSMutableSet *audioPaths;
 @property (copy, nonatomic) NSString *htmlContent;
 @end
@@ -41,7 +54,7 @@
 
 - (id)init {
   if (self = [super init]) {
-    _picturePaths = [[NSMutableSet alloc] init];
+    _picturePaths = [[NSMutableDictionary alloc] init];
     _audioPaths = [[NSMutableSet alloc] init];
   }
   return self;
@@ -54,9 +67,10 @@
 @interface CCRichTextEditorViewController ()
 <UIActionSheetDelegate, UIWebViewDelegate,
 UINavigationControllerDelegate, UIImagePickerControllerDelegate,
-CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDelegate>
+CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDelegate,
+CCMaskViewDelegate, CCDisplayImageViewDelegate>
 
-@property (retain, nonatomic) IBOutlet UIWebView *contentWebView;
+@property (retain, atomic) IBOutlet UIWebView *contentWebView;
 @property (retain, nonatomic) IBOutlet UIView *inputAccessoryView;
 @property (retain, nonatomic) UIPopoverController *fontPopController;
 @property (retain, nonatomic) UIPopoverController *fontColorPopController;
@@ -67,6 +81,9 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 @property (retain, nonatomic) CCRTEDocumentFragmentStatus *documentFragmentStatus;
 @property (retain, nonatomic) UIMenuController *accessoryMenuController;
 @property (retain, nonatomic) CCRTEContent *content;
+@property (retain, nonatomic) CCMaskView *maskView;
+@property (retain, nonatomic) CCDisplayImageView *displayImageView;
+
 @end
 
 @implementation CCRichTextEditorViewController
@@ -90,6 +107,8 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   [_documentFragmentStatus release];
   [_accessoryMenuController release];
   [_content release];
+  [_maskView release];
+  [_displayImageView release];
   [_fontSizeUpBtn release];
   [_fontSizeDownBtn release];
   [_fontColorBtn release];
@@ -114,6 +133,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   self.documentFragmentStatus = nil;
   self.accessoryMenuController = nil;
   self.content = nil;
+  self.maskView = nil;
   [self setFontBtn:nil];
   [self setFontSizeUpBtn:nil];
   [self setFontSizeDownBtn:nil];
@@ -156,8 +176,6 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   return YES;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark - webview delegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
  navigationType:(UIWebViewNavigationType)navigationType
 {  
@@ -173,6 +191,9 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
   return YES;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - private method
 - (void)initDocumentStatus {
   _documentFragmentStatus = [CCRTEDocumentFragmentStatus new];
   _documentFragmentStatus.fontName = self.fontBtn.titleLabel.font.fontName;
@@ -194,34 +215,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
                                                                DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"underline", false),
                                                                DOCUMENT_EXECCMD_CMD_NONSTRING_VALUE(@"strikeThrough", false)]];
   
-  
-  CCRTEGestureRegnizer *tapGesture = [[CCRTEGestureRegnizer alloc] init];
-  tapGesture.touchesBeganCallback = ^(NSSet *touches, UIEvent *event) {
-    UITouch *touch = [[event allTouches] anyObject];
-    CGPoint touchPoint = [touch locationInView:self.view];
-    NSString *javascript = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName.toString()",
-                                                      touchPoint.x, touchPoint.y];
-    NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
-    if ([elementNameAtPoint isEqualToString:@"IMG"]) {
-      // We set the inital point of the image for use latter on when we actually move it
-      tapGesture.startPoint = touchPoint;
-      // In order to make moving the image easy we must disable scrolling otherwise the view will just scroll and prevent fully detecting movement on the image.
-      self.contentWebView.scrollView.scrollEnabled = NO;
-    }
-    else {
-      tapGesture.startPoint = CGPointZero;
-    }
-  };
-  tapGesture.touchesEndedCallback = ^(NSSet *touches, UIEvent *event) {
-    UITouch *touch = [[event allTouches] anyObject];
-    CGPoint touchPoint = [touch locationInView:self.view];
-    
-    NSString *javascript = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)", tapGesture.startPoint.x, tapGesture.startPoint.y, touchPoint.x, touchPoint.y];
-    [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
-    self.contentWebView.scrollView.scrollEnabled = YES;
-  };
-  
-  [self.contentWebView.scrollView addGestureRecognizer:tapGesture];
+  [self addGesture];
 
   if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
     UIMenuItem *boldItem = [[[UIMenuItem alloc] initWithTitle:@"加粗"
@@ -237,6 +231,50 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
                                                             underlineItem,
                                                             highlightItem]];
   }
+}
+
+- (void)addGesture {
+  CCRTEGestureRegnizer *moveImageGesture = [[[CCRTEGestureRegnizer alloc] init] autorelease];
+  moveImageGesture.touchesBeganCallback = ^(NSSet *touches, UIEvent *event) {
+    UITouch *touch = [[event allTouches] anyObject];
+    CGPoint touchPoint = [touch locationInView:self.view];
+    NSString *javascript = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName.toString()",
+                            touchPoint.x, touchPoint.y];
+    NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+    if ([elementNameAtPoint isEqualToString:@"IMG"]) {
+      // We set the inital point of the image for use latter on when we actually move it
+      moveImageGesture.startPoint = touchPoint;
+      // In order to make moving the image easy we must disable scrolling otherwise the view will just scroll and prevent fully detecting movement on the image.
+      self.contentWebView.scrollView.scrollEnabled = NO;
+    }
+    else {
+      moveImageGesture.startPoint = CGPointZero;
+    }
+  };
+  moveImageGesture.touchesEndedCallback = ^(NSSet *touches, UIEvent *event) {
+    UITouch *touch = [[event allTouches] anyObject];
+    CGPoint touchPoint = [touch locationInView:self.view];
+    
+    NSString *javascript = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)", moveImageGesture.startPoint.x, moveImageGesture.startPoint.y, touchPoint.x, touchPoint.y];
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+    self.contentWebView.scrollView.scrollEnabled = YES;
+  };
+  [self.contentWebView.scrollView addGestureRecognizer:moveImageGesture];
+  
+  CCRTEGestureRegnizer *tapImageGesture = [[[CCRTEGestureRegnizer alloc] init] autorelease];
+  tapImageGesture.numberOfTapsRequired = 2;
+  tapImageGesture.touchesBeganCallback = ^(NSSet *touches, UIEvent *event) {
+    UITouch *touch = [[event allTouches] anyObject];
+    CGPoint touchPoint = [touch locationInView:self.view];
+    NSString *javascript = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName.toString()",
+                            touchPoint.x, touchPoint.y];
+    NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+    if ([elementNameAtPoint isEqualToString:@"IMG"]) {
+      [self showMaskViewFromPoint:touchPoint];
+    }
+  };
+  
+  [self.contentWebView.scrollView addGestureRecognizer:tapImageGesture];
 }
 
 - (void)checkSelection {
@@ -356,6 +394,84 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
     [self.contentWebView.scrollView setContentOffset:p];
     self.documentFragmentStatus.caretOffsetY = self.inputAccessoryView.frame.origin.y - kOffsetEdge;
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - image show delegate
+- (void)showMaskViewFromPoint:(CGPoint )aPoint {
+  NSString *javascript = DOM_ELEMENT_FORMPOINT_ATTRIBUTE(aPoint.x, aPoint.y, @"src");
+  NSString *imgSrc = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+  javascript = [NSString stringWithFormat:@"clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
+  NSString *string = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+  NSArray *clientRect = [string componentsSeparatedByString:@","];
+  if (!self.maskView) {
+    _maskView = [[CCMaskView alloc] initWithFrame:self.view.bounds];
+    _maskView.delegate = self;
+    _maskView.shouldDimBackground = YES;
+    [self.view addSubview:_maskView];
+  }
+  
+  UIImage *img = [UIImage imageWithContentsOfFile:imgSrc];
+  if (!self.displayImageView) {
+    _displayImageView = [[CCDisplayImageView alloc] initWithImage:img
+                                                    maxImageWidth:self.view.bounds.size.width * 4 / 5
+                                                   maxImageHeight:self.view.bounds.size.height * 4 / 5];
+    _displayImageView.delegate = self;
+    [self.maskView addSubview:self.displayImageView];
+    self.displayImageView.center = self.maskView.center;
+  }
+  else {
+    [self.displayImageView setDisplayImage:img];
+  }
+  
+  [self.contentWebView endEditing:YES];
+  
+  float kDuration = .2f;
+  CABasicAnimation *positionAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+  CGPoint point = CGPointZero;
+  point.x = [clientRect[kClientRectLeft] floatValue] + [clientRect[kClientRectWidth] floatValue] / 2;
+  point.y = [clientRect[kClientRectTop] floatValue] + [clientRect[kClientRectHeight] floatValue] / 2;
+  positionAnimation.fromValue = [NSValue valueWithCGPoint:point];
+  point = self.displayImageView.center;
+  positionAnimation.toValue = [NSValue valueWithCGPoint:point];
+  positionAnimation.duration = kDuration;
+  
+  CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+  float scaleX = [clientRect[kClientRectWidth] floatValue] / self.displayImageView.frame.size.width;
+  float scaleY = [clientRect[kClientRectHeight] floatValue] / self.displayImageView.frame.size.height;
+  scaleAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(scaleX, scaleY, 1)];
+  scaleAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+  scaleAnimation.duration = kDuration;
+  
+  CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+  animationGroup.animations = @[positionAnimation, scaleAnimation];
+  [self.displayImageView.layer addAnimation:animationGroup forKey:@"showDisplayImageView"];
+  
+  CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  opacityAnimation.fromValue = @(0);
+  opacityAnimation.toValue = @(self.maskView.opacity);
+  opacityAnimation.duration = kDuration;
+  [self.maskView.layer addAnimation:opacityAnimation forKey:@"showMask"];
+  [self.view bringSubviewToFront:self.maskView];
+  self.maskView.alpha = self.maskView.opacity;
+}
+
+- (void)maskViewWillDismiss:(CCMaskView *)maskView {
+  [self dismissDisplayImageView];
+}
+
+- (void)displayImageViewWillClose:(CCDisplayImageView *)displayImageView {
+  [self dismissDisplayImageView];
+}
+
+- (void)dismissDisplayImageView {
+  CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  opacityAnimation.toValue = @(0);
+  opacityAnimation.fromValue = @(self.maskView.opacity);
+  opacityAnimation.duration = .3f;
+  [self.maskView.layer addAnimation:opacityAnimation forKey:@"dismissMask"];
+  [self.view bringSubviewToFront:self.maskView];
+  self.maskView.alpha = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -589,14 +705,15 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image picker
-//TODO:图片存储有待改进，要去重
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
   if (UIImagePickerControllerSourceTypePhotoLibrary == picker.sourceType) {
     NSURL *referenceUrl = [info objectForKey:UIImagePickerControllerReferenceURL];
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    NSString *imagePath = nil;
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
       __block UIImage *image = nil;
-      if ([self.content.picturePaths containsObject:referenceUrl]) {
+      imagePath = [self.content.picturePaths objectForKey:referenceUrl];
+      if (imagePath) {
         ALAssetsLibrary *library = [[[ALAssetsLibrary alloc] init] autorelease];
         [library assetForURL:referenceUrl resultBlock:^(ALAsset *asset)
         {
@@ -605,8 +722,9 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
                                       scale:assetRep.scale
                                 orientation:(UIImageOrientation)assetRep.orientation];
           
-//          [self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_EXECCMD_CMD_STRING_VALUE(@"insertImage", assetRep.url.absoluteString)];
-
+          NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
+                                                    imagePath, image.size.width, image.size.height];
+          [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
         }failureBlock:^(NSError *error){
           NSLog(@"%@", error);
         }];
@@ -614,7 +732,7 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
       else {
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png",
+        imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png",
                                                                                   [NSDate date]]];
         
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
@@ -623,10 +741,8 @@ CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDeleg
         
         NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
                                                   imagePath, image.size.width, image.size.height];
-        NSLog(@"%@", js);
-        NSString *t = [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
-        NSLog(@"%@", t);
-        [self.content.picturePaths addObject:referenceUrl];
+        [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
+        [self.content.picturePaths addEntriesFromDictionary:@{referenceUrl : imagePath}];
       }
     }
     

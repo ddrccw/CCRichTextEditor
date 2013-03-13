@@ -25,6 +25,7 @@
 		2AB4B2E616E5EEE100901268 /* fontStyleBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2D216E5EEE100901268 /* fontStyleBackground.png */; };
 		2AB4B2E716E5EEE100901268 /* fontNameBtnHighlightedBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2D316E5EEE100901268 /* fontNameBtnHighlightedBackground.png */; };
 		2AD2328D16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */; };
+		2ADD3AF016F01484008FACD3 /* closeBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 2ADD3AEF16F01484008FACD3 /* closeBtn.png */; };
 		2ADEA01616E095C200E768F3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01516E095C200E768F3 /* UIKit.framework */; };
 		2ADEA01816E095C200E768F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01716E095C200E768F3 /* Foundation.framework */; };
 		2ADEA01A16E095C200E768F3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ADEA01916E095C200E768F3 /* CoreGraphics.framework */; };
@@ -44,6 +45,8 @@
 		2AE0353416EEC4FD00052936 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE0353316EEC4FD00052936 /* AssetsLibrary.framework */; };
 		2AE0354716EEF8C000052936 /* CCRichTextEditor.js in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0354116EEF68200052936 /* CCRichTextEditor.js */; };
 		2AE0354A16EEFBAB00052936 /* CCRTELog.js in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0354816EEFB9400052936 /* CCRTELog.js */; };
+		2AE0357616EF29A600052936 /* CCMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE0357516EF29A500052936 /* CCMaskView.m */; };
+		2AE0357916EF2FCF00052936 /* CCDisplayImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE0357816EF2FCE00052936 /* CCDisplayImageView.m */; };
 		2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */; };
 		2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */; };
 		2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */; };
@@ -78,6 +81,7 @@
 		2AB4B2D316E5EEE100901268 /* fontNameBtnHighlightedBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fontNameBtnHighlightedBackground.png; sourceTree = "<group>"; };
 		2AD2328B16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEAccessorySwitch.h; sourceTree = "<group>"; };
 		2AD2328C16E0A8DA00BF23F5 /* CCRTEAccessorySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEAccessorySwitch.m; sourceTree = "<group>"; };
+		2ADD3AEF16F01484008FACD3 /* closeBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = closeBtn.png; sourceTree = "<group>"; };
 		2ADEA01116E095C200E768F3 /* CCRichTextEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCRichTextEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ADEA01516E095C200E768F3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2ADEA01716E095C200E768F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -104,6 +108,10 @@
 		2AE0353316EEC4FD00052936 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		2AE0354116EEF68200052936 /* CCRichTextEditor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CCRichTextEditor.js; sourceTree = "<group>"; };
 		2AE0354816EEFB9400052936 /* CCRTELog.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CCRTELog.js; sourceTree = "<group>"; };
+		2AE0357416EF29A500052936 /* CCMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMaskView.h; sourceTree = "<group>"; };
+		2AE0357516EF29A500052936 /* CCMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMaskView.m; sourceTree = "<group>"; };
+		2AE0357716EF2FCD00052936 /* CCDisplayImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDisplayImageView.h; sourceTree = "<group>"; };
+		2AE0357816EF2FCE00052936 /* CCDisplayImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDisplayImageView.m; sourceTree = "<group>"; };
 		2AE1336F16E58A9F00209312 /* CCRTEColorSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEColorSelectionViewController.h; sourceTree = "<group>"; };
 		2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEColorSelectionViewController.m; sourceTree = "<group>"; };
 		2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEPhotoSelectionViewController.h; sourceTree = "<group>"; };
@@ -192,6 +200,10 @@
 				2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */,
 				2AE1EBD516E7354500FB4D04 /* CCRTEGestureRegnizer.h */,
 				2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */,
+				2AE0357416EF29A500052936 /* CCMaskView.h */,
+				2AE0357516EF29A500052936 /* CCMaskView.m */,
+				2AE0357716EF2FCD00052936 /* CCDisplayImageView.h */,
+				2AE0357816EF2FCE00052936 /* CCDisplayImageView.m */,
 				2AE0354016EEF68200052936 /* js */,
 				2ADEA03B16E09A7100E768F3 /* Resources */,
 				2ADEA01C16E095C200E768F3 /* Supporting Files */,
@@ -227,6 +239,7 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2ADD3AEF16F01484008FACD3 /* closeBtn.png */,
 				2AA9983B16ED67D200A0B473 /* customKeyboardBar.png */,
 				2AE0230F16E85CC200FC8316 /* highlightMark.png */,
 				2AE0230916E8305900FC8316 /* strikeThroughMark.png */,
@@ -347,6 +360,7 @@
 				2AE0230A16E8305900FC8316 /* strikeThroughMark.png in Resources */,
 				2AE0231016E85CC200FC8316 /* highlightMark.png in Resources */,
 				2AA9983C16ED67D200A0B473 /* customKeyboardBar.png in Resources */,
+				2ADD3AF016F01484008FACD3 /* closeBtn.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +380,8 @@
 				2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */,
 				2AE1EBD916E73F6100FB4D04 /* CCRTEGestureRegnizer.m in Sources */,
 				2AE0230E16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m in Sources */,
+				2AE0357616EF29A600052936 /* CCMaskView.m in Sources */,
+				2AE0357916EF2FCF00052936 /* CCDisplayImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

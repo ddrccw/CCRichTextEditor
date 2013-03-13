@@ -11,6 +11,7 @@
 typedef void (^TouchEventBlock_t)(NSSet *touches, UIEvent *event);
 
 @interface CCRTEGestureRegnizer : UIGestureRecognizer
+@property (assign, nonatomic) int numberOfTapsRequired;
 @property (assign, nonatomic) CGPoint startPoint;
 @property (copy) TouchEventBlock_t touchesBeganCallback;
 @property (copy) TouchEventBlock_t touchesEndedCallback;

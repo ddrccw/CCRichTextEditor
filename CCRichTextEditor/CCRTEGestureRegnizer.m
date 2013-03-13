@@ -16,16 +16,27 @@
   [super dealloc];
 }
 
+- (id)init {
+  if (self = [super init]) {
+    _numberOfTapsRequired = 1;
+  }
+  return self;
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-  if (_touchesBeganCallback)
-    _touchesBeganCallback(touches, event);
+  if (self.numberOfTapsRequired == [[touches anyObject] tapCount]) {
+    if (_touchesBeganCallback)
+      _touchesBeganCallback(touches, event);
+  }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-  if (_touchesEndedCallback)
-    _touchesEndedCallback(touches, event);
+  if (self.numberOfTapsRequired == [[touches anyObject] tapCount]) {
+    if (_touchesEndedCallback)
+      _touchesEndedCallback(touches, event);
+  }
 }
 
 //- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
