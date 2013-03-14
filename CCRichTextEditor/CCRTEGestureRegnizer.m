@@ -29,14 +29,20 @@
     if (_touchesBeganCallback)
       _touchesBeganCallback(touches, event);
   }
+  
+  UITouch *touch = [touches anyObject];
+  NSLog(@"touchesBegan=%d, UITouchPhase=%d", [touch tapCount], [touch phase]);
+  
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-  if (self.numberOfTapsRequired == [[touches anyObject] tapCount]) {
+//  if (self.numberOfTapsRequired == [[touches anyObject] tapCount]) {
     if (_touchesEndedCallback)
       _touchesEndedCallback(touches, event);
-  }
+//  }
+  UITouch *touch = [touches anyObject];
+  NSLog(@"touchesEnded=%d, UITouchPhase=%d", [touch tapCount], [touch phase]);
 }
 
 //- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

@@ -43,6 +43,7 @@
 						<string key="NSFrameSize">{1024, 748}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
@@ -398,6 +399,7 @@
 						<string key="NSFrame">{{626, 9}, {38, 38}}</string>
 						<reference key="NSSuperview" ref="192744563"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="848893280"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -413,6 +415,36 @@
 							<string key="NSResourceName">photoMark.png</string>
 						</object>
 						<reference key="IBUINormalImage" ref="1057177650"/>
+						<reference key="IBUIHighlightedBackgroundImage" ref="635207087"/>
+						<reference key="IBUINormalBackgroundImage" ref="661090051"/>
+						<reference key="IBUIFontDescription" ref="1006536875"/>
+						<reference key="IBUIFont" ref="422460925"/>
+					</object>
+					<object class="IBUIButton" id="848893280">
+						<reference key="NSNextResponder" ref="192744563"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{672, 9}, {38, 38}}</string>
+						<reference key="NSSuperview" ref="192744563"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
+						<string key="NSReuseIdentifierKey">_NS:9</string>
+						<bool key="IBUIOpaque">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<object class="NSColor" key="IBUINormalTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+						</object>
+						<reference key="IBUINormalTitleShadowColor" ref="46659044"/>
+						<object class="NSCustomResource" key="IBUIHighlightedImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">audioMarkHighlighted.png</string>
+						</object>
+						<object class="NSCustomResource" key="IBUINormalImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">audioMarkDefault.png</string>
+						</object>
 						<reference key="IBUIHighlightedBackgroundImage" ref="635207087"/>
 						<reference key="IBUINormalBackgroundImage" ref="661090051"/>
 						<reference key="IBUIFontDescription" ref="1006536875"/>
@@ -445,28 +477,6 @@
 					<reference key="NSCustomColorSpace" ref="919177440"/>
 				</object>
 				<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-			</object>
-			<object class="IBUIButton" id="869371188">
-				<reference key="NSNextResponder"/>
-				<int key="NSvFlags">292</int>
-				<string key="NSFrameSize">{96, 44}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
-				<string key="NSReuseIdentifierKey">_NS:9</string>
-				<bool key="IBUIOpaque">NO</bool>
-				<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-				<int key="IBUIContentHorizontalAlignment">0</int>
-				<int key="IBUIContentVerticalAlignment">0</int>
-				<int key="IBUIButtonType">1</int>
-				<string key="IBUINormalTitle">FontColor</string>
-				<reference key="IBUIHighlightedTitleColor" ref="22990345"/>
-				<object class="NSColor" key="IBUINormalTitleColor">
-					<int key="NSColorSpace">1</int>
-					<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-				</object>
-				<reference key="IBUINormalTitleShadowColor" ref="46659044"/>
-				<reference key="IBUIFontDescription" ref="780210967"/>
-				<reference key="IBUIFont" ref="225521031"/>
 			</object>
 			<object class="IBUIView" id="570012276">
 				<nil key="NSNextResponder"/>
@@ -603,6 +613,14 @@
 					</object>
 					<int key="connectionID">58</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">audioBtn</string>
+						<reference key="source" ref="841351856"/>
+						<reference key="destination" ref="848893280"/>
+					</object>
+					<int key="connectionID">61</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -657,6 +675,7 @@
 							<reference ref="874025151"/>
 							<reference ref="971626077"/>
 							<reference ref="897386910"/>
+							<reference ref="848893280"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -669,11 +688,6 @@
 						<int key="objectID">19</int>
 						<reference key="object" ref="920148821"/>
 						<reference key="parent" ref="192744563"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">20</int>
-						<reference key="object" ref="869371188"/>
-						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">23</int>
@@ -750,6 +764,11 @@
 						<reference key="object" ref="897386910"/>
 						<reference key="parent" ref="192744563"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">60</int>
+						<reference key="object" ref="848893280"/>
+						<reference key="parent" ref="192744563"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -763,7 +782,6 @@
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<real value="1" key="19.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="20.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="23.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<real value="0.0" key="23.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="24.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -790,12 +808,14 @@
 				<string key="54.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="57.CustomClassName">CCRTEAccessorySwitch</string>
 				<string key="57.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="60.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<real value="0.0" key="60.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">59</int>
+			<int key="maxID">61</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -811,6 +831,7 @@
 					<string key="className">CCRichTextEditorViewController</string>
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="audioBtn">UIButton</string>
 						<string key="boldSwitch">CCRTEAccessorySwitch</string>
 						<string key="contentWebView">UIWebView</string>
 						<string key="fontBtn">UIButton</string>
@@ -827,6 +848,10 @@
 						<string key="undoBtn">UIButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="audioBtn">
+							<string key="name">audioBtn</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="boldSwitch">
 							<string key="name">boldSwitch</string>
 							<string key="candidateClassName">CCRTEAccessorySwitch</string>
@@ -896,6 +921,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="audioMarkDefault.png">{32, 32}</string>
+			<string key="audioMarkHighlighted.png">{32, 32}</string>
 			<string key="commonBtnBackground.png">{38, 38}</string>
 			<string key="commonBtnHighlightedBackground.png">{38, 38}</string>
 			<string key="fontNameBtnHighlightedBackground.png">{54, 38}</string>

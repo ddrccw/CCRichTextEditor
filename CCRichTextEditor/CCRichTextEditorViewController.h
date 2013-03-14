@@ -22,5 +22,7 @@
 @property (retain, nonatomic) IBOutlet CCRTEAccessorySwitch *highlightSwitch;
 @property (retain, nonatomic) IBOutlet UIButton *undoBtn;
 @property (retain, nonatomic) IBOutlet UIButton *redoBtn;
+@property (retain, nonatomic) IBOutlet UIButton *photoBtn;
+@property (retain, nonatomic) IBOutlet UIButton *audioBtn;
 
 @end

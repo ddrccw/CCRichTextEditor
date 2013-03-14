@@ -110,7 +110,7 @@ function moveImageAtTo(x, y, newX, newY) {
     // Attempt to move an image which doesn't exist at the point
     return;
   }
-  
+
   var caretRange = document.caretRangeFromPoint(newX, newY);
   
   // Save the image source so we know this later when we need to re-insert it
@@ -125,12 +125,11 @@ function moveImageAtTo(x, y, newX, newY) {
   
   // Delete the image
   document.execCommand('delete');
-  
+ 
   // Set the selection to the caret range, so we can then add the image
   selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(caretRange);
-  
   insertNodeAtCurrentRange(element);
 };
 

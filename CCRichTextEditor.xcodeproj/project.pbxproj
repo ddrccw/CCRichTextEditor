@@ -59,6 +59,8 @@
 		2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */; };
 		2AE2169B16E49EBC00887B7C /* SimSun.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2AE2169916E49EBC00887B7C /* SimSun.ttf */; };
 		2AE2169D16E4A07A00887B7C /* Kai.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2AE2169C16E4A07A00887B7C /* Kai.ttf */; };
+		2AEFCCE116F1A27B00D7BBBE /* audioMarkDefault.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AEFCCDF16F1A27B00D7BBBE /* audioMarkDefault.png */; };
+		2AEFCCE216F1A27B00D7BBBE /* audioMarkHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AEFCCE016F1A27B00D7BBBE /* audioMarkHighlighted.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +130,8 @@
 		2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEFontSelectionViewController.m; sourceTree = "<group>"; };
 		2AE2169916E49EBC00887B7C /* SimSun.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimSun.ttf; sourceTree = "<group>"; };
 		2AE2169C16E4A07A00887B7C /* Kai.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Kai.ttf; sourceTree = "<group>"; };
+		2AEFCCDF16F1A27B00D7BBBE /* audioMarkDefault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioMarkDefault.png; sourceTree = "<group>"; };
+		2AEFCCE016F1A27B00D7BBBE /* audioMarkHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioMarkHighlighted.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +243,8 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2AEFCCDF16F1A27B00D7BBBE /* audioMarkDefault.png */,
+				2AEFCCE016F1A27B00D7BBBE /* audioMarkHighlighted.png */,
 				2ADD3AEF16F01484008FACD3 /* closeBtn.png */,
 				2AA9983B16ED67D200A0B473 /* customKeyboardBar.png */,
 				2AE0230F16E85CC200FC8316 /* highlightMark.png */,
@@ -361,6 +367,8 @@
 				2AE0231016E85CC200FC8316 /* highlightMark.png in Resources */,
 				2AA9983C16ED67D200A0B473 /* customKeyboardBar.png in Resources */,
 				2ADD3AF016F01484008FACD3 /* closeBtn.png in Resources */,
+				2AEFCCE116F1A27B00D7BBBE /* audioMarkDefault.png in Resources */,
+				2AEFCCE216F1A27B00D7BBBE /* audioMarkHighlighted.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

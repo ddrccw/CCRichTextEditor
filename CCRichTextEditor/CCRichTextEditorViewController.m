@@ -74,7 +74,6 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
 @property (retain, nonatomic) IBOutlet UIView *inputAccessoryView;
 @property (retain, nonatomic) UIPopoverController *fontPopController;
 @property (retain, nonatomic) UIPopoverController *fontColorPopController;
-@property (retain, nonatomic) IBOutlet UIButton *photoBtn;
 @property (retain, nonatomic) UIActionSheet *photoActionSheet;
 @property (retain, nonatomic) UIPopoverController *photoPopController;
 @property (retain, nonatomic) NSTimer *timer;
@@ -100,7 +99,6 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [_fontBtn release];
   [_fontPopController release];
   [_fontColorPopController release];
-  [_photoBtn release];
   [_photoActionSheet release];
   [_photoPopController release];
   [_timer release];
@@ -119,6 +117,8 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [_highlightSwitch release];
   [_undoBtn release];
   [_redoBtn release];
+  [_photoBtn release];
+  [_audioBtn release];
   [super dealloc];
 }
 
@@ -126,7 +126,6 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [self setContentWebView:nil];
   self.fontPopController = nil;
   self.fontColorPopController = nil;
-  [self setPhotoBtn:nil];
   self.photoActionSheet = nil;
   self.photoPopController = nil;
   self.timer = nil;
@@ -145,6 +144,8 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [self setUnderlineSwitch:nil];
   [self setUndoBtn:nil];
   [self setRedoBtn:nil];
+  [self setPhotoBtn:nil];
+  [self setAudioBtn:nil];
   [super viewDidUnload];
 }
 
@@ -256,6 +257,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
     CGPoint touchPoint = [touch locationInView:self.view];
     
     NSString *javascript = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)", moveImageGesture.startPoint.x, moveImageGesture.startPoint.y, touchPoint.x, touchPoint.y];
+//    NSLog(@"%@", javascript);
     [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
     self.contentWebView.scrollView.scrollEnabled = YES;
   };
@@ -308,7 +310,6 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   
   self.documentFragmentStatus.undo = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDENABLED(@"undo")] boolValue];
   self.documentFragmentStatus.redo = [[self.contentWebView stringByEvaluatingJavaScriptFromString:DOCUMENT_QUERYCMDENABLED(@"redo")] boolValue];
-
 
   [self refreshInputAccessoryView];
   [self refreshForScrollingToVisible];
@@ -399,7 +400,8 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image show delegate
 - (void)showMaskViewFromPoint:(CGPoint )aPoint {
-  [self.contentWebView endEditing:YES];
+  //防止双击弹窗期间，可能会再次弹出键盘
+  [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0];
   NSString *javascript = DOM_ELEMENT_FORMPOINT_ATTRIBUTE(aPoint.x, aPoint.y, @"src");
   NSString *imgSrc = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
   javascript = [NSString stringWithFormat:@"clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
@@ -562,6 +564,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [self.redoBtn addTarget:self action:@selector(redoAction) forControlEvents:UIControlEventTouchUpInside];
   self.redoBtn.enabled = NO;
   [self.photoBtn addTarget:self action:@selector(choosePhoto) forControlEvents:UIControlEventTouchUpInside];
+  [self.audioBtn addTarget:self action:@selector(recordAudio) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)chooseFont {
@@ -673,6 +676,10 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
 
   }
   [_photoActionSheet showFromRect:self.photoBtn.frame inView:self.inputAccessoryView animated:YES];
+}
+
+- (void)recordAudio {
+  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
