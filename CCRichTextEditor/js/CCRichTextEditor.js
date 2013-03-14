@@ -134,7 +134,7 @@ function moveImageAtTo(x, y, newX, newY) {
   insertNodeAtCurrentRange(element);
 };
 
-//css:  top, right, bottom, left, width, height
+//box:  top, right, bottom, left, width, height
 function clientRectOfElementFromPoint(x, y) {
   var rects = document.elementFromPoint(x, y).getClientRects();
   var rect = rects[0];

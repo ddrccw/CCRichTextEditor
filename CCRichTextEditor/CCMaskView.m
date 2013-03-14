@@ -2,7 +2,7 @@
 //  CCMaskView.m
 //  CCRichTextEditor
 //
-//  Created by chenche on 13-3-12.
+//  Created by ddrccw on 13-3-12.
 //  Copyright (c) 2013年 ddrccw. All rights reserved.
 //
 
@@ -20,6 +20,7 @@
     // Make it invisible for now
     self.alpha = 0.0f;
     self.opacity = 0.8f;
+    self.autoresizingMask = UIViewAutoResizingFlexibleAll;
     UIControl *maskControl = [[UIControl alloc] initWithFrame:self.bounds];
     [maskControl addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:maskControl];

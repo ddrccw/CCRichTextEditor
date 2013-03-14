@@ -2,7 +2,7 @@
 //  CCDisplayImageView.m
 //  CCRichTextEditor
 //
-//  Created by chenche on 13-3-12.
+//  Created by ddrccw on 13-3-12.
 //  Copyright (c) 2013年 ddrccw. All rights reserved.
 //
 
@@ -65,14 +65,32 @@ static const UInt8 kDefaultOffset = 0;
     [self.containerView addSubview:_closeBtn];
     [self.closeBtn addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
     self.backgroundColor = [UIColor clearColor];
-    
     self.maxImageWidth = maxImageWidth;
     self.maxImageHeight = maxImageHeight;
     [self sizeToFitImage:image];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(sizeToFitForRotation:)
+                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+
+    
+    UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
+                                                                                       action:@selector(scaleImage:)];
+    [self addGestureRecognizer:pinchGesture];
+    [pinchGesture release];
   }
   return self;
 }
 
+- (void)sizeToFitForRotation:(NSNotification *)notification {
+  float tmp = self.maxImageWidth;
+  self.maxImageWidth = self.maxImageHeight;
+  self.maxImageHeight = tmp;
+  [self sizeToFitImage:self.imageDisplayView.image];
+  if (self.superview) {
+    self.center = self.superview.center;
+  }
+}
 
 - (void)sizeToFitImage:(UIImage *)aImage {
   CGRect rect = CGRectZero;
@@ -131,5 +149,35 @@ static const UInt8 kDefaultOffset = 0;
   if ([self.delegate respondsToSelector:@selector(displayImageViewWillClose:)]) {
     [self.delegate displayImageViewWillClose:self];
   }
+}
+
+// scale and rotation transforms are applied relative to the layer's anchor point
+// this method moves a gesture recognizer's view's anchor point between the user's fingers
+- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+{
+  if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+    UIView *piece = gestureRecognizer.view;
+    CGPoint locationInView = [gestureRecognizer locationInView:piece];
+    CGPoint locationInSuperview = [gestureRecognizer locationInView:piece.superview];
+    
+    piece.layer.anchorPoint = CGPointMake(locationInView.x / piece.bounds.size.width, locationInView.y / piece.bounds.size.height);
+    piece.center = locationInSuperview;
+  }
+}
+
+//TODO:scale 范围, 旋转有bug
+- (void)scaleImage:(UIPinchGestureRecognizer *)gestureRecognizer {
+  [self adjustAnchorPointForGestureRecognizer:gestureRecognizer];
+  if ([gestureRecognizer state] == UIGestureRecognizerStateBegan ||
+      [gestureRecognizer state] == UIGestureRecognizerStateChanged)
+  {
+    [gestureRecognizer view].transform = CGAffineTransformScale([[gestureRecognizer view] transform],
+                                                                [gestureRecognizer scale],
+                                                                [gestureRecognizer scale]);
+    NSLog(@"%@, scale=%f", NSStringFromCGRect(gestureRecognizer.view.frame), gestureRecognizer.scale);
+    [gestureRecognizer setScale:1];
+  }
+
+
 }
 @end

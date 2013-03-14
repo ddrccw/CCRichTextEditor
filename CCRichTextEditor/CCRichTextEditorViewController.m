@@ -399,6 +399,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - image show delegate
 - (void)showMaskViewFromPoint:(CGPoint )aPoint {
+  [self.contentWebView endEditing:YES];
   NSString *javascript = DOM_ELEMENT_FORMPOINT_ATTRIBUTE(aPoint.x, aPoint.y, @"src");
   NSString *imgSrc = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
   javascript = [NSString stringWithFormat:@"clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
@@ -421,10 +422,11 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
     self.displayImageView.center = self.maskView.center;
   }
   else {
+    self.displayImageView.maxImageWidth = self.view.bounds.size.width * 4 / 5;
+    self.displayImageView.maxImageHeight = self.view.bounds.size.height * 4 / 5;
     [self.displayImageView setDisplayImage:img];
+    self.displayImageView.center = self.maskView.center;
   }
-  
-  [self.contentWebView endEditing:YES];
   
   float kDuration = .2f;
   CABasicAnimation *positionAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -435,7 +437,8 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   point = self.displayImageView.center;
   positionAnimation.toValue = [NSValue valueWithCGPoint:point];
   positionAnimation.duration = kDuration;
-  
+ 
+  self.displayImageView.transform = CGAffineTransformIdentity; //IMPORTANT!!
   CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
   float scaleX = [clientRect[kClientRectWidth] floatValue] / self.displayImageView.frame.size.width;
   float scaleY = [clientRect[kClientRectHeight] floatValue] / self.displayImageView.frame.size.height;
@@ -472,6 +475,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [self.maskView.layer addAnimation:opacityAnimation forKey:@"dismissMask"];
   [self.view bringSubviewToFront:self.maskView];
   self.maskView.alpha = 0;
+  [self.contentWebView endEditing:NO];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -494,7 +498,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [self.fontColorBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.fontColorBtn setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
   
-  //Bold, Italic, Underline
+  //Bold, Italic, Underline, underline
   const int kFontSize = 17;
   UIFont *font = [UIFont systemFontOfSize:kFontSize];
   NSDictionary *normalFontAttributes = @{(id)kCTFontAttributeName :
