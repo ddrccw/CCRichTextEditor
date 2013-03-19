@@ -12,12 +12,8 @@
   #import <UIKit/UIKit.h>
   #import <Foundation/Foundation.h>
   #import <QuartzCore/QuartzCore.h>
+  #import "CCRichTextEditor-Config.h"
 #endif
 
 
-#define UIViewAutoResizingFlexibleAll UIViewAutoresizingFlexibleBottomMargin |   \
-                                      UIViewAutoresizingFlexibleLeftMargin |   \
-                                      UIViewAutoresizingFlexibleTopMargin |    \
-                                      UIViewAutoresizingFlexibleRightMargin |  \
-                                      UIViewAutoresizingFlexibleHeight |       \
-                                      UIViewAutoresizingFlexibleWidth
+

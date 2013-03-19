@@ -7,6 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A0FA1BA16F1B48F00A415D8 /* AQPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1AD16F1B48F00A415D8 /* AQPlayer.mm */; };
+		2A0FA1BB16F1B48F00A415D8 /* AQRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1AF16F1B48F00A415D8 /* AQRecorder.mm */; };
+		2A0FA1BC16F1B48F00A415D8 /* MeterTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1B016F1B48F00A415D8 /* MeterTable.cpp */; };
+		2A0FA1CA16F1B5A700A415D8 /* AQLevelMeter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1C316F1B5A700A415D8 /* AQLevelMeter.mm */; };
+		2A0FA1CB16F1B5A700A415D8 /* GLLevelMeter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1C516F1B5A700A415D8 /* GLLevelMeter.m */; };
+		2A0FA1CC16F1B5A700A415D8 /* LevelMeter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1C716F1B5A700A415D8 /* LevelMeter.m */; };
+		2A0FA1D416F1B83E00A415D8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A0FA1D316F1B83E00A415D8 /* AudioToolbox.framework */; };
+		2A0FA1D616F1B85800A415D8 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A0FA1D516F1B85800A415D8 /* OpenGLES.framework */; };
+		2A0FA1E116F1BA8600A415D8 /* CCAudioViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1E016F1BA8600A415D8 /* CCAudioViewController.mm */; };
+		2A0FA1F016F1CFD400A415D8 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1E616F1CFD400A415D8 /* CADebugMacros.cpp */; };
+		2A0FA1F116F1CFD400A415D8 /* CADebugPrintf.cp in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1E816F1CFD400A415D8 /* CADebugPrintf.cp */; };
+		2A0FA1F216F1CFD400A415D8 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1EB16F1CFD400A415D8 /* CAStreamBasicDescription.cpp */; };
+		2A0FA1F316F1CFD400A415D8 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1ED16F1CFD400A415D8 /* CAXException.cpp */; };
+		2A0FA1F816F1CFF400A415D8 /* CCDisplayImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1F516F1CFF400A415D8 /* CCDisplayImageView.m */; };
+		2A0FA1F916F1CFF400A415D8 /* CCMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A0FA1F716F1CFF400A415D8 /* CCMaskView.m */; };
+		2A60D4A416F6B49B00500DEB /* CCAudioViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2A60D4A316F6B49B00500DEB /* CCAudioViewController.xib */; };
+		2A60D4A716F6B52100500DEB /* audioBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A60D4A616F6B52100500DEB /* audioBackground.png */; };
+		2A60D4AA16F715A500500DEB /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A60D4A916F715A500500DEB /* microphone.png */; };
 		2AA9983C16ED67D200A0B473 /* customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA9983B16ED67D200A0B473 /* customKeyboardBar.png */; };
 		2AB4B2D416E5EEE100901268 /* boldMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C016E5EEE100901268 /* boldMark.png */; };
 		2AB4B2D516E5EEE100901268 /* old.customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */; };
@@ -45,8 +63,6 @@
 		2AE0353416EEC4FD00052936 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE0353316EEC4FD00052936 /* AssetsLibrary.framework */; };
 		2AE0354716EEF8C000052936 /* CCRichTextEditor.js in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0354116EEF68200052936 /* CCRichTextEditor.js */; };
 		2AE0354A16EEFBAB00052936 /* CCRTELog.js in Resources */ = {isa = PBXBuildFile; fileRef = 2AE0354816EEFB9400052936 /* CCRTELog.js */; };
-		2AE0357616EF29A600052936 /* CCMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE0357516EF29A500052936 /* CCMaskView.m */; };
-		2AE0357916EF2FCF00052936 /* CCDisplayImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE0357816EF2FCE00052936 /* CCDisplayImageView.m */; };
 		2AE1337116E58A9F00209312 /* CCRTEColorSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */; };
 		2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */; };
 		2AE1EBC716E6D6D700FB4D04 /* commonBtnBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC516E6D6D600FB4D04 /* commonBtnBackground.png */; };
@@ -64,6 +80,40 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A0FA1AC16F1B48F00A415D8 /* AQPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AQPlayer.h; sourceTree = "<group>"; };
+		2A0FA1AD16F1B48F00A415D8 /* AQPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AQPlayer.mm; sourceTree = "<group>"; };
+		2A0FA1AE16F1B48F00A415D8 /* AQRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AQRecorder.h; sourceTree = "<group>"; };
+		2A0FA1AF16F1B48F00A415D8 /* AQRecorder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AQRecorder.mm; sourceTree = "<group>"; };
+		2A0FA1B016F1B48F00A415D8 /* MeterTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeterTable.cpp; sourceTree = "<group>"; };
+		2A0FA1B116F1B48F00A415D8 /* MeterTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeterTable.h; sourceTree = "<group>"; };
+		2A0FA1C216F1B5A700A415D8 /* AQLevelMeter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AQLevelMeter.h; sourceTree = "<group>"; };
+		2A0FA1C316F1B5A700A415D8 /* AQLevelMeter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AQLevelMeter.mm; sourceTree = "<group>"; };
+		2A0FA1C416F1B5A700A415D8 /* GLLevelMeter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLevelMeter.h; sourceTree = "<group>"; };
+		2A0FA1C516F1B5A700A415D8 /* GLLevelMeter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLevelMeter.m; sourceTree = "<group>"; };
+		2A0FA1C616F1B5A700A415D8 /* LevelMeter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LevelMeter.h; sourceTree = "<group>"; };
+		2A0FA1C716F1B5A700A415D8 /* LevelMeter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LevelMeter.m; sourceTree = "<group>"; };
+		2A0FA1D316F1B83E00A415D8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		2A0FA1D516F1B85800A415D8 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		2A0FA1DD16F1BA6E00A415D8 /* CCAudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCAudioViewController.h; path = CCRichTextEditor/Audio/CCAudioViewController.h; sourceTree = SOURCE_ROOT; };
+		2A0FA1E016F1BA8600A415D8 /* CCAudioViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CCAudioViewController.mm; sourceTree = "<group>"; };
+		2A0FA1E316F1C5A100A415D8 /* CCRichTextEditor-Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCRichTextEditor-Config.h"; sourceTree = "<group>"; };
+		2A0FA1E616F1CFD400A415D8 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
+		2A0FA1E716F1CFD400A415D8 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		2A0FA1E816F1CFD400A415D8 /* CADebugPrintf.cp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugPrintf.cp; sourceTree = "<group>"; };
+		2A0FA1E916F1CFD400A415D8 /* CADebugPrintf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugPrintf.h; sourceTree = "<group>"; };
+		2A0FA1EA16F1CFD400A415D8 /* CAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
+		2A0FA1EB16F1CFD400A415D8 /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
+		2A0FA1EC16F1CFD400A415D8 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		2A0FA1ED16F1CFD400A415D8 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
+		2A0FA1EE16F1CFD400A415D8 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
+		2A0FA1EF16F1CFD400A415D8 /* CCLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLogger.h; sourceTree = "<group>"; };
+		2A0FA1F416F1CFF400A415D8 /* CCDisplayImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDisplayImageView.h; sourceTree = "<group>"; };
+		2A0FA1F516F1CFF400A415D8 /* CCDisplayImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDisplayImageView.m; sourceTree = "<group>"; };
+		2A0FA1F616F1CFF400A415D8 /* CCMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMaskView.h; sourceTree = "<group>"; };
+		2A0FA1F716F1CFF400A415D8 /* CCMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMaskView.m; sourceTree = "<group>"; };
+		2A60D4A316F6B49B00500DEB /* CCAudioViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CCAudioViewController.xib; sourceTree = "<group>"; };
+		2A60D4A616F6B52100500DEB /* audioBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioBackground.png; sourceTree = "<group>"; };
+		2A60D4A916F715A500500DEB /* microphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = microphone.png; sourceTree = "<group>"; };
 		2AA9983B16ED67D200A0B473 /* customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = customKeyboardBar.png; sourceTree = "<group>"; };
 		2AB4B2C016E5EEE100901268 /* boldMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = boldMark.png; sourceTree = "<group>"; };
 		2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = old.customKeyboardBar.png; sourceTree = "<group>"; };
@@ -110,10 +160,6 @@
 		2AE0353316EEC4FD00052936 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		2AE0354116EEF68200052936 /* CCRichTextEditor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CCRichTextEditor.js; sourceTree = "<group>"; };
 		2AE0354816EEFB9400052936 /* CCRTELog.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = CCRTELog.js; sourceTree = "<group>"; };
-		2AE0357416EF29A500052936 /* CCMaskView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMaskView.h; sourceTree = "<group>"; };
-		2AE0357516EF29A500052936 /* CCMaskView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMaskView.m; sourceTree = "<group>"; };
-		2AE0357716EF2FCD00052936 /* CCDisplayImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDisplayImageView.h; sourceTree = "<group>"; };
-		2AE0357816EF2FCE00052936 /* CCDisplayImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDisplayImageView.m; sourceTree = "<group>"; };
 		2AE1336F16E58A9F00209312 /* CCRTEColorSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEColorSelectionViewController.h; sourceTree = "<group>"; };
 		2AE1337016E58A9F00209312 /* CCRTEColorSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEColorSelectionViewController.m; sourceTree = "<group>"; };
 		2AE1337C16E5973700209312 /* CCRTEPhotoSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEPhotoSelectionViewController.h; sourceTree = "<group>"; };
@@ -139,6 +185,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A0FA1D616F1B85800A415D8 /* OpenGLES.framework in Frameworks */,
+				2A0FA1D416F1B83E00A415D8 /* AudioToolbox.framework in Frameworks */,
 				2AE0353416EEC4FD00052936 /* AssetsLibrary.framework in Frameworks */,
 				2AE1EBD416E732E900FB4D04 /* MobileCoreServices.framework in Frameworks */,
 				2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */,
@@ -152,6 +200,65 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2A0FA1AB16F1B48F00A415D8 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				2A0FA1C116F1B5A700A415D8 /* Views */,
+				2A0FA1DD16F1BA6E00A415D8 /* CCAudioViewController.h */,
+				2A0FA1E016F1BA8600A415D8 /* CCAudioViewController.mm */,
+				2A60D4A316F6B49B00500DEB /* CCAudioViewController.xib */,
+				2A0FA1AC16F1B48F00A415D8 /* AQPlayer.h */,
+				2A0FA1AD16F1B48F00A415D8 /* AQPlayer.mm */,
+				2A0FA1AE16F1B48F00A415D8 /* AQRecorder.h */,
+				2A0FA1AF16F1B48F00A415D8 /* AQRecorder.mm */,
+				2A0FA1B016F1B48F00A415D8 /* MeterTable.cpp */,
+				2A0FA1B116F1B48F00A415D8 /* MeterTable.h */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		2A0FA1C116F1B5A700A415D8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2A0FA1C216F1B5A700A415D8 /* AQLevelMeter.h */,
+				2A0FA1C316F1B5A700A415D8 /* AQLevelMeter.mm */,
+				2A0FA1C416F1B5A700A415D8 /* GLLevelMeter.h */,
+				2A0FA1C516F1B5A700A415D8 /* GLLevelMeter.m */,
+				2A0FA1C616F1B5A700A415D8 /* LevelMeter.h */,
+				2A0FA1C716F1B5A700A415D8 /* LevelMeter.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2A0FA1E416F1CFD300A415D8 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				2A0FA1F416F1CFF400A415D8 /* CCDisplayImageView.h */,
+				2A0FA1F516F1CFF400A415D8 /* CCDisplayImageView.m */,
+				2A0FA1F616F1CFF400A415D8 /* CCMaskView.h */,
+				2A0FA1F716F1CFF400A415D8 /* CCMaskView.m */,
+				2A0FA1E516F1CFD400A415D8 /* Utility */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		2A0FA1E516F1CFD400A415D8 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				2A0FA1E616F1CFD400A415D8 /* CADebugMacros.cpp */,
+				2A0FA1E716F1CFD400A415D8 /* CADebugMacros.h */,
+				2A0FA1E816F1CFD400A415D8 /* CADebugPrintf.cp */,
+				2A0FA1E916F1CFD400A415D8 /* CADebugPrintf.h */,
+				2A0FA1EA16F1CFD400A415D8 /* CAMath.h */,
+				2A0FA1EB16F1CFD400A415D8 /* CAStreamBasicDescription.cpp */,
+				2A0FA1EC16F1CFD400A415D8 /* CAStreamBasicDescription.h */,
+				2A0FA1ED16F1CFD400A415D8 /* CAXException.cpp */,
+				2A0FA1EE16F1CFD400A415D8 /* CAXException.h */,
+				2A0FA1EF16F1CFD400A415D8 /* CCLogger.h */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		2ADEA00616E095C200E768F3 = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +279,8 @@
 		2ADEA01416E095C200E768F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2A0FA1D516F1B85800A415D8 /* OpenGLES.framework */,
+				2A0FA1D316F1B83E00A415D8 /* AudioToolbox.framework */,
 				2AE0353316EEC4FD00052936 /* AssetsLibrary.framework */,
 				2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */,
 				2AE2168916E4674C00887B7C /* CoreText.framework */,
@@ -204,10 +313,8 @@
 				2AE1337D16E5973700209312 /* CCRTEPhotoSelectionViewController.m */,
 				2AE1EBD516E7354500FB4D04 /* CCRTEGestureRegnizer.h */,
 				2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */,
-				2AE0357416EF29A500052936 /* CCMaskView.h */,
-				2AE0357516EF29A500052936 /* CCMaskView.m */,
-				2AE0357716EF2FCD00052936 /* CCDisplayImageView.h */,
-				2AE0357816EF2FCE00052936 /* CCDisplayImageView.m */,
+				2A0FA1AB16F1B48F00A415D8 /* Audio */,
+				2A0FA1E416F1CFD300A415D8 /* Common */,
 				2AE0354016EEF68200052936 /* js */,
 				2ADEA03B16E09A7100E768F3 /* Resources */,
 				2ADEA01C16E095C200E768F3 /* Supporting Files */,
@@ -218,6 +325,7 @@
 		2ADEA01C16E095C200E768F3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2A0FA1E316F1C5A100A415D8 /* CCRichTextEditor-Config.h */,
 				2ADEA01D16E095C200E768F3 /* CCRichTextEditor-Info.plist */,
 				2ADEA01E16E095C200E768F3 /* InfoPlist.strings */,
 				2ADEA02116E095C200E768F3 /* main.m */,
@@ -243,6 +351,8 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2A60D4A916F715A500500DEB /* microphone.png */,
+				2A60D4A616F6B52100500DEB /* audioBackground.png */,
 				2AEFCCDF16F1A27B00D7BBBE /* audioMarkDefault.png */,
 				2AEFCCE016F1A27B00D7BBBE /* audioMarkHighlighted.png */,
 				2ADD3AEF16F01484008FACD3 /* closeBtn.png */,
@@ -369,6 +479,9 @@
 				2ADD3AF016F01484008FACD3 /* closeBtn.png in Resources */,
 				2AEFCCE116F1A27B00D7BBBE /* audioMarkDefault.png in Resources */,
 				2AEFCCE216F1A27B00D7BBBE /* audioMarkHighlighted.png in Resources */,
+				2A60D4A416F6B49B00500DEB /* CCAudioViewController.xib in Resources */,
+				2A60D4A716F6B52100500DEB /* audioBackground.png in Resources */,
+				2A60D4AA16F715A500500DEB /* microphone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,8 +501,19 @@
 				2AE1337E16E5973700209312 /* CCRTEPhotoSelectionViewController.m in Sources */,
 				2AE1EBD916E73F6100FB4D04 /* CCRTEGestureRegnizer.m in Sources */,
 				2AE0230E16E8589E00FC8316 /* CCRTEDocumentFragmentStatus.m in Sources */,
-				2AE0357616EF29A600052936 /* CCMaskView.m in Sources */,
-				2AE0357916EF2FCF00052936 /* CCDisplayImageView.m in Sources */,
+				2A0FA1BA16F1B48F00A415D8 /* AQPlayer.mm in Sources */,
+				2A0FA1BB16F1B48F00A415D8 /* AQRecorder.mm in Sources */,
+				2A0FA1BC16F1B48F00A415D8 /* MeterTable.cpp in Sources */,
+				2A0FA1CA16F1B5A700A415D8 /* AQLevelMeter.mm in Sources */,
+				2A0FA1CB16F1B5A700A415D8 /* GLLevelMeter.m in Sources */,
+				2A0FA1CC16F1B5A700A415D8 /* LevelMeter.m in Sources */,
+				2A0FA1E116F1BA8600A415D8 /* CCAudioViewController.mm in Sources */,
+				2A0FA1F016F1CFD400A415D8 /* CADebugMacros.cpp in Sources */,
+				2A0FA1F116F1CFD400A415D8 /* CADebugPrintf.cp in Sources */,
+				2A0FA1F216F1CFD400A415D8 /* CAStreamBasicDescription.cpp in Sources */,
+				2A0FA1F316F1CFD400A415D8 /* CAXException.cpp in Sources */,
+				2A0FA1F816F1CFF400A415D8 /* CCDisplayImageView.m in Sources */,
+				2A0FA1F916F1CFF400A415D8 /* CCMaskView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

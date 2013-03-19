@@ -14,6 +14,7 @@
 #import "CCRTEGestureRegnizer.h"
 #import "CCMaskView.h"
 #import "CCDisplayImageView.h"
+#import "CCAudioViewController.h"
 
 #import <CoreText/CoreText.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -68,7 +69,7 @@ enum {
 <UIActionSheetDelegate, UIWebViewDelegate,
 UINavigationControllerDelegate, UIImagePickerControllerDelegate,
 CCRTEFontSelectionViewControllerDelegate, CCRTEColorSelectionViewControllerDelegate,
-CCMaskViewDelegate, CCDisplayImageViewDelegate>
+CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 
 @property (retain, atomic) IBOutlet UIWebView *contentWebView;
 @property (retain, nonatomic) IBOutlet UIView *inputAccessoryView;
@@ -82,7 +83,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
 @property (retain, nonatomic) CCRTEContent *content;
 @property (retain, nonatomic) CCMaskView *maskView;
 @property (retain, nonatomic) CCDisplayImageView *displayImageView;
-
+@property (retain, nonatomic) CCAudioViewController *audioViewController;
 @end
 
 @implementation CCRichTextEditorViewController
@@ -107,6 +108,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   [_content release];
   [_maskView release];
   [_displayImageView release];
+  [_audioViewController release];
   [_fontSizeUpBtn release];
   [_fontSizeDownBtn release];
   [_fontColorBtn release];
@@ -133,6 +135,8 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   self.accessoryMenuController = nil;
   self.content = nil;
   self.maskView = nil;
+  self.displayImageView = nil;
+  self.audioViewController = nil;
   [self setFontBtn:nil];
   [self setFontSizeUpBtn:nil];
   [self setFontSizeDownBtn:nil];
@@ -185,7 +189,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   
   if ([requestString hasPrefix:@"ios-log:"]) {
     NSString* logString = [[requestString componentsSeparatedByString:@":#iOS#"] objectAtIndex:1];
-    NSLog(@"UIWebView console: %@", logString);
+    CC_ERRORLOG(@"UIWebView console: %@", logString);
     return NO;
   }
   
@@ -420,14 +424,13 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
                                                     maxImageWidth:self.view.bounds.size.width * 4 / 5
                                                    maxImageHeight:self.view.bounds.size.height * 4 / 5];
     _displayImageView.delegate = self;
-    [self.maskView addSubview:self.displayImageView];
-    self.displayImageView.center = self.maskView.center;
+    [self.maskView setCenterView:self.displayImageView];
   }
   else {
     self.displayImageView.maxImageWidth = self.view.bounds.size.width * 4 / 5;
     self.displayImageView.maxImageHeight = self.view.bounds.size.height * 4 / 5;
     [self.displayImageView setDisplayImage:img];
-    self.displayImageView.center = self.maskView.center;
+    [self.maskView setCenterView:self.displayImageView];
   }
   
   float kDuration = .2f;
@@ -451,33 +454,26 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
   CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
   animationGroup.animations = @[positionAnimation, scaleAnimation];
   [self.displayImageView.layer addAnimation:animationGroup forKey:@"showDisplayImageView"];
-  
-  CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-  opacityAnimation.fromValue = @(0);
-  opacityAnimation.toValue = @(self.maskView.opacity);
-  opacityAnimation.duration = kDuration;
-  [self.maskView.layer addAnimation:opacityAnimation forKey:@"showMask"];
-  [self.view bringSubviewToFront:self.maskView];
-  self.maskView.alpha = self.maskView.opacity;
-}
-
-- (void)maskViewWillDismiss:(CCMaskView *)maskView {
-  [self dismissDisplayImageView];
+ 
+  [self.maskView show:kDuration];
 }
 
 - (void)displayImageViewWillClose:(CCDisplayImageView *)displayImageView {
-  [self dismissDisplayImageView];
+  [self.maskView hide];
+  [self.contentWebView endEditing:NO];
 }
 
-- (void)dismissDisplayImageView {
-  CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-  opacityAnimation.toValue = @(0);
-  opacityAnimation.fromValue = @(self.maskView.opacity);
-  opacityAnimation.duration = .3f;
-  [self.maskView.layer addAnimation:opacityAnimation forKey:@"dismissMask"];
-  [self.view bringSubviewToFront:self.maskView];
-  self.maskView.alpha = 0;
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - mask view delegate
+- (void)maskViewWillDismiss:(CCMaskView *)maskView {
   [self.contentWebView endEditing:NO];
+}
+
+- (BOOL)maskViewShouldDismiss:(CCMaskView *)maskView {
+  if ([self.maskView.centerView isKindOfClass:[CCDisplayImageView class]]) {
+    return YES;
+  }
+  return NO;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -679,7 +675,30 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
 }
 
 - (void)recordAudio {
-  
+  if (!self.audioViewController) {
+    _audioViewController = [[CCAudioViewController alloc] initWithNibName:@"CCAudioViewController" bundle:nil];
+    _audioViewController.delegate = self;
+    [self addChildViewController:self.audioViewController];
+    [self.audioViewController didMoveToParentViewController:self];
+   
+    if (!self.maskView) {
+      _maskView = [[CCMaskView alloc] initWithFrame:self.view.bounds];
+      _maskView.delegate = self;
+      _maskView.shouldDimBackground = YES;
+      [self.view addSubview:_maskView];
+    }
+  }
+
+  [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0];
+  [self.maskView setCenterView:self.audioViewController.view];
+  [self.maskView show:.3];
+  [self.audioViewController record:nil];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - audio view controller delegate
+- (void)audioViewControllerDidStopRecord {
+  [self.maskView hide];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -737,7 +756,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate>
                                                     imagePath, image.size.width, image.size.height];
           [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
         }failureBlock:^(NSError *error){
-          NSLog(@"%@", error);
+          CC_ERRORLOG(@"%@", error);
         }];
       }
       else {

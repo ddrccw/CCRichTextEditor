@@ -30,8 +30,8 @@
       _touchesBeganCallback(touches, event);
   }
   
-  UITouch *touch = [touches anyObject];
-  NSLog(@"touchesBegan=%d, UITouchPhase=%d", [touch tapCount], [touch phase]);
+//  UITouch *touch = [touches anyObject];
+//  NSLog(@"touchesBegan=%d, UITouchPhase=%d", [touch tapCount], [touch phase]);
   
 }
 
@@ -41,8 +41,8 @@
     if (_touchesEndedCallback)
       _touchesEndedCallback(touches, event);
 //  }
-  UITouch *touch = [touches anyObject];
-  NSLog(@"touchesEnded=%d, UITouchPhase=%d", [touch tapCount], [touch phase]);
+//  UITouch *touch = [touches anyObject];
+//  NSLog(@"touchesEnded=%d, UITouchPhase=%d", [touch tapCount], [touch phase]);
 }
 
 //- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

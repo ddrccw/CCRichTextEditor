@@ -10,6 +10,7 @@
 
 @class CCMaskView;
 @protocol CCMaskViewDelegate <NSObject>
+- (BOOL)maskViewShouldDismiss:(CCMaskView *)maskView;
 - (void)maskViewWillDismiss:(CCMaskView *)maskView;
 @end
 
@@ -18,4 +19,8 @@
 @property (retain, nonatomic) UIColor *color;
 @property (assign, nonatomic) CGFloat opacity;
 @property (assign, nonatomic) id <CCMaskViewDelegate> delegate;
+@property (retain, nonatomic) UIView *centerView;
+
+- (void)hide;
+- (void)show:(CGFloat)animationDuration;
 @end

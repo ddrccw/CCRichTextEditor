@@ -87,9 +87,6 @@ static const UInt8 kDefaultOffset = 0;
   self.maxImageWidth = self.maxImageHeight;
   self.maxImageHeight = tmp;
   [self sizeToFitImage:self.imageDisplayView.image];
-  if (self.superview) {
-    self.center = self.superview.center;
-  }
 }
 
 - (void)sizeToFitImage:(UIImage *)aImage {

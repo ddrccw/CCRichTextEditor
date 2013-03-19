@@ -8,6 +8,9 @@
 
 #import "CCMaskView.h"
 
+@interface CCMaskView ()
+@end
+
 @implementation CCMaskView
 
 - (id)initWithFrame:(CGRect)frame
@@ -67,10 +70,50 @@
   UIGraphicsPopContext();
 }
 
+- (void)layoutSubviews {
+  [super layoutSubviews];
+  self.centerView.center = self.center;
+}
+
 - (void)dismiss:(id)sender {
+  if ([self.delegate respondsToSelector:@selector(maskViewShouldDismiss:)]) {
+    BOOL status = [self.delegate maskViewShouldDismiss:self];
+    if (!status) return;
+  }
+  
   if ([self.delegate respondsToSelector:@selector(maskViewWillDismiss:)]) {
     [self.delegate maskViewWillDismiss:self];
   }
+  [self hide];
+}
+
+- (void)setCenterView:(UIView *)centerView {
+  if (_centerView != centerView) {
+    [_centerView removeFromSuperview];
+    [_centerView release];
+    _centerView = [centerView retain];
+    [self addSubview:_centerView];
+    _centerView.center = self.center;
+  }
+}
+
+- (void)hide {
+  CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  opacityAnimation.fromValue = @(self.opacity);
+  opacityAnimation.toValue = @(0);
+  opacityAnimation.duration = .3f;
+  [self.layer addAnimation:opacityAnimation forKey:@"dismissMask"];
+  self.alpha = 0;
+}
+
+- (void)show:(CGFloat)animationDuration {
+  CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+  opacityAnimation.fromValue = @(0);
+  opacityAnimation.toValue = @(self.opacity);
+  opacityAnimation.duration = animationDuration;
+  [self.layer addAnimation:opacityAnimation forKey:@"showMask"];
+  [self.superview bringSubviewToFront:self];
+  self.alpha = self.opacity;
 }
 
 @end
