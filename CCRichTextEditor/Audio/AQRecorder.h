@@ -62,9 +62,11 @@ class AQRecorder
 	{
 	public:
 		AQRecorder();
+    AQRecorder(CFStringRef recordFileDirectory);
 		~AQRecorder();
-		
-		UInt32						GetNumberChannels() const	{ return mRecordFormat.NumberChannels(); }
+	
+		UInt32						  GetNumberChannels() const	{ return mRecordFormat.NumberChannels(); }
+    CFStringRef         GetFileDirectory() const { return mFileDirectory; }
 		CFStringRef					GetFileName() const			{ return mFileName; }
 		AudioQueueRef				Queue() const				{ return mQueue; }
 		CAStreamBasicDescription	DataFormat() const			{ return mRecordFormat; }
@@ -76,6 +78,7 @@ class AQRecorder
 		UInt64			startTime;
 				
 	private:
+    CFStringRef         mFileDirectory;
 		CFStringRef					mFileName;
 		AudioQueueRef				mQueue;
 		AudioQueueBufferRef			mBuffers[kNumberRecordBuffers];

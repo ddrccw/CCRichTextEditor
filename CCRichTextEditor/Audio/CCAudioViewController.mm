@@ -14,11 +14,10 @@
 static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoViewControllerplaybackQueueResumed";
 
 @interface CCAudioViewController ()
-{
-	CFStringRef recordFilePath_;
-}
+
 @property (atomic) AQPlayer *player;
 @property (atomic) AQRecorder *recorder;
+@property (copy, nonatomic) NSString *recordFilePath;
 @property (assign, nonatomic) BOOL playbackWasInterrupted;
 @property (assign, nonatomic) BOOL playbackWasPaused;
 @property (nonatomic, retain) IBOutlet AQLevelMeter *lvlMeter_in;
@@ -36,7 +35,8 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   delete _player;
   delete _recorder;
-  CFRelease(recordFilePath_);
+  [_recordFilePath release];
+  [_lvlMeter_in release];
   [_timeLabel release];
   [_tipLabel release];
   [super dealloc];
@@ -57,8 +57,12 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 - (void)willMoveToParentViewController:(UIViewController *)parent {
   [super willMoveToParentViewController:parent];
   self.view.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+  self.timeLabel.text = @"0s";
+  self.tipLabel.text = @"";
 	// Allocate our singleton instance for the recorder & player object
-	_recorder = new AQRecorder();
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+  NSString *cacheDirectory = [paths objectAtIndex:0];
+	_recorder = new AQRecorder((CFStringRef)cacheDirectory);
 	_player = new AQPlayer();
   
 	OSStatus error = AudioSessionInitialize(NULL, NULL, interruptionListener, self);
@@ -93,7 +97,6 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 	[[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(playbackQueueResumed:)
                                                name:kCCAuidoViewControllerplaybackQueueResumed object:nil];
-  
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(updateRecordDuration:)
                                                name:kAQRecorderTimelineDidChange
@@ -186,13 +189,18 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 	_player->DisposeQueue(true);
   
 	// now create a new queue for the recorded file
-	recordFilePath_ = (CFStringRef)[NSTemporaryDirectory() stringByAppendingPathComponent: @"recordedFile.caf"];
-	_player->CreateQueueForFile(recordFilePath_);
- 
+//  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+//  NSString *documentsDirectory = [paths objectAtIndex:0];
+//  recordFilePath_ = (CFStringRef)[documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"audio4@.caf"]];
+//                                                                  //[NSDate date]]];
+//  
+////	recordFilePath_ = (CFStringRef)[NSTemporaryDirectory() stringByAppendingPathComponent: @"recordedFile.caf"];
+//	_player->CreateQueueForFile(recordFilePath_);
   self.tipLabel.text = @"结束录音";
-  if ([self.delegate respondsToSelector:@selector(audioViewControllerDidStopRecord)]) {
-    [self.delegate audioViewControllerDidStopRecord];
+  if ([self.delegate respondsToSelector:@selector(audioViewControllerDidStopRecord:)]) {
+    [self.delegate audioViewControllerDidStopRecord:self.recordFilePath];
   }
+  self.timeLabel.text = @"0s";
 }
 
 - (void)play:(id)sender
@@ -227,9 +235,12 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 	else // If we're not recording, start.
 	{
 		// Start the recorder
-		_recorder->StartRecord(CFSTR("recordedFile.caf"));
-		
-		[self setFileDescriptionForFormat:_recorder->DataFormat() withName:@"Recorded File"];
+    NSString *fileName = [NSString stringWithFormat:@"audio%@.caf", [NSDate date]];
+    NSString *filePath = (NSString *)_recorder->GetFileDirectory();
+    self.recordFilePath = [filePath stringByAppendingPathComponent:fileName];
+		_recorder->StartRecord((CFStringRef)fileName);
+    
+//		[self setFileDescriptionForFormat:_recorder->DataFormat() withName:@"Recorded File"];
 		
 		// Hook the level meter up to the Audio Queue for the recorder
 		[self.lvlMeter_in setAq:_recorder->Queue()];

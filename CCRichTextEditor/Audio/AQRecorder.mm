@@ -49,6 +49,25 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 
 #include "AQRecorder.h"
 
+
+AQRecorder::AQRecorder()
+{
+	mIsRunning = false;
+	mRecordPacket = 0;
+}
+
+AQRecorder::AQRecorder(CFStringRef recordFileDirectory) : AQRecorder()
+{
+  mFileDirectory = CFStringCreateCopy(kCFAllocatorDefault, recordFileDirectory);
+}
+
+AQRecorder::~AQRecorder()
+{
+	AudioQueueDispose(mQueue, TRUE);
+	AudioFileClose(mRecordFile);
+  if (mFileDirectory) CFRelease(mFileDirectory);
+	if (mFileName) CFRelease(mFileName);
+}
 // ____________________________________________________________________________________
 // Determine the size, in bytes, of a buffer necessary to represent the supplied number
 // of seconds of audio data.
@@ -137,18 +156,6 @@ void AQRecorder::MyInputBufferHandler(	void *								inUserData,
 	}
 }
 
-AQRecorder::AQRecorder()
-{
-	mIsRunning = false;
-	mRecordPacket = 0;
-}
-
-AQRecorder::~AQRecorder()
-{
-	AudioQueueDispose(mQueue, TRUE);
-	AudioFileClose(mRecordFile);
-	if (mFileName) CFRelease(mFileName);
-}
 
 // ____________________________________________________________________________________
 // Copy a queue's encoder's magic cookie to an audio file.
@@ -232,10 +239,24 @@ void AQRecorder::StartRecord(CFStringRef inRecordFile)
 		XThrowIfError(AudioQueueGetProperty(mQueue, kAudioQueueProperty_StreamDescription,	
 										 &mRecordFormat, &size), "couldn't get queue's format");
 			
-		NSString *recordFile = [NSTemporaryDirectory() stringByAppendingPathComponent: (NSString*)inRecordFile];	
-			
-		url = CFURLCreateWithString(kCFAllocatorDefault, (CFStringRef)recordFile, NULL);
-		
+
+		NSString *recordFile = nil;
+    if (mFileDirectory && !access([(NSString *)mFileDirectory UTF8String], W_OK | R_OK)) {
+      recordFile = [(NSString *)mFileDirectory stringByAppendingPathComponent: (NSString *)inRecordFile];
+    }
+    else {
+      recordFile = [NSTemporaryDirectory() stringByAppendingPathComponent: (NSString *)inRecordFile];
+    }
+	
+    //处理空格
+    CFStringRef recordFileEscaped = CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                            (CFStringRef)recordFile,
+                                                                            NULL,
+                                                                            NULL,
+                                                                            kCFStringEncodingUTF8);
+		url = CFURLCreateWithString(kCFAllocatorDefault, (CFStringRef)recordFileEscaped, NULL);
+    CFRelease(recordFileEscaped);
+    
 		// create the audio file
 		OSStatus status = AudioFileCreateWithURL(url, kAudioFileCAFType, &mRecordFormat, kAudioFileFlags_EraseFile, &mRecordFile);
 		CFRelease(url);

@@ -36,16 +36,16 @@
 ////    }
 
 function insertNodeAtCurrentRange(node) {
-    var sel = window.getSelection();
-    var range = sel.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(node);
-    sel.removeAllRanges();
-    range = range.cloneRange();
-    range.selectNode(node);
-    range.collapse(false);
-    sel.addRange(range);
-    return range;
+  var sel = window.getSelection();
+  var range = sel.getRangeAt(0);
+  range.deleteContents();
+  range.insertNode(node);
+  sel.removeAllRanges();
+  range = range.cloneRange();
+  range.selectNode(node);
+  range.collapse(false);
+  sel.addRange(range);
+  return range;
 }
 
 function insertSingleImage(src, width, height) {
@@ -61,6 +61,23 @@ function insertSingleImage(src, width, height) {
 	imgNode.setAttribute("height", height * scale);
 	insertNodeAtCurrentRange(imgNode);
 };
+
+function insertSingleAudioFile(){
+  var contentDIV = document.getElementById('content')
+  contentDIV.focus();
+  var rects = contentDIV.getClientRects();
+  var rect = rects[0];
+  var caretRange = document.caretRangeFromPoint((rect.left + rect.width), (rect.top + rect.height));
+  var selection = window.getSelection();
+  selection.addRange(caretRange);
+//  alert(range);
+//  insertSingleImage("audioFileMark.png", 96, 96);
+//  alert(selection);
+//  console.log(contentDIV);
+  document.execCommand('insertImage', false, 'audioFileMark.png');
+//  document.execCommand('insertImage', false, 'audioFileMark.png');
+ 
+}
 
 function getCaretPosition() {
   var sel = window.getSelection();
@@ -145,4 +162,6 @@ function clientRectOfElementFromPoint(x, y) {
     return "0"
   }
 };
+
+
 

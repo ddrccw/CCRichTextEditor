@@ -25,6 +25,7 @@
 		2A60D4A416F6B49B00500DEB /* CCAudioViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2A60D4A316F6B49B00500DEB /* CCAudioViewController.xib */; };
 		2A60D4A716F6B52100500DEB /* audioBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A60D4A616F6B52100500DEB /* audioBackground.png */; };
 		2A60D4AA16F715A500500DEB /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A60D4A916F715A500500DEB /* microphone.png */; };
+		2A6CDBA416F83F0500D53288 /* audioFileMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A6CDBA316F83F0500D53288 /* audioFileMark.png */; };
 		2AA9983C16ED67D200A0B473 /* customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AA9983B16ED67D200A0B473 /* customKeyboardBar.png */; };
 		2AB4B2D416E5EEE100901268 /* boldMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C016E5EEE100901268 /* boldMark.png */; };
 		2AB4B2D516E5EEE100901268 /* old.customKeyboardBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */; };
@@ -114,6 +115,7 @@
 		2A60D4A316F6B49B00500DEB /* CCAudioViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CCAudioViewController.xib; sourceTree = "<group>"; };
 		2A60D4A616F6B52100500DEB /* audioBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioBackground.png; sourceTree = "<group>"; };
 		2A60D4A916F715A500500DEB /* microphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = microphone.png; sourceTree = "<group>"; };
+		2A6CDBA316F83F0500D53288 /* audioFileMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioFileMark.png; sourceTree = "<group>"; };
 		2AA9983B16ED67D200A0B473 /* customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = customKeyboardBar.png; sourceTree = "<group>"; };
 		2AB4B2C016E5EEE100901268 /* boldMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = boldMark.png; sourceTree = "<group>"; };
 		2AB4B2C116E5EEE100901268 /* old.customKeyboardBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = old.customKeyboardBar.png; sourceTree = "<group>"; };
@@ -351,6 +353,7 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2A6CDBA316F83F0500D53288 /* audioFileMark.png */,
 				2A60D4A916F715A500500DEB /* microphone.png */,
 				2A60D4A616F6B52100500DEB /* audioBackground.png */,
 				2AEFCCDF16F1A27B00D7BBBE /* audioMarkDefault.png */,
@@ -482,6 +485,7 @@
 				2A60D4A416F6B49B00500DEB /* CCAudioViewController.xib in Resources */,
 				2A60D4A716F6B52100500DEB /* audioBackground.png in Resources */,
 				2A60D4AA16F715A500500DEB /* microphone.png in Resources */,
+				2A6CDBA416F83F0500D53288 /* audioFileMark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

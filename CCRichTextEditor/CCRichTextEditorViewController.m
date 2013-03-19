@@ -697,8 +697,10 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - audio view controller delegate
-- (void)audioViewControllerDidStopRecord {
+- (void)audioViewControllerDidStopRecord:(NSString *)audioFilePath {
   [self.maskView hide];
+  [self.content.audioPaths addObject:audioFilePath];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:@"insertSingleAudioFile()"];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -760,7 +762,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
         }];
       }
       else {
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
         imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png",
                                                                                   [NSDate date]]];

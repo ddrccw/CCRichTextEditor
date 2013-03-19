@@ -10,7 +10,7 @@
 
 @protocol CCAudioViewControllerDelegate <NSObject>
 
-- (void)audioViewControllerDidStopRecord;
+- (void)audioViewControllerDidStopRecord:(NSString *)audioFilePath;
 
 @end
 
