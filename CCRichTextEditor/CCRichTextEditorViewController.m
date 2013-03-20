@@ -40,7 +40,7 @@ enum {
 
 @interface CCRTEContent : NSObject
 @property (retain, nonatomic) NSMutableDictionary *picturePaths;
-@property (retain, nonatomic) NSMutableSet *audioPaths;
+@property (retain, nonatomic) NSMutableArray *audioPaths;
 @property (copy, nonatomic) NSString *htmlContent;
 @end
 
@@ -56,7 +56,7 @@ enum {
 - (id)init {
   if (self = [super init]) {
     _picturePaths = [[NSMutableDictionary alloc] init];
-    _audioPaths = [[NSMutableSet alloc] init];
+    _audioPaths = [[NSMutableArray alloc] init];
   }
   return self;
 }
@@ -272,10 +272,10 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   tapImageGesture.touchesBeganCallback = ^(NSSet *touches, UIEvent *event) {
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint touchPoint = [touch locationInView:self.view];
-    NSString *javascript = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName.toString()",
+    NSString *javascript = [NSString stringWithFormat:@"isNormalImageAtPoint(%f, %f)",
                             touchPoint.x, touchPoint.y];
-    NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
-    if ([elementNameAtPoint isEqualToString:@"IMG"]) {
+    BOOL isImg = [[self.contentWebView stringByEvaluatingJavaScriptFromString:javascript] boolValue];
+    if (isImg) {
       [self showMaskViewFromPoint:touchPoint];
     }
   };
@@ -699,8 +699,9 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 #pragma mark - audio view controller delegate
 - (void)audioViewControllerDidStopRecord:(NSString *)audioFilePath {
   [self.maskView hide];
+  NSString *js = [NSString stringWithFormat:@"insertSingleAudioFile(%d)", [self.content.audioPaths count]];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
   [self.content.audioPaths addObject:audioFilePath];
-  [self.contentWebView stringByEvaluatingJavaScriptFromString:@"insertSingleAudioFile()"];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

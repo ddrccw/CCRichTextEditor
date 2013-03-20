@@ -35,6 +35,9 @@
 ////      }, false);
 ////    }
 
+/*
+ *  在当前range插入节点
+ */
 function insertNodeAtCurrentRange(node) {
   var sel = window.getSelection();
   var range = sel.getRangeAt(0);
@@ -48,6 +51,9 @@ function insertNodeAtCurrentRange(node) {
   return range;
 }
 
+/*
+ *  在当前range插入指定图片
+ */
 function insertSingleImage(src, width, height) {
   var scale = 1;
 	var kMaxWidth = 384.0; //(768 / 2)
@@ -62,23 +68,26 @@ function insertSingleImage(src, width, height) {
 	insertNodeAtCurrentRange(imgNode);
 };
 
-function insertSingleAudioFile(){
+/*
+ *  在contentDiv结尾插入代表声音文件的图片
+ */
+function insertSingleAudioFile(index){
   var contentDIV = document.getElementById('content')
   contentDIV.focus();
-  var rects = contentDIV.getClientRects();
-  var rect = rects[0];
-  var caretRange = document.caretRangeFromPoint((rect.left + rect.width), (rect.top + rect.height));
-  var selection = window.getSelection();
-  selection.addRange(caretRange);
-//  alert(range);
-//  insertSingleImage("audioFileMark.png", 96, 96);
-//  alert(selection);
-//  console.log(contentDIV);
-  document.execCommand('insertImage', false, 'audioFileMark.png');
-//  document.execCommand('insertImage', false, 'audioFileMark.png');
- 
+	var imgNode = document.createElement("IMG");
+  imgNode.setAttribute("id", "audio" + index);
+	imgNode.setAttribute("src", "audioFileMark.png");
+	imgNode.setAttribute("width", 96);
+	imgNode.setAttribute("height", 96);
+
+  var brNode = document.createElement("BR");
+  contentDIV.appendChild(brNode);
+  contentDIV.appendChild(imgNode);
 }
 
+/*
+ *  在UIWebView编辑状态时获取光标的坐标
+ */
 function getCaretPosition() {
   var sel = window.getSelection();
   var range = sel.getRangeAt(0);
@@ -120,6 +129,9 @@ function getCaretPosition() {
   }
 };
 
+/*
+ *  移动Img节点
+ */
 function moveImageAtTo(x, y, newX, newY) {
   // Get our required variables
   var element = document.elementFromPoint(x, y);
@@ -150,7 +162,11 @@ function moveImageAtTo(x, y, newX, newY) {
   insertNodeAtCurrentRange(element);
 };
 
-//box:  top, right, bottom, left, width, height
+/*
+ *  在当前range插入节点
+ *
+ *  box:  top, right, bottom, left, width, height
+ */
 function clientRectOfElementFromPoint(x, y) {
   var rects = document.elementFromPoint(x, y).getClientRects();
   var rect = rects[0];
@@ -163,5 +179,21 @@ function clientRectOfElementFromPoint(x, y) {
   }
 };
 
+/*
+ *  判断(x, y)点处的dom元素是否为img（非音频文件img）
+ */
+function isNormalImageAtPoint(x, y) {
+  var elem = document.elementFromPoint(x, y);
+  var isImg = (elem.tagName == "IMG") ? true: false;
+  if (isImg) {
+    var id = elem.getAttribute("id");
+    if (id) {
+      return false;
+    }
+    return true;
+  }
+  else
+    return false;
+}
 
 
