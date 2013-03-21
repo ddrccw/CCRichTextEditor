@@ -247,23 +247,29 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
                             touchPoint.x, touchPoint.y];
     NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
     if ([elementNameAtPoint isEqualToString:@"IMG"]) {
+      moveImageGesture.shouldCancelTouch = NO;
       // We set the inital point of the image for use latter on when we actually move it
       moveImageGesture.startPoint = touchPoint;
       // In order to make moving the image easy we must disable scrolling otherwise the view will just scroll and prevent fully detecting movement on the image.
       self.contentWebView.scrollView.scrollEnabled = NO;
     }
     else {
+      moveImageGesture.shouldCancelTouch = YES;
       moveImageGesture.startPoint = CGPointZero;
+      self.contentWebView.scrollView.scrollEnabled = YES;
     }
   };
   moveImageGesture.touchesEndedCallback = ^(NSSet *touches, UIEvent *event) {
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint touchPoint = [touch locationInView:self.view];
-    
-    NSString *javascript = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)", moveImageGesture.startPoint.x, moveImageGesture.startPoint.y, touchPoint.x, touchPoint.y];
-//    NSLog(@"%@", javascript);
-    [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
+    NSString *js = nil;
     self.contentWebView.scrollView.scrollEnabled = YES;
+    if (!CGPointEqualToPoint(moveImageGesture.startPoint, touchPoint)) {
+      js = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)",
+                                      moveImageGesture.startPoint.x, moveImageGesture.startPoint.y,
+                                      touchPoint.x, touchPoint.y];
+      [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
+    }
   };
   [self.contentWebView.scrollView addGestureRecognizer:moveImageGesture];
   
@@ -272,11 +278,20 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   tapImageGesture.touchesBeganCallback = ^(NSSet *touches, UIEvent *event) {
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint touchPoint = [touch locationInView:self.view];
-    NSString *javascript = [NSString stringWithFormat:@"isNormalImageAtPoint(%f, %f)",
+    NSString *js = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).tagName.toString()",
                             touchPoint.x, touchPoint.y];
-    BOOL isImg = [[self.contentWebView stringByEvaluatingJavaScriptFromString:javascript] boolValue];
-    if (isImg) {
-      [self showMaskViewFromPoint:touchPoint];
+    NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
+    if ([elementNameAtPoint isEqualToString:@"IMG"]) {
+      js = [NSString stringWithFormat:@"audioFileIndexAtPoint(%f, %f)", touchPoint.x, touchPoint.y];
+      int audioFileIndex = [[self.contentWebView stringByEvaluatingJavaScriptFromString:js] intValue];
+      if (audioFileIndex >= 0) {
+        [self showAudioMaskView];
+        NSString *fileName = [NSString stringWithFormat:@"audio%d", audioFileIndex];
+        [self.audioViewController play:fileName];
+      }
+      else {
+        [self showImageMaskViewFromPoint:touchPoint];
+      }
     }
   };
   
@@ -402,10 +417,30 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#pragma mark - image show delegate
-- (void)showMaskViewFromPoint:(CGPoint )aPoint {
-  //防止双击弹窗期间，可能会再次弹出键盘
+#pragma mark - audio/image show delegate
+- (void)showAudioMaskView {
+  if (!self.audioViewController) {
+    _audioViewController = [[CCAudioViewController alloc] initWithNibName:@"CCAudioViewController" bundle:nil];
+    _audioViewController.delegate = self;
+    [self addChildViewController:self.audioViewController];
+    [self.audioViewController didMoveToParentViewController:self];
+    
+    if (!self.maskView) {
+      _maskView = [[CCMaskView alloc] initWithFrame:self.view.bounds];
+      _maskView.delegate = self;
+      _maskView.shouldDimBackground = YES;
+      [self.view addSubview:_maskView];
+    }
+  }
+  
   [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0];
+  [self.maskView setCenterView:self.audioViewController.view];
+  [self.maskView show:.3]; 
+}
+
+- (void)showImageMaskViewFromPoint:(CGPoint )aPoint {
+  //防止双击弹窗期间，可能会再次弹出键盘
+  [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0.1];
   NSString *javascript = DOM_ELEMENT_FORMPOINT_ATTRIBUTE(aPoint.x, aPoint.y, @"src");
   NSString *imgSrc = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
   javascript = [NSString stringWithFormat:@"clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
@@ -466,11 +501,19 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - mask view delegate
 - (void)maskViewWillDismiss:(CCMaskView *)maskView {
-  [self.contentWebView endEditing:NO];
+  if ([self.maskView.centerView isKindOfClass:[CCDisplayImageView class]]) {
+    [self.contentWebView endEditing:NO];
+  }
+  else {
+    [self.audioViewController stopPlayQueue];
+  }
 }
 
 - (BOOL)maskViewShouldDismiss:(CCMaskView *)maskView {
   if ([self.maskView.centerView isKindOfClass:[CCDisplayImageView class]]) {
+    return YES;
+  }
+  if ([self.audioViewController playing]) {
     return YES;
   }
   return NO;
@@ -675,24 +718,9 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 }
 
 - (void)recordAudio {
-  if (!self.audioViewController) {
-    _audioViewController = [[CCAudioViewController alloc] initWithNibName:@"CCAudioViewController" bundle:nil];
-    _audioViewController.delegate = self;
-    [self addChildViewController:self.audioViewController];
-    [self.audioViewController didMoveToParentViewController:self];
-   
-    if (!self.maskView) {
-      _maskView = [[CCMaskView alloc] initWithFrame:self.view.bounds];
-      _maskView.delegate = self;
-      _maskView.shouldDimBackground = YES;
-      [self.view addSubview:_maskView];
-    }
-  }
-
-  [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0];
-  [self.maskView setCenterView:self.audioViewController.view];
-  [self.maskView show:.3];
-  [self.audioViewController record:nil];
+  [self showAudioMaskView];
+  NSString *fileName = [NSString stringWithFormat:@"audio%d", [self.content.audioPaths count]];
+  [self.audioViewController record:fileName];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

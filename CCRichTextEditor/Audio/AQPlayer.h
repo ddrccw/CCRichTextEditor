@@ -55,6 +55,7 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 #define kNumberBuffers 3
 
 static NSString * const kAQPlayerPlaybackQueueStopped = @"kAQPlayerPlaybackQueueStopped";
+static NSString * const kAQPlayerTimelineDidChange = @"kAQPlayerTimelineDidChange";
 
 class AQPlayer
 	{
@@ -72,19 +73,20 @@ class AQPlayer
 		Boolean							IsInitialized()	const	{ return mIsInitialized; }		
 		CFStringRef						GetFilePath() const		{ return (mFilePath) ? mFilePath : CFSTR(""); }
 		Boolean							IsLooping() const		{ return mIsLooping; }
-		
+		Float64 GetDurationInSecond() const { return mDurationInSecond; }
+    
 		void SetLooping(Boolean inIsLooping)	{ mIsLooping = inIsLooping; }
 		void CreateQueueForFile(CFStringRef inFilePath);
 		void DisposeQueue(Boolean inDisposeFile);	
-										
+    int GetCurrentTime();
 	private:
 		UInt32							GetNumPacketsToRead()				{ return mNumPacketsToRead; }
 		SInt64							GetCurrentPacket()					{ return mCurrentPacket; }
 		AudioFileID						GetAudioFileID()					{ return mAudioFile; }
 		void							SetCurrentPacket(SInt64 inPacket)	{ mCurrentPacket = inPacket; }
-		
 		void							SetupNewQueue();
-		
+	
+    Float64 mDurationInSecond;   //unit second 
 		AudioQueueRef					mQueue;
 		AudioQueueBufferRef				mBuffers[kNumberBuffers];
 		AudioFileID						mAudioFile;

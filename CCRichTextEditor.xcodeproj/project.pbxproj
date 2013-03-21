@@ -71,6 +71,8 @@
 		2AE1EBCA16E6D7F600FB4D04 /* photoMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1EBC916E6D7F600FB4D04 /* photoMark.png */; };
 		2AE1EBD416E732E900FB4D04 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */; };
 		2AE1EBD916E73F6100FB4D04 /* CCRTEGestureRegnizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */; };
+		2AE1F2CF16F965EF006E5C42 /* CCCircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE1F2CE16F965EF006E5C42 /* CCCircleProgressView.m */; };
+		2AE1F2D216F9B2C8006E5C42 /* audio.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE1F2D116F9B2C8006E5C42 /* audio.png */; };
 		2AE2167F16E4315F00887B7C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2167E16E4315F00887B7C /* QuartzCore.framework */; };
 		2AE2168A16E4674C00887B7C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AE2168916E4674C00887B7C /* CoreText.framework */; };
 		2AE2169116E493F100887B7C /* CCRTEFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE2169016E493F000887B7C /* CCRTEFontSelectionViewController.m */; };
@@ -172,6 +174,9 @@
 		2AE1EBD316E732E800FB4D04 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		2AE1EBD516E7354500FB4D04 /* CCRTEGestureRegnizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEGestureRegnizer.h; sourceTree = "<group>"; };
 		2AE1EBD816E73F6000FB4D04 /* CCRTEGestureRegnizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRTEGestureRegnizer.m; sourceTree = "<group>"; };
+		2AE1F2CD16F965EF006E5C42 /* CCCircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCircleProgressView.h; sourceTree = "<group>"; };
+		2AE1F2CE16F965EF006E5C42 /* CCCircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCircleProgressView.m; sourceTree = "<group>"; };
+		2AE1F2D116F9B2C8006E5C42 /* audio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audio.png; sourceTree = "<group>"; };
 		2AE2167E16E4315F00887B7C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2AE2168916E4674C00887B7C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		2AE2168F16E493F000887B7C /* CCRTEFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRTEFontSelectionViewController.h; sourceTree = "<group>"; };
@@ -235,6 +240,8 @@
 		2A0FA1E416F1CFD300A415D8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				2AE1F2CD16F965EF006E5C42 /* CCCircleProgressView.h */,
+				2AE1F2CE16F965EF006E5C42 /* CCCircleProgressView.m */,
 				2A0FA1F416F1CFF400A415D8 /* CCDisplayImageView.h */,
 				2A0FA1F516F1CFF400A415D8 /* CCDisplayImageView.m */,
 				2A0FA1F616F1CFF400A415D8 /* CCMaskView.h */,
@@ -353,6 +360,7 @@
 		2ADEA04016E09BD200E768F3 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2AE1F2D116F9B2C8006E5C42 /* audio.png */,
 				2A6CDBA316F83F0500D53288 /* audioFileMark.png */,
 				2A60D4A916F715A500500DEB /* microphone.png */,
 				2A60D4A616F6B52100500DEB /* audioBackground.png */,
@@ -486,6 +494,7 @@
 				2A60D4A716F6B52100500DEB /* audioBackground.png in Resources */,
 				2A60D4AA16F715A500500DEB /* microphone.png in Resources */,
 				2A6CDBA416F83F0500D53288 /* audioFileMark.png in Resources */,
+				2AE1F2D216F9B2C8006E5C42 /* audio.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +527,7 @@
 				2A0FA1F316F1CFD400A415D8 /* CAXException.cpp in Sources */,
 				2A0FA1F816F1CFF400A415D8 /* CCDisplayImageView.m in Sources */,
 				2A0FA1F916F1CFF400A415D8 /* CCMaskView.m in Sources */,
+				2AE1F2CF16F965EF006E5C42 /* CCCircleProgressView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

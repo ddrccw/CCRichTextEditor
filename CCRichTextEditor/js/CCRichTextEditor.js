@@ -73,7 +73,6 @@ function insertSingleImage(src, width, height) {
  */
 function insertSingleAudioFile(index){
   var contentDIV = document.getElementById('content')
-  contentDIV.focus();
 	var imgNode = document.createElement("IMG");
   imgNode.setAttribute("id", "audio" + index);
 	imgNode.setAttribute("src", "audioFileMark.png");
@@ -196,4 +195,19 @@ function isNormalImageAtPoint(x, y) {
     return false;
 }
 
+/*
+ *  判断(x, y)点处的dom元素是否为音频文件img, true则返回index，false则放回-1
+ */
+function audioFileIndexAtPoint(x, y) {
+  var elem = document.elementFromPoint(x, y);
+  var isImg = (elem.tagName == "IMG") ? true: false;
+  if (isImg) {
+    var id = elem.getAttribute("id");
+    if (id) {
+      var index = id.substr(5);  //audioN
+      return index;
+    }
+  }
+  return -1;
+}
 

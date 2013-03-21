@@ -16,6 +16,12 @@
 
 @interface CCAudioViewController : UIViewController
 @property (assign, nonatomic) id <CCAudioViewControllerDelegate> delegate;
+@property (assign, nonatomic) BOOL playing;
+- (void)stopPlayQueue;
+- (void)pausePlayQueue;
+- (void)stopRecord;
 
-- (void)record:(id)sender;
+- (void)play:(NSString *)fileName;
+- (void)record:(NSString *)fileName;
+- (void)replay;
 @end

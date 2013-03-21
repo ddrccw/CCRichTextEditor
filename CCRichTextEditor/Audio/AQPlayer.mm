@@ -69,8 +69,14 @@ void AQPlayer::AQBufferCallback(void *					inUserData,
 		inCompleteAQBuffer->mPacketDescriptionCount = nPackets;		
 		AudioQueueEnqueueBuffer(inAQ, inCompleteAQBuffer, 0, NULL);
 		THIS->mCurrentPacket = (THIS->GetCurrentPacket() + nPackets);
+   
+    @autoreleasepool {
+      int currentTime = THIS->GetCurrentTime();
+      Float64 totalTime = THIS->GetDurationInSecond();
+      [[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerTimelineDidChange
+                                                          object:@[@(currentTime), @(totalTime)]];
+    }
 	} 
-	
 	else 
 	{
 		if (THIS->IsLooping())
@@ -80,6 +86,13 @@ void AQPlayer::AQBufferCallback(void *					inUserData,
 		}
 		else
 		{
+      @autoreleasepool {
+        Float64 currentTime = THIS->GetDurationInSecond();
+        Float64 totalTime = currentTime;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerTimelineDidChange
+                                                            object:@[@(currentTime), @(totalTime)]];
+      }
+      
 			// stop
 			THIS->mIsDone = true;
 			AudioQueueStop(inAQ, false);
@@ -191,16 +204,21 @@ void AQPlayer::CreateQueueForFile(CFStringRef inFilePath)
 			sndFile = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, inFilePath, kCFURLPOSIXPathStyle, false);
 			if (!sndFile) { printf("can't parse file path\n"); return; }
 			
-            OSStatus rc = AudioFileOpenURL (sndFile, kAudioFileReadPermission, 0/*inFileTypeHint*/, &mAudioFile);
-            CFRelease(sndFile); // release sndFile here to quiet analyzer
+      OSStatus rc = AudioFileOpenURL (sndFile, kAudioFileReadPermission, 0/*inFileTypeHint*/, &mAudioFile);
+      CFRelease(sndFile); // release sndFile here to quiet analyzer
 			XThrowIfError(rc, "can't open file");
              
 			UInt32 size = sizeof(mDataFormat);
-			XThrowIfError(AudioFileGetProperty(mAudioFile, kAudioFilePropertyDataFormat, &size, &mDataFormat), "couldn't get file's data format");
+			XThrowIfError(AudioFileGetProperty(mAudioFile, kAudioFilePropertyDataFormat, &size, &mDataFormat),
+                    "couldn't get file's data format");
 			mFilePath = CFStringCreateCopy(kCFAllocatorDefault, inFilePath);
+      
+      UInt32 thePropSize = sizeof(mDurationInSecond);  //must be Float64
+      XThrowIfError(AudioFileGetProperty(mAudioFile, kAudioFilePropertyEstimatedDuration, &thePropSize, &mDurationInSecond),
+                    "couldn't get file's duration");
 		}
 		SetupNewQueue();		
-    }
+  }
 	catch (CAXException e) {
 		char buf[256];
 		fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
@@ -285,4 +303,16 @@ void AQPlayer::DisposeQueue(Boolean inDisposeFile)
 		}
 	}
 	mIsInitialized = false;
+}
+
+int AQPlayer::GetCurrentTime() {
+  int timeInterval = 0;
+  AudioQueueTimelineRef timeLine;
+  OSStatus status = AudioQueueCreateTimeline(mQueue, &timeLine);
+  if(status == noErr) {
+    AudioTimeStamp timeStamp;
+    AudioQueueGetCurrentTime(mQueue, timeLine, &timeStamp, NULL);
+    timeInterval = timeStamp.mSampleTime / mDataFormat.mSampleRate;
+  }
+  return timeInterval;
 }
