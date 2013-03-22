@@ -2,7 +2,7 @@
 //  CCCircleProgressView.h
 //  CCRichTextEditor
 //
-//  Created by chenche on 13-3-20.
+//  Created by ddrccw on 13-3-20.
 //  Copyright (c) 2013年 ddrccw. All rights reserved.
 //
 

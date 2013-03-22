@@ -61,7 +61,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   [super willMoveToParentViewController:parent];
   self.view.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
   self.progressView.hidden = YES;
-//  self.progressView.progressBarBackgroundColor = [UIColor lightGrayColor];
+  self.progressView.progressBarBackgroundColor = [UIColor darkGrayColor];
   self.timeLabel.text = @"0.000s";
   self.tipLabel.text = @"";
 	// Allocate our singleton instance for the recorder & player object
