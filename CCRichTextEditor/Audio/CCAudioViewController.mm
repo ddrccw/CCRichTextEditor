@@ -61,6 +61,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   [super willMoveToParentViewController:parent];
   self.view.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
   self.progressView.hidden = YES;
+//  self.progressView.progressBarBackgroundColor = [UIColor lightGrayColor];
   self.timeLabel.text = @"0.000s";
   self.tipLabel.text = @"";
 	// Allocate our singleton instance for the recorder & player object
@@ -184,16 +185,17 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 }
 
 - (void)updatePlayTimeAndDuration:(NSNotification *)notification {
-  int playTime = [[notification object][0] intValue];
+  double playTime = [[notification object][0] doubleValue];
   double duration = [[notification object][1] doubleValue];
   
   int playTimeMinutes = playTime / 60;
-  int playTimeSeconds = playTime % 60;
+  int playTimeSeconds = playTime - playTimeMinutes * 60;
   int durationMinutes = duration / 60;
   int durationSeconds = duration - durationMinutes * 60;
   NSString *text = [NSString stringWithFormat:@"%02d:%02d/%02d:%02d", playTimeMinutes, playTimeSeconds,
                                                                       durationMinutes, durationSeconds];
   self.timeLabel.text = text;
+  self.progressView.progress = playTime / duration;
 }
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - background notifications

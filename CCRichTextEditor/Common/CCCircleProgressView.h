@@ -11,4 +11,5 @@
 @interface CCCircleProgressView : UIView
 @property (assign, nonatomic) CGFloat progress;
 @property (assign, nonatomic) CGFloat progressWidth; //out.radius - in.radius
+@property (retain, nonatomic) UIColor *progressBarBackgroundColor;
 @end
