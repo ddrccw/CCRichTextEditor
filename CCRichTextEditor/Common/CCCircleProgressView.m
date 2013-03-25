@@ -11,11 +11,11 @@
 #define DEGREES_TO_RADIANS(__ANGLE__) ((__ANGLE__) / 180.0 * M_PI)
 #define RADIANS_TO_DEGREES(__ANGLE__) ((__ANGLE__) / M_PI * 180.0)
 
-static const UInt8 kShadowLineWidth = 1;
+static const UInt8 kProgressBarGlossWidth = 1;
 static const UInt8 kProgressBarInset = 1;
 static const float kStripePaddingDegree = 5;
 static const float kStripeDegree = 5;
-
+static const float kProgressStartAngleInRadians = -M_PI_2;
 
 /*    θ=endAngle   a=b=offset
  *    (x-a)^2 + (y-b)^2 = r^2
@@ -38,15 +38,18 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
   float progressInRadius_;
   float progressBarOutRadius_;
   float progressBarInRadius_;
+  float progressEndAngleInRadians_;
   CGPoint progressCenter_;
-  float progressAngle_;
+  float progressEndAngleInDegrees_;
   UIBezierPath *progressBarPath_;
 }
+@property (retain, nonatomic) UIBezierPath *progressBarGlossPath;
 @end
 
 @implementation CCCircleProgressView
 
 - (void)dealloc {
+  [_progressBarGlossPath release];
   [_progressBarBackgroundColor release];
   [super dealloc];
 }
@@ -89,6 +92,8 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
 - (void)setProgress:(CGFloat)progress {
   if (_progress != progress) {
     _progress = progress;
+    progressEndAngleInRadians_ = kProgressStartAngleInRadians + _progress * 2 * M_PI;
+    progressEndAngleInDegrees_ = _progress * 360 - 90;
     [self setNeedsDisplay];
   }
 }
@@ -113,20 +118,20 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
   [[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.2] set];
   UIBezierPath *outerFrame = [UIBezierPath bezierPathWithArcCenter:progressCenter_
                                                             radius:progressOutRadius_
-                                                        startAngle:-M_PI_2
+                                                        startAngle:kProgressStartAngleInRadians
                                                           endAngle:endAngle
                                                          clockwise:YES];
   [outerFrame stroke];
   CGPathAddPath(paths, NULL, [outerFrame CGPath]);
-  UIBezierPath *innerShadow = [UIBezierPath bezierPathWithArcCenter:progressCenter_
-                                                             radius:progressInRadius_ - kShadowLineWidth
-                                                         startAngle:-M_PI_2
-                                                           endAngle:endAngle
-                                                          clockwise:YES];
-  [innerShadow stroke];
+  //  UIBezierPath *innerShadow = [UIBezierPath bezierPathWithArcCenter:progressCenter_
+  //                                                             radius:progressInRadius_ - kProgressBarGlossWidth
+  //                                                         startAngle:-M_PI_2
+  //                                                           endAngle:endAngle
+  //                                                          clockwise:YES];
+  //  [innerShadow stroke];
   UIBezierPath *innerFrame = [UIBezierPath bezierPathWithArcCenter:progressCenter_
                                                             radius:progressInRadius_
-                                                        startAngle:-M_PI_2
+                                                        startAngle:kProgressStartAngleInRadians
                                                           endAngle:endAngle
                                                          clockwise:YES];
   CGPathAddPath(paths, NULL, [innerFrame CGPath]);
@@ -140,28 +145,24 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
 }
 
 - (void)drawProgressBarWithRect:(CGRect)rect {
-  
   CGContextRef context = UIGraphicsGetCurrentContext();
   CGColorSpaceRef colorSpace  = CGColorSpaceCreateDeviceRGB();
   
   CGContextSaveGState(context);
   assert(CGContextIsPathEmpty(context));
   
-  float startAngle = -M_PI_2;
-  float endAngle = startAngle + self.progress * 2 * M_PI;
-  progressAngle_ = self.progress * 360 - 90;
   UIBezierPath *path = [UIBezierPath bezierPath];
   [path moveToPoint:CGPointMake(progressCenter_.x, kProgressBarInset)];
   [path addLineToPoint:CGPointMake(progressCenter_.x, self.progressWidth)];
   
   [path addArcWithCenter:progressCenter_
                   radius:progressBarInRadius_
-              startAngle:startAngle
-                endAngle:endAngle clockwise:YES];
+              startAngle:kProgressStartAngleInRadians
+                endAngle:progressEndAngleInRadians_ clockwise:YES];
   
   float capRadius = (self.progressWidth - kProgressBarInset) / 2;
   float arcRadius = progressBarInRadius_ + capRadius;
-  CGPoint p = GetPointOnCircle(progressCenter_.x, arcRadius, progressAngle_);
+  CGPoint p = GetPointOnCircle(progressCenter_.x, arcRadius, progressEndAngleInDegrees_);
   [path addArcWithCenter:p
                   radius:capRadius
               startAngle:0
@@ -172,8 +173,8 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
   
   [path addArcWithCenter:progressCenter_
                   radius:progressBarOutRadius_
-              startAngle:endAngle
-                endAngle:startAngle
+              startAngle:progressEndAngleInRadians_
+                endAngle:kProgressStartAngleInRadians
                clockwise:NO];
   
   CGContextAddPath(context, [path CGPath]);
@@ -210,11 +211,11 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
   assert(CGContextIsPathEmpty(context));
   {
     static const UInt8 kInsetAngle = 10;
-    int numberOfStrips = abs(progressAngle_ + 90 + kInsetAngle) / (kStripePaddingDegree + kStripeDegree) + 1;
+    int numberOfStrips = abs(progressEndAngleInDegrees_ + 90 + kInsetAngle) / (kStripePaddingDegree + kStripeDegree) + 1;
     UIBezierPath *path = [UIBezierPath bezierPath];
     CGPoint p = CGPointZero;
     float offset = progressCenter_.x;
-    float endAngle = progressAngle_ + kInsetAngle;
+    float endAngle = progressEndAngleInDegrees_ + kInsetAngle;
     float startAngle = endAngle - kStripeDegree;
     float startAngleInRadian = DEGREES_TO_RADIANS(startAngle);
     float endAngleInRadian = DEGREES_TO_RADIANS(endAngle);
@@ -257,13 +258,71 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
     CGColorRelease(stripesColor);
   }
   CGContextRestoreGState(context);
-  [progressBarPath_ release];
   
   CGContextRestoreGState(context);
   CGColorSpaceRelease(colorSpace);
 }
 
 - (void)drawGlossWithRect:(CGRect)rect {
+  CGContextRef context = UIGraphicsGetCurrentContext();
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+  
+  CGContextSaveGState(context);
+  CGContextAddPath(context, [progressBarPath_ CGPath]);
+  CGContextClip(context);
+  
+  CGContextSaveGState(context);
+  {
+    float radius = progressInRadius_ + self.progressWidth / 3 * 2;
+    static const UInt8 kGlossWidth = 5;
+    // Draw the gloss's drop shadow
+    CGContextSetBlendMode(context, kCGBlendModeSoftLight);
+    if (!self.progressBarGlossPath) {
+      self.progressBarGlossPath = [UIBezierPath bezierPath];
+      float endAngle = kProgressStartAngleInRadians + 2 * M_PI;
+      [self.progressBarGlossPath addArcWithCenter:progressCenter_
+                                           radius:radius
+                                       startAngle:kProgressStartAngleInRadians
+                                         endAngle:endAngle
+                                        clockwise:YES];
+      
+      [self.progressBarGlossPath addArcWithCenter:progressCenter_
+                                           radius:radius + kGlossWidth
+                                       startAngle:kProgressStartAngleInRadians
+                                         endAngle:endAngle
+                                        clockwise:NO];
+      [self.progressBarGlossPath closePath];
+    }
+    
+    CGContextAddPath(context, [self.progressBarGlossPath CGPath]);
+    
+    const CGFloat glossDropShadowComponents[] = { 0.0f, 0.0f, 0.0f, 0.15f };
+    CGColorRef glossDropShadowColor = CGColorCreate(colorSpace, glossDropShadowComponents);
+    CGContextSetFillColorWithColor(context, glossDropShadowColor);
+    CGContextFillPath(context);
+    CGColorRelease(glossDropShadowColor);
+  }
+  CGContextRestoreGState(context);
+  CGContextRestoreGState(context);
+  
+  CGContextSaveGState(context);
+  {
+    UIBezierPath *innerShadow = [UIBezierPath bezierPathWithArcCenter:progressCenter_
+                                                               radius:progressInRadius_ - kProgressBarGlossWidth
+                                                           startAngle:kProgressStartAngleInRadians
+                                                             endAngle:progressEndAngleInRadians_
+                                                            clockwise:YES];
+    CGContextAddPath(context, [innerShadow CGPath]);
+    const CGFloat progressBarGlowComponents[] = {1.0f, 1.0f, 1.0f, 0.12f};
+    CGColorRef progressBarGlowColor = CGColorCreate(colorSpace, progressBarGlowComponents);
+    CGContextSetBlendMode(context, kCGBlendModeOverlay);
+    CGContextSetStrokeColorWithColor(context, progressBarGlowColor);
+    CGContextStrokePath(context);
+    CGColorRelease(progressBarGlowColor);
+  }
+  CGContextRestoreGState(context);
+  
+  [progressBarPath_ release];
   
 }
 @end
