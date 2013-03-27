@@ -14,6 +14,7 @@ static const UInt8 kDefaultOffset = 0;
 @interface CCDisplayImageView ()
 {
   CGSize closeBtnSize_;
+  UIInterfaceOrientation lastOrientation_;
 }
 @property (retain, nonatomic) UIView *containerView;
 @property (retain, nonatomic) UIView *imageFrameView;
@@ -72,8 +73,7 @@ static const UInt8 kDefaultOffset = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(sizeToFitForRotation:)
                                                  name:UIDeviceOrientationDidChangeNotification object:nil];
-
-    
+    lastOrientation_ = [[UIApplication sharedApplication] statusBarOrientation];
     UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
                                                                                        action:@selector(scaleImage:)];
     [self addGestureRecognizer:pinchGesture];
@@ -83,10 +83,14 @@ static const UInt8 kDefaultOffset = 0;
 }
 
 - (void)sizeToFitForRotation:(NSNotification *)notification {
-  float tmp = self.maxImageWidth;
-  self.maxImageWidth = self.maxImageHeight;
-  self.maxImageHeight = tmp;
-  [self sizeToFitImage:self.imageDisplayView.image];
+  UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+  if (lastOrientation_ != orientation) {
+    float tmp = self.maxImageWidth;
+    self.maxImageWidth = self.maxImageHeight;
+    self.maxImageHeight = tmp;
+    [self sizeToFitImage:self.imageDisplayView.image];
+    lastOrientation_ = orientation;
+  }
 }
 
 - (void)sizeToFitImage:(UIImage *)aImage {
@@ -171,7 +175,7 @@ static const UInt8 kDefaultOffset = 0;
     [gestureRecognizer view].transform = CGAffineTransformScale([[gestureRecognizer view] transform],
                                                                 [gestureRecognizer scale],
                                                                 [gestureRecognizer scale]);
-    NSLog(@"%@, scale=%f", NSStringFromCGRect(gestureRecognizer.view.frame), gestureRecognizer.scale);
+//    NSLog(@"%@, scale=%f", NSStringFromCGRect(gestureRecognizer.view.frame), gestureRecognizer.scale);
     [gestureRecognizer setScale:1];
   }
 
