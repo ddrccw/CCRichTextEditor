@@ -75,6 +75,9 @@ static CGPoint GetPointOnCircle(float offset, float radius, float angleInDegree)
                                                     green:0.1137f
                                                      blue:0.1294f
                                                     alpha:1.0f];
+//  float x[4];
+//  [self.progressBarBackgroundColor getRed:&x[0] green:&x[1] blue:&x[2] alpha:&x[3]];
+
   progressOutRadius_ = self.frame.size.height / 2;
   progressBarOutRadius_ = progressOutRadius_ - kProgressBarInset;
   progressCenter_ = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);

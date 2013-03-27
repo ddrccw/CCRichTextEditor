@@ -19,10 +19,10 @@
   if (self) {
     // Transparent background
     self.opaque = NO;
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [UIColor clearColor];
     // Make it invisible for now
     self.alpha = 0.0f;
-    self.opacity = 0.8f;
+    self.opacity = 0.9f;
     self.autoresizingMask = UIViewAutoResizingFlexibleAll;
     UIControl *maskControl = [[UIControl alloc] initWithFrame:self.bounds];
     [maskControl addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventTouchUpInside];
@@ -42,8 +42,9 @@
 	if (self.shouldDimBackground) {
 		//Gradient colours
 		size_t gradLocationsNum = 2;
-		CGFloat gradLocations[2] = {0.0f, 1.0f};
-		CGFloat gradColors[8] = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.75f};
+		CGFloat gradLocations[2] = {0.1, 0.9};
+		CGFloat gradColors[8] = {68.0/255.0, 68.0/255.0, 68.0/255.0, 1.0,
+                             32.0/255.0, 36.0/255.0, 41.0/255.0, 1.0};
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 		CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, gradColors, gradLocations, gradLocationsNum);
 		CGColorSpaceRelease(colorSpace);
@@ -58,16 +59,13 @@
 		CGGradientRelease(gradient);
 	}
   
-  // Set background rect color
-  if (self.color) {
-    CGContextSetFillColorWithColor(context, self.color.CGColor);
-  }
-  else {
-    CGContextSetGrayFillColor(context, 0.0f, self.opacity);
-  }
-  
-  CGContextFillRect(context, self.bounds);
   UIGraphicsPopContext();
+  
+  // Blend the noize texture to the background
+//  UIImage *noizeImage = [UIImage imageNamed:@"noise"];
+//  CGSize textureSize                  = [noizeImage size];
+//  CGContextDrawTiledImage(context, CGRectMake(0, 0, textureSize.width, textureSize.height), noizeImage.CGImage);
+
 }
 
 - (void)layoutSubviews {

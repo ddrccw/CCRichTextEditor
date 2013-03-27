@@ -16,7 +16,6 @@
 
 @interface CCMaskView : UIView
 @property (assign, nonatomic) BOOL shouldDimBackground;
-@property (retain, nonatomic) UIColor *color;
 @property (assign, nonatomic) CGFloat opacity;
 @property (assign, nonatomic) id <CCMaskViewDelegate> delegate;
 @property (retain, nonatomic) UIView *centerView;
