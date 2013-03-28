@@ -322,7 +322,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 		_recorder->StartRecord((CFStringRef)fileName);
     
 //		[self setFileDescriptionForFormat:_recorder->DataFormat() withName:@"Recorded File"];
-		
+
 		// Hook the level meter up to the Audio Queue for the recorder
 		[self.lvlMeter_in setAq:_recorder->Queue()];
 	}

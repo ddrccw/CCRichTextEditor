@@ -36,18 +36,29 @@
 ////    }
 
 /*
- *  在当前range插入节点
+ *  在当前range插入节点, 否则在结尾插入
  */
 function insertNodeAtCurrentRange(node) {
   var sel = window.getSelection();
-  var range = sel.getRangeAt(0);
-  range.deleteContents();
-  range.insertNode(node);
-  sel.removeAllRanges();
-  range = range.cloneRange();
-  range.selectNode(node);
-  range.collapse(false);
-  sel.addRange(range);
+  var range = null;
+  if (sel.rangeCount) {
+    range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(node);
+    sel.removeAllRanges();
+    range = range.cloneRange();
+    range.selectNode(node);
+    range.collapse(false);
+    sel.addRange(range);
+  }
+  else {
+    var contentDIV = document.getElementById('content');
+    contentDIV.appendChild(node);
+    range = document.createRange();
+    range.selectNode(node);
+    range.collapse(false);
+    sel.addRange(range);
+  }
   return range;
 }
 
@@ -72,16 +83,13 @@ function insertSingleImage(src, width, height) {
  *  在contentDiv结尾插入代表声音文件的图片
  */
 function insertSingleAudioFile(index){
-  var contentDIV = document.getElementById('content')
 	var imgNode = document.createElement("IMG");
   imgNode.setAttribute("id", "audio" + index);
 	imgNode.setAttribute("src", "audioFileMark.png");
 	imgNode.setAttribute("width", 96);
 	imgNode.setAttribute("height", 96);
 
-  var brNode = document.createElement("BR");
-  contentDIV.appendChild(brNode);
-  contentDIV.appendChild(imgNode);
+  insertNodeAtCurrentRange(imgNode);
 }
 
 /*

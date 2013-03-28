@@ -277,7 +277,7 @@ void AQPlayer::SetupNewQueue()
 	}	
 
 	// set the volume of the queue
-	XThrowIfError (AudioQueueSetParameter(mQueue, kAudioQueueParam_Volume, 1.0), "set queue volume");
+	XThrowIfError(AudioQueueSetParameter(mQueue, kAudioQueueParam_Volume, 1.0), "set queue volume");
 	
 	mIsInitialized = true;
 }

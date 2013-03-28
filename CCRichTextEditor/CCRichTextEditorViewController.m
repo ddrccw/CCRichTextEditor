@@ -403,14 +403,14 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
     static const UInt16 kKeyboardHeight = 450;
     if (p.y >= (preContentSize.height - kKeyboardHeight)) {
       preContentSize.height += preContentSize.height / 3;
-      CGRect rect = self.contentWebView.frame;
+      CGRect rect = self.contentWebView.scrollView.frame;
       rect.size = preContentSize;
-      self.contentWebView.frame = rect;
+      self.contentWebView.scrollView.frame = rect;
       self.contentWebView.scrollView.contentSize = preContentSize;
     }
-    //    NSLog(@"%@, contentSize=%@, scrollframe=%@", NSStringFromCGPoint(p),
-    //          NSStringFromCGSize(self.contentWebView.scrollView.contentSize),
-    //          NSStringFromCGRect(self.contentWebView.frame));
+    NSLog(@"%@, contentSize=%@, scrollframe=%@", NSStringFromCGPoint(p),
+          NSStringFromCGSize(self.contentWebView.scrollView.contentSize),
+          NSStringFromCGRect(self.contentWebView.frame));
     [self.contentWebView.scrollView setContentOffset:p];
     self.documentFragmentStatus.caretOffsetY = self.inputAccessoryView.frame.origin.y - kOffsetEdge;
   }
@@ -770,10 +770,10 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   if (UIImagePickerControllerSourceTypePhotoLibrary == picker.sourceType) {
     NSURL *referenceUrl = [info objectForKey:UIImagePickerControllerReferenceURL];
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    NSString *imagePath = nil;
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
       __block UIImage *image = nil;
-      imagePath = [self.content.picturePaths objectForKey:referenceUrl];
+      NSString *imagePath = nil;
+      imagePath = [self.content.picturePaths objectForKey:[referenceUrl relativeString]];
       if (imagePath) {
         ALAssetsLibrary *library = [[[ALAssetsLibrary alloc] init] autorelease];
         [library assetForURL:referenceUrl resultBlock:^(ALAsset *asset)
@@ -791,27 +791,34 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
         }];
       }
       else {
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        imagePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"photo%@.png",
-                                                                                  [NSDate date]]];
-        
-        image = [info objectForKey:UIImagePickerControllerOriginalImage];
-        NSData *data = UIImagePNGRepresentation(image);
-        [data writeToFile:imagePath atomically:YES];
-        
-        NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
-                                                  imagePath, image.size.width, image.size.height];
-        [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
-        [self.content.picturePaths addEntriesFromDictionary:@{referenceUrl : imagePath}];
+        [self savePhotoForKey:[referenceUrl relativeString] withInfo:info];
       }
     }
     
     [_photoPopController dismissPopoverAnimated:YES];
   }
-  else {
+  else {    
+    [self savePhotoForKey:nil withInfo:info];
     [self dismissModalViewControllerAnimated:YES];
   }
+}
+
+- (void)savePhotoForKey:(NSString *)key withInfo:(NSDictionary *)info{
+  NSString *photoName = [NSString stringWithFormat:@"photo%@.png", [NSDate date]];
+  NSString *photoKey = (key) ? key : photoName;
+  
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0];
+  NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:photoName];
+  
+  UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+  NSData *data = UIImagePNGRepresentation(image);
+  [data writeToFile:imagePath atomically:YES];
+  
+  NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
+                  imagePath, image.size.width, image.size.height];
+  [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
+  [self.content.picturePaths addEntriesFromDictionary:@{photoKey : imagePath}];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
