@@ -403,14 +403,12 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
     static const UInt16 kKeyboardHeight = 450;
     if (p.y >= (preContentSize.height - kKeyboardHeight)) {
       preContentSize.height += preContentSize.height / 3;
-      CGRect rect = self.contentWebView.scrollView.frame;
-      rect.size = preContentSize;
-      self.contentWebView.scrollView.frame = rect;
       self.contentWebView.scrollView.contentSize = preContentSize;
     }
-    NSLog(@"%@, contentSize=%@, scrollframe=%@", NSStringFromCGPoint(p),
-          NSStringFromCGSize(self.contentWebView.scrollView.contentSize),
-          NSStringFromCGRect(self.contentWebView.frame));
+//    NSLog(@"%@, contentSize=%@, scrollframe=%@, webFrame=%@", NSStringFromCGPoint(p),
+//          NSStringFromCGSize(self.contentWebView.scrollView.contentSize),
+//          NSStringFromCGRect(self.contentWebView.scrollView.frame),
+//          NSStringFromCGRect(self.contentWebView.frame));
     [self.contentWebView.scrollView setContentOffset:p];
     self.documentFragmentStatus.caretOffsetY = self.inputAccessoryView.frame.origin.y - kOffsetEdge;
   }
