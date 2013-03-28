@@ -68,10 +68,12 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 	if (self = [super initWithFrame:frame]) {
 		_refreshHz = 1. / 30.;
 		_showsPeaks = YES;
-		_channelNumbers = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:0], nil];
+    _channelNumbers = nil;
+//		_channelNumbers = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:0], nil];
 		_vertical = NO;
 		_useGL = YES;
-		_chan_lvls = (AudioQueueLevelMeterState*)malloc(sizeof(AudioQueueLevelMeterState) * [_channelNumbers count]);
+    _chan_lvls = nil;
+//		_chan_lvls = (AudioQueueLevelMeterState*)malloc(sizeof(AudioQueueLevelMeterState) * [_channelNumbers count]);
 		_meterTable = new MeterTable(kMinDBvalue);
 		_bgColor = nil;
 		_borderColor = nil;
@@ -85,8 +87,10 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 	if (self = [super initWithCoder:coder]) {
 		_refreshHz = 1. / 30.;
 		_showsPeaks = YES;
-		_channelNumbers = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:0], nil];
-		_chan_lvls = (AudioQueueLevelMeterState*)malloc(sizeof(AudioQueueLevelMeterState) * [_channelNumbers count]);
+    _channelNumbers = nil;
+    _chan_lvls = nil;
+//		_channelNumbers = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:0], nil];
+//		_chan_lvls = (AudioQueueLevelMeterState*)malloc(sizeof(AudioQueueLevelMeterState) * [_channelNumbers count]);
 		_vertical = NO;
 		_useGL = YES;
 		_meterTable = new MeterTable(kMinDBvalue);
