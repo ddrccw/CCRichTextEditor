@@ -57,15 +57,9 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   [super viewDidUnload];
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-  [super willMoveToParentViewController:parent];
-  self.view.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-  self.view.layer.backgroundColor = [[UIColor colorWithRed:.2f green:.2f blue:.2f alpha:1] CGColor];
-  self.view.layer.cornerRadius = 25.f;
-  self.progressView.hidden = YES;
-  self.timeLabel.text = @"0.000s";
-  self.tipLabel.text = @"";
-	// Allocate our singleton instance for the recorder & player object
+- (void)viewDidLoad {
+  [super viewDidLoad];
+  // Allocate our singleton instance for the recorder & player object
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
   NSString *cacheDirectory = [paths objectAtIndex:0];
 	_recorder = new AQRecorder((CFStringRef)cacheDirectory);
@@ -114,6 +108,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   
 	UIColor *bgColor = [[UIColor alloc] initWithRed:.39 green:.44 blue:.57 alpha:.5];
   self.lvlMeter_in.vertical = YES;
+  //  self.lvlMeter_in.useGL = NO;
 	[self.lvlMeter_in setBackgroundColor:bgColor];  //default use opengl es
 	[self.lvlMeter_in setBorderColor:bgColor];      //make a effect when not use gl
 	[bgColor release];
@@ -138,6 +133,98 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   _playbackWasStopped = NO;
   
   [self registerForBackgroundNotifications];
+  
+  self.view.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+  self.view.layer.backgroundColor = [[UIColor colorWithRed:.2f green:.2f blue:.2f alpha:1] CGColor];
+  self.view.layer.cornerRadius = 25.f;
+  self.progressView.hidden = YES;
+  self.timeLabel.text = @"0.000s";
+  self.tipLabel.text = @"";
+}
+
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+  [super willMoveToParentViewController:parent];
+//	// Allocate our singleton instance for the recorder & player object
+//  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+//  NSString *cacheDirectory = [paths objectAtIndex:0];
+//	_recorder = new AQRecorder((CFStringRef)cacheDirectory);
+//	_player = new AQPlayer();
+//  
+//	OSStatus error = AudioSessionInitialize(NULL, NULL, interruptionListener, self);
+//	if (error) CC_ERRORLOG("ERROR INITIALIZING AUDIO SESSION! %d", (int)error);
+//	else
+//	{
+//		UInt32 category = kAudioSessionCategory_PlayAndRecord;
+//		error = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
+//		if (error) CC_ERRORLOG("couldn't set audio category!");
+//    
+//		error = AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, propListener, self);
+//		if (error) CC_ERRORLOG("ERROR ADDING AUDIO SESSION PROP LISTENER! %d", (int)error);
+//		UInt32 inputAvailable = 0;
+//		UInt32 size = sizeof(inputAvailable);
+//		
+//		// we do not want to allow recording if input is not available
+//		error = AudioSessionGetProperty(kAudioSessionProperty_AudioInputAvailable, &size, &inputAvailable);
+//		if (error) CC_ERRORLOG("ERROR GETTING INPUT AVAILABILITY! %d", (int)error);
+//    //		btn_record.enabled = (inputAvailable) ? YES : NO;
+//		
+//		// we also need to listen to see if input availability changes
+//		error = AudioSessionAddPropertyListener(kAudioSessionProperty_AudioInputAvailable, propListener, self);
+//		if (error) CC_ERRORLOG("ERROR ADDING AUDIO SESSION PROP LISTENER! %d", (int)error);
+//    
+//		error = AudioSessionSetActive(true);
+//		if (error) CC_ERRORLOG("AudioSessionSetActive (true) failed");
+//	}
+//	
+//	[[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(playbackQueueStopped:)
+//                                               name:kAQPlayerPlaybackQueueStopped object:nil];
+//	[[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(playbackQueueResumed:)
+//                                               name:kCCAuidoViewControllerplaybackQueueResumed object:nil];
+//  [[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(updateRecordDuration:)
+//                                               name:kAQRecorderTimelineDidChange
+//                                             object:nil];
+//  [[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(updatePlayTimeAndDuration:)
+//                                               name:kAQPlayerTimelineDidChange
+//                                             object:nil];
+//  
+//	UIColor *bgColor = [[UIColor alloc] initWithRed:.39 green:.44 blue:.57 alpha:.5];
+//  self.lvlMeter_in.vertical = YES;
+////  self.lvlMeter_in.useGL = NO;
+//	[self.lvlMeter_in setBackgroundColor:bgColor];  //default use opengl es
+//	[self.lvlMeter_in setBorderColor:bgColor];      //make a effect when not use gl
+//	[bgColor release];
+//	
+//  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                                                              action:@selector(singleTapAction)];
+//  singleTap.numberOfTapsRequired = 1;
+//  singleTap.numberOfTouchesRequired = 1;
+//  [self.view addGestureRecognizer:singleTap];
+//  
+//  UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                                                              action:@selector(doubleTapAction)];
+//  doubleTap.numberOfTapsRequired = 2;
+//  doubleTap.numberOfTouchesRequired = 1;
+//  [self.view addGestureRecognizer:doubleTap];
+//  [singleTap requireGestureRecognizerToFail:doubleTap];
+//  [singleTap release];
+//  [doubleTap release];
+//  
+//	_playbackWasInterrupted = NO;
+//	_playbackWasPaused = NO;
+//  _playbackWasStopped = NO;
+//  
+//  [self registerForBackgroundNotifications];
+//  
+//  self.view.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+//  self.view.layer.backgroundColor = [[UIColor colorWithRed:.2f green:.2f blue:.2f alpha:1] CGColor];
+//  self.view.layer.cornerRadius = 25.f;
+//  self.progressView.hidden = YES;
+//  self.timeLabel.text = @"0.000s";
+//  self.tipLabel.text = @"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@
     self.backgroundColor = [UIColor clearColor];
     // Make it invisible for now
     self.alpha = 0.0f;
-    self.opacity = 0.9f;
+    self.opacity = 0.95f;
     self.autoresizingMask = UIViewAutoResizingFlexibleAll;
     UIControl *maskControl = [[UIControl alloc] initWithFrame:self.bounds];
     [maskControl addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventTouchUpInside];

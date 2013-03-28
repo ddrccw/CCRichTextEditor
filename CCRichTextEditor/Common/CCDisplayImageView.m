@@ -15,6 +15,9 @@ static const UInt8 kDefaultOffset = 0;
 {
   CGSize closeBtnSize_;
   UIInterfaceOrientation lastOrientation_;
+  float maxScale_;
+  float currentScale_;
+  float minScale_;
 }
 @property (retain, nonatomic) UIView *containerView;
 @property (retain, nonatomic) UIView *imageFrameView;
@@ -78,6 +81,7 @@ static const UInt8 kDefaultOffset = 0;
                                                                                        action:@selector(scaleImage:)];
     [self addGestureRecognizer:pinchGesture];
     [pinchGesture release];
+    maxScale_ = MAXFLOAT;
   }
   return self;
 }
@@ -138,6 +142,8 @@ static const UInt8 kDefaultOffset = 0;
   rect.size.width = self.containerView.bounds.size.width + kDefaultOffset * 2;
   rect.size.height = self.containerView.bounds.size.height + kDefaultOffset * 2;
   self.bounds = rect;
+  maxScale_ = MAXFLOAT;
+  self.transform = CGAffineTransformIdentity;
 }
 
 - (void)setDisplayImage:(UIImage *)image {
@@ -152,33 +158,39 @@ static const UInt8 kDefaultOffset = 0;
   }
 }
 
-// scale and rotation transforms are applied relative to the layer's anchor point
-// this method moves a gesture recognizer's view's anchor point between the user's fingers
-- (void)adjustAnchorPointForGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-{
-  if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-    UIView *piece = gestureRecognizer.view;
-    CGPoint locationInView = [gestureRecognizer locationInView:piece];
-    CGPoint locationInSuperview = [gestureRecognizer locationInView:piece.superview];
-    
-    piece.layer.anchorPoint = CGPointMake(locationInView.x / piece.bounds.size.width, locationInView.y / piece.bounds.size.height);
-    piece.center = locationInSuperview;
-  }
-}
-
-//TODO:scale 范围, 旋转有bug
 - (void)scaleImage:(UIPinchGestureRecognizer *)gestureRecognizer {
-  [self adjustAnchorPointForGestureRecognizer:gestureRecognizer];
   if ([gestureRecognizer state] == UIGestureRecognizerStateBegan ||
       [gestureRecognizer state] == UIGestureRecognizerStateChanged)
   {
+    float scale = [gestureRecognizer scale];
+    if (maxScale_ == MAXFLOAT) {
+      CGRect rect = gestureRecognizer.view.frame;
+      if (rect.origin.x < rect.origin.y) {
+        maxScale_ = (CGRectGetMaxX(rect) + CGRectGetMinX(rect) - 50) / rect.size.width;
+      }
+      else {
+        maxScale_ = (CGRectGetMaxY(rect) + CGRectGetMinY(rect) - 100) / rect.size.height;
+      }
+      
+      currentScale_ = 1;
+      minScale_ = .5f;
+    }
+
+    float expectedScale = currentScale_ * scale;
+    if (expectedScale < minScale_) {
+      expectedScale = minScale_;
+    }
+    else if (expectedScale > maxScale_) {
+      expectedScale = maxScale_;
+    }
+
+    scale = expectedScale / currentScale_;
     [gestureRecognizer view].transform = CGAffineTransformScale([[gestureRecognizer view] transform],
-                                                                [gestureRecognizer scale],
-                                                                [gestureRecognizer scale]);
-//    NSLog(@"%@, scale=%f", NSStringFromCGRect(gestureRecognizer.view.frame), gestureRecognizer.scale);
-    [gestureRecognizer setScale:1];
+                                                                scale,
+                                                                scale);
+    gestureRecognizer.scale = 1;
+    currentScale_ = expectedScale;
+   
   }
-
-
 }
 @end

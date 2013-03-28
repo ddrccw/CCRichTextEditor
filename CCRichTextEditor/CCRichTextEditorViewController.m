@@ -440,7 +440,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 
 - (void)showImageMaskViewFromPoint:(CGPoint )aPoint {
   //防止双击弹窗期间，可能会再次弹出键盘
-  [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0.1];
+  [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0.15];
   NSString *javascript = DOM_ELEMENT_FORMPOINT_ATTRIBUTE(aPoint.x, aPoint.y, @"src");
   NSString *imgSrc = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
   javascript = [NSString stringWithFormat:@"clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
