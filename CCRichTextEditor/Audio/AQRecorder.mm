@@ -48,7 +48,7 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 */
 
 #include "AQRecorder.h"
-
+#include <mach/mach_time.h>
 
 AQRecorder::AQRecorder()
 {
@@ -128,10 +128,15 @@ void AQRecorder::MyInputBufferHandler(	void *								inUserData,
     }
     
 		// if we're not stopping, re-enqueue the buffe so that it gets filled again
+    mach_timebase_info_data_t info;
+    mach_timebase_info(&info);
 		if (aqr->IsRunning()) {
 			XThrowIfError(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, NULL), "AudioQueueEnqueueBuffer failed");
-      UInt64 duration = inStartTime->mHostTime - aqr->startTime;  //nanosecond
-      
+      UInt64 duration = inStartTime->mHostTime - aqr->startTime;
+      //convert to nanosecond
+      duration *= info.numer;
+      duration /= info.denom;
+ 
       @autoreleasepool {
         [[NSNotificationCenter defaultCenter] postNotificationName:kAQRecorderTimelineDidChange
                                                             object:@(duration)];
@@ -140,7 +145,11 @@ void AQRecorder::MyInputBufferHandler(	void *								inUserData,
     }
     else {
       if (inStartTime->mHostTime) {
-        UInt64 duration = inStartTime->mHostTime - aqr->startTime;  //nanosecond
+        UInt64 duration = inStartTime->mHostTime - aqr->startTime;
+        //convert to nanosecond
+        duration *= info.numer;
+        duration /= info.denom;
+
         @autoreleasepool {
           [[NSNotificationCenter defaultCenter] postNotificationName:kAQRecorderTimelineDidChange
                                                             object:@(duration)];

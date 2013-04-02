@@ -40,7 +40,8 @@ enum {
 
 @interface CCRTEContent : NSObject
 @property (retain, nonatomic) NSMutableDictionary *picturePaths;
-@property (retain, nonatomic) NSMutableArray *audioPaths;
+@property (retain, nonatomic) NSMutableDictionary *audioPaths;
+@property (assign, nonatomic) int audioFileId;  //new audio file id
 @property (copy, nonatomic) NSString *htmlContent;
 @end
 
@@ -56,7 +57,7 @@ enum {
 - (id)init {
   if (self = [super init]) {
     _picturePaths = [[NSMutableDictionary alloc] init];
-    _audioPaths = [[NSMutableArray alloc] init];
+    _audioPaths = [[NSMutableDictionary alloc] init];
   }
   return self;
 }
@@ -230,7 +231,23 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   }
   
   self.content.picturePaths = pictures;
-  NSLog(@"%@",self.content.picturePaths);
+//  NSLog(@"%@",self.content.picturePaths);
+}
+
+- (void)updateAudioData:(NSArray *)audioData {
+  NSMutableDictionary *audio = [NSMutableDictionary dictionaryWithCapacity:[audioData count]];
+  NSDictionary *tmp = nil;
+  NSNumber *idx = nil;
+  for (NSString *index in audioData) {
+    idx = @([index intValue]);
+    tmp = self.content.audioPaths[idx];
+    if (tmp) {
+      [audio addEntriesFromDictionary:@{idx: tmp}];
+    }
+  }
+  
+  self.content.audioPaths = audio;
+//  NSLog(@"%@", self.content.audioPaths);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -753,7 +770,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 
 - (void)recordAudio {
   [self showAudioMaskView];
-  NSString *fileName = [NSString stringWithFormat:@"audio%d", [self.content.audioPaths count]];
+  NSString *fileName = [NSString stringWithFormat:@"audio%d", self.content.audioFileId];
   [self.audioViewController record:fileName];
 }
 
@@ -761,9 +778,9 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 #pragma mark - audio view controller delegate
 - (void)audioViewControllerDidStopRecord:(NSString *)audioFilePath {
   [self.maskView hide];
-  NSString *js = [NSString stringWithFormat:@"editor.insertSingleAudioFile(%d)", [self.content.audioPaths count]];
+  NSString *js = [NSString stringWithFormat:@"editor.insertSingleAudioFile(%d)", self.content.audioFileId];
   [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
-  [self.content.audioPaths addObject:audioFilePath];
+  [self.content.audioPaths addEntriesFromDictionary:@{@(self.content.audioFileId++): audioFilePath}];
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -46,7 +46,6 @@ function CCRichTextEditor() {
   var kPhotoClassName = "photo";
 	var kAudioClassName = "audio";
 	this.photos = new Array();    //p[src]= [{photoMetaData}];
-	this.audioFileIndex = 0;
   
   /*
    *  在当前range插入节点, 否则在结尾插入
@@ -76,7 +75,7 @@ function CCRichTextEditor() {
   };
   
   /*
-   *  在当前range插入指定图片
+   *  在当前range插入指定图片, 参数个数为1或4
    */
   this.insertSingleImage = function() {
 		if (0 == arguments.length || 2 == arguments.length || 
@@ -118,14 +117,16 @@ function CCRichTextEditor() {
   /*
    *  在contentDiv结尾插入代表声音文件的图片
    */
-  this.insertSingleAudioFile = function(index){
+  this.insertSingleAudioFile = function(idx){
     var imgNode = document.createElement("IMG");
-    imgNode.setAttribute("id", "audio" + index);
+    imgNode.setAttribute("id", idx);
+		imgNode.setAttribute("class", kAudioClassName);
     imgNode.setAttribute("src", "audioFileMark.png");
     imgNode.setAttribute("width", 96);
     imgNode.setAttribute("height", 96);
     
     instance.insertNodeAtCurrentRange(imgNode);
+		return id;
   }
   
   /*
@@ -233,9 +234,9 @@ function CCRichTextEditor() {
     var elem = document.elementFromPoint(x, y);
     var isImg = (elem.tagName == "IMG") ? true: false;
     if (isImg) {
-      var id = elem.getAttribute("class");
-      if (id == kAudioClassName) {
-        var index = id.substr(5);  //audioN
+      var type = elem.getAttribute("class");
+      if (type == kAudioClassName) {
+        var index = elem.getAttribute("id");
         return index;
       }
     }
@@ -248,15 +249,6 @@ function CCRichTextEditor() {
   this.stopMonitoringDomModified = false;  //native bridge的实现有ifame的改变dom
   this.hookDomModifiedEvent = function () {
   //if (!window.WebKitMutationObserver) {    //ios6 有，ios5没有
-//    var timer;
-//    document.addEventListener('DOMSubtreeModified', function(e) {
-//      alert(e.target);
-//      clearTimeout(timer);
-//      timer = setTimeout(function () {
-//        fire('DOMSubtreeModified');
-//      }, 5000);
-//    }, false);
-   try {
     var timer;
     document.addEventListener('DOMSubtreeModified', function(e) {
 			if (instance.stopMonitoring) return;
@@ -285,14 +277,22 @@ function CCRichTextEditor() {
 				instance.stopMonitoring = true;
 				NativeBridge.call("updatePictureData:", jsonArray);
 				instance.stopMonitoring = false;
-				//var audioElements = document.getElementsByClassName(kAudioClassName);
-//                         fire('DOMSubtreeModified');
-			}, 50);  //对于连续的变化，仅在稳定后，才处理
+
+				//handle audio
+				var audioElements = document.getElementsByClassName(kAudioClassName);
+				var audioElement;
+				i = 0;
+				jsonArray = new Array();
+				while(audioElement = audioElements[i++]) {
+					key = audioElement.getAttribute("id");
+					jsonArray.push(key);
+				}
+				instance.stopMonitoring = true;
+				NativeBridge.call("updateAudioData:", jsonArray);
+				instance.stopMonitoring = false;
+
+			}, 500);  //对于连续的变化，仅在稳定后，才处理
 		}, false);
-	 }
-	 catch (e) {
-		 alert(e);
-	 }
   };
 
 	this.hookDomModifiedEvent();

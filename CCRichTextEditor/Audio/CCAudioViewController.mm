@@ -184,6 +184,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 
 - (void)updateRecordDuration:(NSNotification *)notification {
   UInt64 nanoDuration = [[notification object] unsignedLongLongValue];
+//  NSLog(@"%llu", nanoDuration);
   NSString *text = [NSString stringWithFormat:@"%.3fs", (nanoDuration * 1. / 1000000000)];
   self.timeLabel.text = text;
 }
@@ -199,6 +200,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   NSString *text = [NSString stringWithFormat:@"%02d:%02d/%02d:%02d", playTimeMinutes, playTimeSeconds,
                                                                       durationMinutes, durationSeconds];
   self.timeLabel.text = text;
+//  NSLog(@"progress=%f", playTime / duration);
   self.progressView.progress = playTime / duration;
 }
 ////////////////////////////////////////////////////////////////////////////////
