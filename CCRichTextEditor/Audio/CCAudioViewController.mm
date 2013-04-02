@@ -332,7 +332,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   if (self.player->IsRunning()) {
     [self stopPlayQueue];
   }
-  
+
   [self play:self.recordFilePath];
 }
 

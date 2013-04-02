@@ -163,7 +163,6 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   NSBundle *bundle = [NSBundle mainBundle];
   NSURL *indexFileURL = [bundle URLForResource:@"index" withExtension:@"html"];
   [self.contentWebView loadRequest:[NSURLRequest requestWithURL:indexFileURL]];
-  
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(keyboardWillShow:)
                                                name:UIKeyboardWillShowNotification
@@ -193,9 +192,46 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
     return NO;
   }
   
+  if ([requestString hasPrefix:@"js-frame:"]) {
+    NSArray *components = [requestString componentsSeparatedByString:@"|"];
+    NSString *function = (NSString*)[components objectAtIndex:1];
+		int callbackId = [((NSString*)[components objectAtIndex:2]) intValue];
+    NSString *argsAsString = [(NSString*)[components objectAtIndex:3]
+                              stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSData *JSONData = [argsAsString dataUsingEncoding:NSUTF8StringEncoding];
+    NSArray *args = [NSJSONSerialization JSONObjectWithData:JSONData options:NSJSONReadingMutableContainers error:nil];
+    [self handleCall:function callbackId:callbackId args:args];
+    return NO;
+  }
+  
   return YES;
 }
 
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+  static BOOL isInit = YES;
+  if (isInit) {
+    [self.contentWebView stringByEvaluatingJavaScriptFromString:@"var editor = new CCRichTextEditor();"];
+    isInit = NO;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - native bridge between iOS and js
+- (void)handleCall:(NSString *)functionName callbackId:(int)callbackId args:(NSArray *)args {
+  [self performSelector:sel_getUid([functionName UTF8String]) withObject:args];
+}
+
+- (void)updatePictureData:(NSArray *)pictureData {
+  NSMutableDictionary *pictures = [NSMutableDictionary dictionaryWithCapacity:[pictureData count]];
+  for (NSDictionary *picture in pictureData) {
+    [pictures addEntriesFromDictionary:@{picture[@"key"]: picture[@"value"]}];
+  }
+  
+  self.content.picturePaths = pictures;
+  NSLog(@"%@",self.content.picturePaths);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - private method
@@ -265,7 +301,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
     NSString *js = nil;
     self.contentWebView.scrollView.scrollEnabled = YES;
     if (!CGPointEqualToPoint(moveImageGesture.startPoint, touchPoint)) {
-      js = [NSString stringWithFormat:@"moveImageAtTo(%f, %f, %f, %f)",
+      js = [NSString stringWithFormat:@"editor.moveImageAtTo(%f, %f, %f, %f)",
                                       moveImageGesture.startPoint.x, moveImageGesture.startPoint.y,
                                       touchPoint.x, touchPoint.y];
       [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
@@ -282,7 +318,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
                             touchPoint.x, touchPoint.y];
     NSString *elementNameAtPoint = [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
     if ([elementNameAtPoint isEqualToString:@"IMG"]) {
-      js = [NSString stringWithFormat:@"audioFileIndexAtPoint(%f, %f)", touchPoint.x, touchPoint.y];
+      js = [NSString stringWithFormat:@"editor.audioFileIndexAtPoint(%f, %f)", touchPoint.x, touchPoint.y];
       int audioFileIndex = [[self.contentWebView stringByEvaluatingJavaScriptFromString:js] intValue];
       if (audioFileIndex >= 0) {
         [self showAudioMaskView];
@@ -389,7 +425,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 - (void)refreshForScrollingToVisible {
 //  NSString *dd = [self.contentWebView stringByEvaluatingJavaScriptFromString:@"getCaretPosition().toString()"];
 //  NSLog(@"%@", dd);
-  int offsetY = [[self.contentWebView stringByEvaluatingJavaScriptFromString:@"getCaretPosition()"] intValue];
+  int offsetY = [[self.contentWebView stringByEvaluatingJavaScriptFromString:@"editor.getCaretPosition()"] intValue];
 //  NSLog(@"out=%d, pre=%d", offsetY, self.documentFragmentStatus.caretOffsetY);
   
   static const UInt8 kOffsetEdge = 30;
@@ -441,7 +477,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   [self.contentWebView performSelector:@selector(endEditing:) withObject:@(YES) afterDelay:0.15];
   NSString *javascript = DOM_ELEMENT_FORMPOINT_ATTRIBUTE(aPoint.x, aPoint.y, @"src");
   NSString *imgSrc = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
-  javascript = [NSString stringWithFormat:@"clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
+  javascript = [NSString stringWithFormat:@"editor.clientRectOfElementFromPoint(%f, %f)", aPoint.x, aPoint.y];
   NSString *string = [self.contentWebView stringByEvaluatingJavaScriptFromString:javascript];
   NSArray *clientRect = [string componentsSeparatedByString:@","];
   if (!self.maskView) {
@@ -725,7 +761,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
 #pragma mark - audio view controller delegate
 - (void)audioViewControllerDidStopRecord:(NSString *)audioFilePath {
   [self.maskView hide];
-  NSString *js = [NSString stringWithFormat:@"insertSingleAudioFile(%d)", [self.content.audioPaths count]];
+  NSString *js = [NSString stringWithFormat:@"editor.insertSingleAudioFile(%d)", [self.content.audioPaths count]];
   [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
   [self.content.audioPaths addObject:audioFilePath];
 }
@@ -769,24 +805,12 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
     NSURL *referenceUrl = [info objectForKey:UIImagePickerControllerReferenceURL];
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
-      __block UIImage *image = nil;
       NSString *imagePath = nil;
       imagePath = [self.content.picturePaths objectForKey:[referenceUrl relativeString]];
       if (imagePath) {
-        ALAssetsLibrary *library = [[[ALAssetsLibrary alloc] init] autorelease];
-        [library assetForURL:referenceUrl resultBlock:^(ALAsset *asset)
-        {
-          ALAssetRepresentation *assetRep = [asset defaultRepresentation];
-          image = [UIImage imageWithCGImage:[assetRep fullResolutionImage]
-                                      scale:assetRep.scale
-                                orientation:(UIImageOrientation)assetRep.orientation];
-          
-          NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
-                                                    imagePath, image.size.width, image.size.height];
-          [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
-        }failureBlock:^(NSError *error){
-          CC_ERRORLOG(@"%@", error);
-        }];
+        NSString *js = [NSString stringWithFormat:@"editor.insertSingleImage('%@')",
+                                                  referenceUrl];
+        [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
       }
       else {
         [self savePhotoForKey:[referenceUrl relativeString] withInfo:info];
@@ -813,8 +837,8 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   NSData *data = UIImagePNGRepresentation(image);
   [data writeToFile:imagePath atomically:YES];
   
-  NSString *js = [NSString stringWithFormat:@"insertSingleImage('%@', %f, %f)",
-                  imagePath, image.size.width, image.size.height];
+  NSString *js = [NSString stringWithFormat:@"editor.insertSingleImage('%@', '%@', %f, %f)",
+                  photoKey, imagePath, image.size.width, image.size.height];
   [self.contentWebView stringByEvaluatingJavaScriptFromString:js];
   [self.content.picturePaths addEntriesFromDictionary:@{photoKey : imagePath}];
 }
