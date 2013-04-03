@@ -175,12 +175,14 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 	
 	if (_vertical)
 	{
-		glTranslatef(0., [self bounds].size.height, 0.);
-		glScalef(1., -1., 1.);
+//    NSLog(@"%@", NSStringFromCGAffineTransform(self.layer.transform));
+//		glTranslatef(0., [self bounds].size.height, 0.);
+//		glScalef(1., -1., 1.);
 		bds = CGRectMake(0., -1., [self bounds].size.width * _scaleFactor, [self bounds].size.height * _scaleFactor);
 	} else {
-		glTranslatef(0., [self bounds].size.height * _scaleFactor, 0.);
-		glRotatef(-90., 0., 0., 1.);
+//		glTranslatef(0., [self bounds].size.height * _scaleFactor, 0.);
+//		glRotatef(-90., 0., 0., 1.);
+    glRotatef(-180., 1., 1., 0.); //等价于上面两步
 		bds = CGRectMake(0., 1., [self bounds].size.height * _scaleFactor, [self bounds].size.width * _scaleFactor);
 	}
 	

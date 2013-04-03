@@ -231,7 +231,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   }
   
   self.content.picturePaths = pictures;
-//  NSLog(@"%@",self.content.picturePaths);
+  NSLog(@"%@",self.content.picturePaths);
 }
 
 - (void)updateAudioData:(NSArray *)audioData {
@@ -247,7 +247,7 @@ CCMaskViewDelegate, CCDisplayImageViewDelegate, CCAudioViewControllerDelegate>
   }
   
   self.content.audioPaths = audio;
-//  NSLog(@"%@", self.content.audioPaths);
+  NSLog(@"%@", self.content.audioPaths);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

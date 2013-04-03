@@ -186,7 +186,7 @@ int _cmp_levelThresholds(const void * a, const void * b)
 			CGRect lightRect;
 			UIColor *lightColor;
 			
-			if (light_i == peakLight)
+			if (light_i == peakLight) //每个小格根据level应用对应的透明度
 			{
 				lightIntensity = 1.;
 			} else {
@@ -194,14 +194,16 @@ int _cmp_levelThresholds(const void * a, const void * b)
 				lightIntensity = LEVELMETER_CLAMP(0., lightIntensity, 1.);
 				if ((!_variableLightIntensity) && (lightIntensity > 0.)) lightIntensity = 1.;
 			}
-			
+		
+      //判断当前的格子位于哪个颜色区段，比如[0, 0.25)--green, [0.25, 0.8)--yellow, [0.8, 1)--red
 			lightColor = _colorThresholds[0].color;
 			int color_i;
-			for (color_i=0; color_i<(_numColorThresholds-1); color_i++)
+			for (color_i=0; color_i<(_numColorThresholds-1); color_i++)  
 			{
 				LevelMeterColorThreshold thisThresh = _colorThresholds[color_i];
 				LevelMeterColorThreshold nextThresh = _colorThresholds[color_i + 1];
-				if (thisThresh.maxValue <= lightMaxVal) lightColor = nextThresh.color;
+				if (thisThresh.maxValue <= lightMaxVal)
+          lightColor = nextThresh.color;
 			}
 			
 			lightRect = CGRectMake(
