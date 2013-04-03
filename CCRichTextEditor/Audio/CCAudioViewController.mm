@@ -116,7 +116,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   
 	UIColor *bgColor = [[UIColor alloc] initWithRed:.39 green:.44 blue:.57 alpha:.5];
   self.lvlMeter_in.vertical = YES;
-  self.lvlMeter_in.useGL = NO;
+  self.lvlMeter_in.useGL = YES;
 	[self.lvlMeter_in setBackgroundColor:bgColor];  //default use opengl es
 	[self.lvlMeter_in setBorderColor:bgColor];      //make a effect when not use gl
 	[bgColor release];

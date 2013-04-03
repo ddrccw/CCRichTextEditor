@@ -144,7 +144,9 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 - (void)layoutSubLevelMeters
 {
   if (_vertical && _useGL) {
-    self.transform = CGAffineTransformRotate(self.transform, M_PI);
+    NSLog(@"bef=%@", NSStringFromCGAffineTransform(self.transform));
+    self.transform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI);
+    NSLog(@"aft=%@", NSStringFromCGAffineTransform(self.transform));
   }
   
 	int i;
