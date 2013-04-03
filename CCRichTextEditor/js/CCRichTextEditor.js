@@ -228,7 +228,7 @@ function CCRichTextEditor() {
   };
   
   /*
-   *  判断(x, y)点处的dom元素是否为音频文件img, true则返回index，false则放回-1
+   *  判断(x, y)点处的dom元素是否为音频文件img, true则返回index，false则返回-1
    */
   this.audioFileIndexAtPoint = function(x, y) {
     var elem = document.elementFromPoint(x, y);
@@ -244,55 +244,125 @@ function CCRichTextEditor() {
   }
   
 	/*
+	 * 更新js和obj-c的pictureData
+	 */
+	this.updatePictureData = function() {
+    var photoElements = document.getElementsByClassName(kPhotoClassName);
+    var key, src, w, h, i=0;
+    var photo, photoElement;
+    var photos = new Array();
+    var jsonArray = new Array();
+    while(photoElement = photoElements[i++]) {
+      key = photoElement.getAttribute("id");
+      photo = photos[key];
+      if (!photo) {
+        src = photoElement.getAttribute("src");
+        w = photoElement.getAttribute("width");
+        h = photoElement.getAttribute("height");
+        photo = new PhotoMetaData(src, w, h);
+        photos[key] = photo;
+
+        jsonArray.push({"key":key, "value":src});
+      }
+    }
+    instance.photos = photos;
+    instance.stopMonitoring = true;
+    NativeBridge.call("updatePictureData:", jsonArray);
+    instance.stopMonitoring = false;
+	};
+
+	/*
+	 * 更新js和obj-c的audioData
+	 */
+	this.updateAudioData = function() {
+    var audioElements = document.getElementsByClassName(kAudioClassName);
+    var audioElement;
+    i = 0;
+    jsonArray = new Array();
+    while(audioElement = audioElements[i++]) {
+      key = audioElement.getAttribute("id");
+      jsonArray.push(key);
+    }
+    instance.stopMonitoring = true;
+    NativeBridge.call("updateAudioData:", jsonArray);
+    instance.stopMonitoring = false;
+	}
+
+	/*
 	 * 监听Dom的状态改变，更新image和audio
 	 */
   this.stopMonitoringDomModified = false;  //native bridge的实现有ifame的改变dom
   this.hookDomModifiedEvent = function () {
-  //if (!window.WebKitMutationObserver) {    //ios6 有，ios5没有
-    var timer;
-    document.addEventListener('DOMSubtreeModified', function(e) {
-			if (instance.stopMonitoring) return;
-      clearTimeout(timer);
-			timer = setTimeout(function() {
-				//handle photos
-				var photoElements = document.getElementsByClassName(kPhotoClassName);
-				var key, src, w, h, i=0;
-				var photo, photoElement;
-				var photos = new Array();
-				var jsonArray = new Array();
-				while(photoElement = photoElements[i++]) {
-					key = photoElement.getAttribute("id");
-					photo = photos[key];
-					if (!photo) {
-						src = photoElement.getAttribute("src");
-						w = photoElement.getAttribute("width");
-						h = photoElement.getAttribute("height");
-						photo = new PhotoMetaData(src, w, h);
-						photos[key] = photo;
+		var contentDiv = document.getElementById("content");
+		if (!window.WebKitMutationObserver) {    //ios6 有，ios5没有
+			var timer;
+			contentDiv.addEventListener('DOMSubtreeModified', function(e) {
+				if (instance.stopMonitoring) return;
+				clearTimeout(timer);
+				timer = setTimeout(function() {
+					instance.updatePictureData();
+					instance.updateAudioData();
+				}, 500);  //对于连续的变化，仅在稳定后，才处理
+			}, false);
+		}
+		else {
+			var FoundNodeType = {
+				Unexpected:0,
+				Picture:1,
+				Audio:2
+			};
+			// [Picture, Audio]
+			var checkPictureOrAudioAddedOrRemoved = function(nodeList, foundTypes) {
+				var node;
+				for (var i = 0; i < nodeList.length; ++i) {
+					if (foundTypes[0] === FoundNodeType.Picture &&
+							foundTypes[1] === FoundNodeType.Audio) 
+					{
+						return;
+					}
 
-						jsonArray.push({"key":key, "value":src});
+					node = nodeList[i];
+          if (node.nodeType == 1) {  //1 === DOM_ELEMENT
+						//alert(node.tagName + " " + node.className);
+            if (node.className) {
+              if (node.className === kPhotoClassName){
+                foundTypes[0] = FoundNodeType.Picture;
+              }
+              else if (node.className === kAudioClassName) {
+                foundTypes[1] = FoundNodeType.Audio;
+              }
+            }
 					}
 				}
-				instance.photos = photos;
-				instance.stopMonitoring = true;
-				NativeBridge.call("updatePictureData:", jsonArray);
-				instance.stopMonitoring = false;
+			};
 
-				//handle audio
-				var audioElements = document.getElementsByClassName(kAudioClassName);
-				var audioElement;
-				i = 0;
-				jsonArray = new Array();
-				while(audioElement = audioElements[i++]) {
-					key = audioElement.getAttribute("id");
-					jsonArray.push(key);
-				}
-				instance.stopMonitoring = true;
-				NativeBridge.call("updateAudioData:", jsonArray);
-				instance.stopMonitoring = false;
+			var observer = new (window.WebKitMutationObserver)(function(mutations) {
+				mutations.forEach(function(mutation) {
+					//alert(mutation.target + " " + mutation.addedNodes[0] + " " + mutation.removedNodes.length);
+					if (mutation.type != "childList") return;
 
-			}, 500);  //对于连续的变化，仅在稳定后，才处理
-		}, false);
+					var foundTypes = [FoundNodeType.Unexpected, FoundNodeType.Unexpected];
+					if (mutation.addedNodes) {
+						checkPictureOrAudioAddedOrRemoved(mutation.addedNodes, foundTypes);
+					}
+					if (mutation.removedNodes) {
+						checkPictureOrAudioAddedOrRemoved(mutation.removedNodes, foundTypes);
+					}
+
+					if (foundTypes[0] === FoundNodeType.Picture) {
+						instance.updatePictureData();
+					}
+					
+					if (foundTypes[1] === FoundNodeType.Audio) {
+						instance.updateAudioData();
+					}
+				});
+			});
+ 
+      observer.observe(contentDiv, {
+				childList: true
+			});
+		}
   };
 
 	this.hookDomModifiedEvent();
