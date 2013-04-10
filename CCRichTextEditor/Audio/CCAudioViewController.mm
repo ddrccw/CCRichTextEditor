@@ -12,8 +12,6 @@
 #import "AQPlayer.h"
 #import "AQRecorder.h"
 
-static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoViewControllerplaybackQueueResumed";
-
 @interface CCAudioViewController ()
 
 @property (atomic) AQPlayer *player;
@@ -104,7 +102,11 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
                                                name:kAQPlayerPlaybackQueueStopped object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(playbackQueueResumed:)
-                                               name:kCCAuidoViewControllerplaybackQueueResumed object:nil];
+                                               name:kAQPlayerPlaybackQueueResumed object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(playbackQueuePaused:)
+                                               name:kAQPlayerPlaybackQueuePaused
+                                             object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(updateRecordDuration:)
                                                name:kAQRecorderTimelineDidChange
@@ -151,7 +153,6 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
   }
   else {
     if (!self.playbackWasStopped && !self.playbackWasPaused) {
-      self.statusLabel.text = @"暂停播放";
       [self pausePlayQueue];
     }
     else {
@@ -167,19 +168,26 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-# pragma mark - Notification routines
-- (void)playbackQueueStopped:(NSNotification *)note
+# pragma mark - Notification routines change to update UI
+- (void)playbackQueueStopped:(NSNotification *)notification
 {
   self.playbackWasStopped = YES;
 	[self.lvlMeter_in setAq: nil];
   self.statusLabel.text = @"播放结束";
+  self.progressView.progress = 0;
 }
 
-- (void)playbackQueueResumed:(NSNotification *)note
+- (void)playbackQueueResumed:(NSNotification *)notification
 {
 	[self.lvlMeter_in setAq:_player->Queue()];
   _playbackWasPaused = NO;
   _playbackWasStopped = NO;
+  self.statusLabel.text = @"开始播放";
+}
+
+- (void)playbackQueuePaused:(NSNotification *)notification {
+  self.playbackWasPaused = YES;
+  self.statusLabel.text = @"播放暂停";
 }
 
 - (void)updateRecordDuration:(NSNotification *)notification {
@@ -221,7 +229,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 - (void)resignActive
 {
   if (_recorder->IsRunning()) [self stopRecord];
-  if (_player->IsRunning()) [self stopPlayQueue];
+  if (_player->IsRunning()) [self pausePlayQueue];
   _inBackground = true;
 }
 
@@ -229,6 +237,9 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 {
   OSStatus error = AudioSessionSetActive(true);
   if (error) CC_ERRORLOG("AudioSessionSetActive (true) failed");
+  if (self.playbackWasPaused)
+    _player->StartQueue(true);
+    
 	_inBackground = false;
 }
 
@@ -237,14 +248,11 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 -(void)stopPlayQueue
 {
 	_player->StopQueue();
-	[self.lvlMeter_in setAq:nil];
-  _playbackWasStopped = YES;
 }
 
 -(void)pausePlayQueue
 {
 	_player->PauseQueue();
-	_playbackWasPaused = YES;
 }
 
 - (void)stopRecord
@@ -284,10 +292,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
 	if (_player->IsRunning())
 	{
 		if (_playbackWasPaused) {
-			OSStatus result = _player->StartQueue(true);
-			if (result == noErr)
-				[[NSNotificationCenter defaultCenter] postNotificationName:kCCAuidoViewControllerplaybackQueueResumed
-                                                            object:self];
+			_player->StartQueue(true);
 		}
 		else
 			[self stopPlayQueue];
@@ -297,11 +302,7 @@ static NSString * const kCCAuidoViewControllerplaybackQueueResumed = @"kCCAuidoV
     NSString *filePath = (NSString *)_recorder->GetFileDirectory();
     self.recordFilePath = [filePath stringByAppendingPathComponent:fileName];
     self.player->CreateQueueForFile((CFStringRef)self.recordFilePath);
-    OSStatus result = _player->StartQueue(false);
-		if (result == noErr)
-			[[NSNotificationCenter defaultCenter] postNotificationName:kCCAuidoViewControllerplaybackQueueResumed
-                                                          object:self];
-    
+    _player->StartQueue(false);
 	}
 }
 
@@ -349,16 +350,14 @@ void interruptionListener(void *inClientData, UInt32 inInterruptionState)
 			[THIS stopRecord];
 		}
 		else if (THIS.player->IsRunning()) {
-			//the queue will stop itself on an interruption, we just need to update the UI
-			[[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerPlaybackQueueStopped object:THIS];
-			THIS.playbackWasInterrupted = YES;
-		}
+      THIS.player->PauseQueue();
+      THIS.playbackWasInterrupted = YES;
+    }
 	}
 	else if ((inInterruptionState == kAudioSessionEndInterruption) && THIS.playbackWasInterrupted)
 	{
 		// we were playing back when we were interrupted, so reset and resume now
 		THIS.player->StartQueue(true);
-		[[NSNotificationCenter defaultCenter] postNotificationName:kCCAuidoViewControllerplaybackQueueResumed object:THIS];
 		THIS.playbackWasInterrupted = NO;
 	}
 }
@@ -398,7 +397,6 @@ void propListener(void *inClientData, AudioSessionPropertyID inID, UInt32 inData
 			{
 				if (THIS.player->IsRunning()) {
 					[THIS pausePlayQueue];
-					[[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerPlaybackQueueStopped object:THIS];
 				}
 			}
       

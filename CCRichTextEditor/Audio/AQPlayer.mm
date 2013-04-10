@@ -172,15 +172,23 @@ OSStatus AQPlayer::StartQueue(BOOL inResume)
             AQBufferCallback (this, mQueue, mBuffers[i]);			
         }
     }
-	return AudioQueueStart(mQueue, NULL);
+  
+  OSStatus result = AudioQueueStart(mQueue, NULL);
+  if (inResume && result == noErr)
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerPlaybackQueueResumed
+                                                        object:nil];
+  return result;
 }
 
 OSStatus AQPlayer::StopQueue()
 {
-    mIsDone = true;
+  mIsDone = true;
     
 	OSStatus result = AudioQueueStop(mQueue, true);
-	if (result) printf("ERROR STOPPING QUEUE!\n");
+	if (result)
+    printf("ERROR STOPPING QUEUE!\n");
+  else
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerPlaybackQueueStopped object: nil];
 
 	return result;
 }
@@ -188,6 +196,10 @@ OSStatus AQPlayer::StopQueue()
 OSStatus AQPlayer::PauseQueue()
 {
 	OSStatus result = AudioQueuePause(mQueue);
+	if (result != noErr)
+    printf("ERROR STOPPING QUEUE!\n");
+  else
+    [[NSNotificationCenter defaultCenter] postNotificationName:kAQPlayerPlaybackQueuePaused object: nil];
 
 	return result;
 }

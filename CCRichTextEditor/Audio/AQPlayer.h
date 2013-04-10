@@ -55,6 +55,8 @@ Copyright (C) 2012 Apple Inc. All Rights Reserved.
 #define kNumberBuffers 3
 
 static NSString * const kAQPlayerPlaybackQueueStopped = @"kAQPlayerPlaybackQueueStopped";
+static NSString * const kAQPlayerPlaybackQueuePaused = @"kAQPlayerPlaybackQueuePaused";
+static NSString * const kAQPlayerPlaybackQueueResumed = @"kAQPlayerPlaybackQueueResumed";
 static NSString * const kAQPlayerTimelineDidChange = @"kAQPlayerTimelineDidChange";
 
 class AQPlayer
